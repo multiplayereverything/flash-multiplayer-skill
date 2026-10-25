@@ -7,6 +7,10 @@ mod without touching the original file, tests it with self-playing copies of the
 a 5-letter room code through the [Multiplayer Everything](https://discord.com/invite/P2MSSUf5GX) relay: nobody opens
 ports, nobody types an IP.
 
+Heavily inspired by [Co-op Anything](https://github.com/cranebeaker/coop-anything) by cranebeaker: the quick start,
+the agent guide, the directory with honest QA levels and the "share back" loop all come from there, adapted to how we
+make Flash games online.
+
 [Quick start](#quick-start) · [How it works](#how-it-works) · [Games so far](#games-so-far) · [Tools](#tools) ·
 [Share back](#share-back) · [FAQ](#faq)
 
