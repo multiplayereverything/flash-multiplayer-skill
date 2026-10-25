@@ -10,7 +10,11 @@ the build injects code into a copy of the SWF, the host's game runs the real gam
 show the host's world and send their own input. Everything goes through the global mod relay, a text relay in
 star mode: the host gets a 5-letter room code and friends type it or pick the room from a public list.
 
-Read the reference that matches the step you're on. This page is the route and the checklist.
+This page is the route and the checklist. The hub also has one skill per phase in `skills/` (`flash-start`,
+`flash-map`, `flash-lab`, `flash-inject`, `flash-sync`, `flash-ship`, `flash-share`), the phase map in `AGENTS.md`, and
+every game done so far in `DIRECTORY.md` (check it first: `python tools/directory.py find <game>`).
+
+Read the reference that matches the step you're on.
 
 | Step | Reference |
 |---|---|
