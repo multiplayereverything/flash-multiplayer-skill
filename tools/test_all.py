@@ -55,7 +55,7 @@ def test_use_network(tmp):
 
 def test_check_public(tmp):
     clean = os.path.join(tmp, "clean.md")
-    open(clean, "w").write("Relay 195.60.166.57:25569, local 127.0.0.1:7801, path C:\\Users\\<name>\\game\n")
+    open(clean, "w").write("Relay relay.example.com:25600, local 127.0.0.1:7801, path C:\\Users\\<name>\\game\n")
     ok("check_public passes clean text", check_public.main([clean]) == 0)
     cases = {
         "a GitHub token": "token = ghp_" + "A" * 30,
@@ -106,9 +106,42 @@ def test_skills():
             ok("skill %s: %s exists" % (n, ref), os.path.exists(os.path.join(root, ref.split(" ")[0])))
 
 
+def test_relay(tmp):
+    import socket
+    import time
+    root = os.path.dirname(HERE)
+    with socket.socket() as s:
+        s.bind(("127.0.0.1", 0))
+        port = s.getsockname()[1]
+    games = os.path.join(tmp, "games.json")
+    open(games, "w").write(open(os.path.join(root, "relay", "games.example.json")).read())
+    proc = subprocess.Popen([sys.executable, "-I", os.path.join(root, "relay", "init.py"), "--port", str(port),
+                             "--bind", "127.0.0.1", "--games", games, "--no-mods-info"],
+                            stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+
+    def ask(line):
+        for _ in range(50):
+            try:
+                with socket.create_connection(("127.0.0.1", port), 2) as c:
+                    c.sendall(line + b"\0")
+                    time.sleep(0.2)
+                    return c.recv(256)
+            except OSError:
+                time.sleep(0.1)
+        return b""
+    try:
+        ok("relay lists rooms for a known game", ask(b"RELAY|1|LIST|tw").startswith(b"LIST|"))
+        ok("twin: relay refuses an unknown game", ask(b"RELAY|1|LIST|nope").startswith(b"E|"))
+        ok("relay gives a host a room code", ask(b"RELAY|1|HOST|bowman|1|1|test").startswith(b"ROOM|"))
+    finally:
+        proc.kill()
+        proc.wait()
+
+
 with tempfile.TemporaryDirectory() as tmp:
     test_use_network(tmp)
     test_check_public(tmp)
+    test_relay(tmp)
 test_directory()
 test_skills()
 print()

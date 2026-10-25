@@ -4,15 +4,15 @@
 
 Point your coding agent at this repo and name a Flash game. It reads the SWF, maps the game's code, builds an online
 mod without touching the original file, tests it with self-playing copies of the game, and ships it. Friends join with
-a 5-letter room code through the [Multiplayer Everything](https://discord.com/invite/P2MSSUf5GX) relay: nobody opens
-ports, nobody types an IP.
+a 5-letter room code through **your own relay server**, which is included: players open no ports and type no IPs, and
+one relay serves every game you make.
 
 Heavily inspired by [Co-op Anything](https://github.com/cranebeaker/coop-anything) by cranebeaker: the quick start,
 the agent guide, the directory with honest QA levels and the "share back" loop all come from there, adapted to how we
 make Flash games online.
 
-[Quick start](#quick-start) · [How it works](#how-it-works) · [Games so far](#games-so-far) · [Tools](#tools) ·
-[Share back](#share-back) · [FAQ](#faq)
+[Quick start](#quick-start) · [Your relay](#your-relay) · [How it works](#how-it-works) · [Games so far](#games-so-far) ·
+[Tools](#tools) · [Share back](#share-back) · [FAQ](#faq)
 
 ## Quick start
 Tell your agent (Claude Code, Codex, Gemini CLI, Cursor, ...), in the folder with the game's `.swf`:
@@ -27,6 +27,18 @@ git clone https://github.com/multiplayereverything/flash-multiplayer-skill ~/fla
 Then link the folder as `~/.claude/skills/flash-multiplayer` and each `skills/<name>` folder as
 `~/.claude/skills/<name>` (or copy them). You need Java 21, [FFDec](https://github.com/jindrapetrik/jpexs-decompiler)
 26.x, Python 3.10+ and [Ruffle](https://ruffle.rs) desktop. The agent asks before installing anything.
+
+## Your relay
+Online play goes through a relay server that you run: [`relay/`](relay) (Python, standard library only, one TCP port
+for every game). The host connects and gets a room code, friends join with it, and the relay passes their messages.
+
+1. **Try it locally:** `python relay/init.py --port 7790 --log`. The labs start their own copy automatically.
+2. **Add your game** to `relay/games.json` (`"mode": "star"`, max players).
+3. **Put it online** on a small VPS, a Python game-server host, or a PC with one forwarded port.
+4. **Build its address into the mod** as the default server. Players can still type another one.
+
+[`relay/README.md`](relay/README.md) walks through each step, with a service file, a firewall line and a check from
+another network. Optional mods-info files let you move the relay or announce updates without rebuilding the mods.
 
 ## How it works
 Every Flash game here took one of three paths:
@@ -100,8 +112,13 @@ Pull requests welcome.
 
 ## FAQ
 <details><summary>Do my friends need anything?</summary>
-The mod's SWF and Ruffle desktop (or the Multiplayer Everything launcher, which sets both up). No accounts, no port
-forwarding.
+The mod's SWF and Ruffle desktop. No accounts and no port forwarding: only whoever runs the relay opens one port.
+</details>
+
+<details><summary>Do I need a server?</summary>
+Something has to run the relay where your players can reach it: a cheap VPS, a Python game-server host, or a PC
+with one forwarded port. For testing on one PC, the relay runs locally and the labs start it for you. See
+<a href="relay/README.md">relay/README.md</a>.
 </details>
 
 <details><summary>Flash Player or Ruffle?</summary>

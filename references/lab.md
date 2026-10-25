@@ -10,7 +10,7 @@ Templates: `templates/lab/lab_as3.py` (from Air Battle: relay, host, guests, lat
 ## The runner
 1. Build the lab SWF (`python -I build.py --lab`). Don't build while a lab is starting.
 2. Refuse to start if the lab port is busy. Pick one port per mod and never share it; avoid ports real sessions use.
-3. Start the relay on `127.0.0.1:<port>`:
+3. Start the hub's relay (`relay/init.py`, set `MOD_RELAY` to its path) on `127.0.0.1:<port>`:
    ```bash
    python init.py --port 7801 --bind 127.0.0.1 --log --games tools/lab_games.json --no-mods-info [--sim-delay 80 --sim-jitter 40]
    ```
@@ -55,7 +55,7 @@ Lab lines can also go through the relay as `D|LAB ...`, which helps when a windo
 | `--wrong-code`, `--wrong-version` | refused with a readable reason |
 | `--delay 80 --jitter 40` | still smooth and in sync with lag |
 | `--modinfo <url>` with a local `http.server`, and `--modinfo-relay` | mods-info download and the relay INFO fallback |
-| `--release-smoke` | the release build starts with the relay typed as a closed local port, never touching the live server |
+| `--release-smoke` | the release build starts with the relay typed as a closed local port, never touching your live relay |
 
 Turn games: compare a `LAB| HASH <turn> <state>` line between host and guest at every turn start.
 

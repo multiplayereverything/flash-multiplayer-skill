@@ -1,13 +1,13 @@
 ---
 name: flash-multiplayer
-description: Turn a single-player or local-multiplayer Flash game (.swf, AS2/AVM1 or AS3/AVM2) into an online multiplayer mod that plays through the Multiplayer Everything global mod relay, with room codes and no port forwarding. Covers recon of the SWF, injecting code with FFDec (AS3 importScript plus stub classes, AS2 new DoAction tags, spliced or patched frame scripts, p-code), host-authoritative sync for turn-based, realtime and physics games, input injection for remote players, the in-game online panel, the self-driving Ruffle lab, and releasing to the flash-games repo and mods-info. Built from the Bad Ice-Cream, Stealth Hunter 2, Gun Mayhem 2, Air Battle, Intrusion 1 and 2, Territory War, Bow Man, Ultimate Crab Battle and Raft Wars mods. Use this whenever someone wants to make a Flash game online, co-op, versus or multiplayer, add room codes or a relay to a SWF, or debug a Flash mod's sync, build or lab, even if they only say "make this swf multiplayer".
+description: Turn a single-player or local-multiplayer Flash game (.swf, AS2/AVM1 or AS3/AVM2) into an online multiplayer mod that plays through your own relay server (included, Python, one port for every game), with room codes and no port forwarding for players. Covers recon of the SWF, injecting code with FFDec (AS3 importScript plus stub classes, AS2 new DoAction tags, spliced or patched frame scripts, p-code), host-authoritative sync for turn-based, realtime and physics games, input injection for remote players, the in-game online panel, the self-driving Ruffle lab, and releasing (your relay online, optional mods-info, publishing the build). Built from the Bad Ice-Cream, Stealth Hunter 2, Gun Mayhem 2, Air Battle, Intrusion 1 and 2, Territory War, Bow Man, Ultimate Crab Battle and Raft Wars mods. Use this whenever someone wants to make a Flash game online, co-op, versus or multiplayer, add room codes or a relay to a SWF, or debug a Flash mod's sync, build or lab, even if they only say "make this swf multiplayer".
 ---
 
 # Flash multiplayer
 
 A Flash game knows one player and one keyboard. These mods add online play without touching the original file:
 the build injects code into a copy of the SWF, the host's game runs the real game, and the other players' games
-show the host's world and send their own input. Everything goes through the global mod relay, a text relay in
+show the host's world and send their own input. Everything goes through a relay you run (`relay/`, see `relay/README.md`), a text relay in
 star mode: the host gets a 5-letter room code and friends type it or pick the room from a public list.
 
 This page is the route and the checklist. The hub also has one skill per phase in `skills/` (`flash-start`,
@@ -26,7 +26,8 @@ Read the reference that matches the step you're on.
 | The self-driving lab and the offline checks | `references/lab.md` |
 | Every trap found so far (Ruffle, Flash Player 32, FFDec, AS2, AS3) | `references/traps.md` |
 | How each of the 10 mods was done, to borrow the closest one | `references/games.md` |
-| Relay profile, mods-info, flash-games repo, launcher | `references/release.md` |
+| Run your own relay | `relay/README.md` |
+| Your relay's game list, optional mods-info, publishing, a launcher | `references/release.md` |
 
 ## The route
 1. **Recon.** Read the SWF header (`tools/swfheader.py`): SWF version,
@@ -46,7 +47,7 @@ Read the reference that matches the step you're on.
    death and respawn, win and lose, pause, the host leaving. Then 3 and 4 players and a late join.
 6. **The panel and mods-info** (`references/ui.md`, `references/release.md`): Online is the default and usually the
    only mode.
-7. **Release:** the `*_online.swf` to the flash-games repo, a launcher entry, and `mods/<id>.json` in mods-info.
+7. **Release:** your relay knows the game id, the mod has your relay built in, and the `*_online.swf` is published.
 
 ## Rules that held on every mod
 - **Never edit the original SWF.** Every build starts from the untouched file. Patches are applied by script, match
@@ -56,7 +57,7 @@ Read the reference that matches the step you're on.
 - **One host, one world.** The host's game runs AI, physics, damage, randomness, timers, level flow, score and saves.
   Other players send input or requests. Don't run two copies of the world and hope they agree: Ruffle and Flash
   Player differ in the last bit of `hitTest`, timers and trig, and Box2D drifts within a second.
-- **Online is the default.** HOST gives a room code on the main relay, JOIN takes one. Direct IP or LAN, if a mod
+- **Online is the default.** HOST gives a room code on your relay, JOIN takes one. Direct IP or LAN, if a mod
   keeps them at all, is the second choice, and a saved setting never keeps a player on Direct unless they chose it.
 - **One version string.** The relay refuses a joiner whose version differs from the host's. Change it whenever a
   message changes.
@@ -67,7 +68,8 @@ Read the reference that matches the step you're on.
 - **Ruffle desktop first**, Flash Player 32 second. Flash Player can't load HTTP from a local SWF and can't open
   sockets from SWF 6 files; some mods are Ruffle-only, and that's fine when it's written down.
 - **Nothing private in public repos.** No tokens, keys, passwords, personal paths, emails or home-network IPs in the
-  mod, its docs, mods-info or the flash-games repo. Scan before every push.
+  mod, its docs or any public repo; your relay's public address is the only server detail that belongs there.
+  `python tools/check_public.py` before every push.
 
 ## Tools in this skill
 | Path | What |
@@ -86,6 +88,7 @@ Read the reference that matches the step you're on.
 | `templates/as2/relay.as` | AS2 session layer on XMLSocket (SWF 6 safe) |
 | `templates/as2/modinfo.as` | AS2 mods-info reader (LoadVars, then relay INFO) |
 | `templates/build/*.py` | Build scripts: AS3 simple, AS3 with patches on fresh decompiled copies, AS2 insert, AS2 splice |
+| `relay/` | the relay server: run it locally for labs and online for players |
 | `templates/lab/*` | Lab runners (AS3 and AS2), relay profile, relay and mods-info checks, message coverage check |
 
 The templates come from working mods. Each says what to rename (package, game id, version, ports, FlashVars). They

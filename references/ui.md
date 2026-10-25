@@ -18,7 +18,7 @@ style. No external windows or web pages.
 | ROOM CODE + JOIN | Enter in the field joins; the code is cleaned (`0`→`O`, `1`→`I`) |
 | PUBLIC ROOMS | `RELAY|1|LIST|<game>` on its own socket; Refresh; click a row to join |
 | "List my room publicly" | on by default |
-| SERVER | blank means the main relay. Saved only when the player typed it |
+| SERVER | blank means the mod's built-in relay (yours). Saved only when the player typed it |
 | Status line | the last relay reason (`E|...`), the mods-info notice or "update available" line |
 | LEAVE | ends the session |
 
@@ -29,10 +29,10 @@ While the panel is open or a field has focus, game keys are off (clear the game'
 listener so a click on the panel doesn't fire a shot). Enter and Space press the focused button.
 
 ## Online is the default
-- HOST and JOIN use room codes on the main relay. Most mods have no other mode.
+- HOST and JOIN use room codes on your relay. Most mods have no other mode.
 - A mod that keeps Direct IP or LAN starts on ONLINE and saves the mode only when the player presses the mode button
   (ignore old saved mode keys).
-- Save only the server the player typed. A `relay=` FlashVar is for this run only. A saved value equal to the main
+- Save only the server the player typed. A `relay=` FlashVar is for this run only. A saved value equal to the built-in
   relay counts as blank. Saving the address in use pins an old server forever and hides every later server move.
 - Lab builds never save settings. SharedObjects at path "/" are shared by every local SWF in that player, and lab
   builds would leak their lab address into the real game.

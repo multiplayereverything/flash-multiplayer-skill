@@ -1,0 +1,82 @@
+{
+  "bic": {
+    "name": "Bad Ice-Cream Online",
+    "mode": "star",
+    "max_players": 2,
+    "framing": "nul",
+    "versions": [],
+    "idle": 300
+  },
+  "sh2": {
+    "name": "Stealth Hunter 2 Online",
+    "mode": "star",
+    "max_players": 4,
+    "framing": "nul",
+    "versions": [],
+    "idle": 300
+  },
+  "gm2": {
+    "name": "Gun Mayhem 2: More Mayhem Online",
+    "mode": "star",
+    "max_players": 4,
+    "framing": "nul",
+    "versions": [],
+    "idle": 300
+  },
+  "airbattle": {
+    "name": "Air Battle Online",
+    "mode": "star",
+    "max_players": 4,
+    "framing": "nul",
+    "versions": [],
+    "idle": 300
+  },
+  "tw": {
+    "name": "Territory War Online",
+    "mode": "star",
+    "max_players": 4,
+    "framing": "nul",
+    "versions": [],
+    "idle": 300
+  },
+  "bowman": {
+    "name": "Bow Man Online",
+    "mode": "star",
+    "max_players": 2,
+    "framing": "nul",
+    "versions": [],
+    "idle": 300
+  },
+  "ucb": {
+    "name": "Ultimate Crab Battle Online",
+    "mode": "star",
+    "max_players": 4,
+    "framing": "nul",
+    "versions": [],
+    "idle": 300
+  },
+  "raftwars": {
+    "name": "Raft Wars Online",
+    "mode": "star",
+    "max_players": 4,
+    "framing": "nul",
+    "versions": [],
+    "idle": 300
+  },
+  "intrusion": {
+    "name": "Intrusion Online",
+    "mode": "star",
+    "max_players": 4,
+    "framing": "nul",
+    "versions": [],
+    "idle": 300
+  },
+  "intrusion2": {
+    "name": "Intrusion 2 Online",
+    "mode": "star",
+    "max_players": 4,
+    "framing": "nul",
+    "versions": [],
+    "idle": 300
+  }
+}

@@ -9,7 +9,7 @@ package mynet
    import flash.utils.clearTimeout;
    import flash.utils.setTimeout;
 
-   // Live mod information from github.com/multiplayereverything/mods-info: the central server's address,
+   // Live mod information from your own mods-info (optional JSON files you host): your relay's address,
    // the latest and oldest allowed versions and a notice, so a server move or an update needs no rebuild.
    // Same rules as the C# helper (global-mods-server/clients/ModInfo.cs) and mods-info/tools/validate.py:
    // anything invalid is ignored, and the last good copy (SharedObject "mynet_modinfo", data.modinfo) or the
@@ -22,8 +22,7 @@ package mynet
       // tried in order until one answers; the modinfo flashvar (test builds) replaces the list. Flash Player 32
       // refuses all of them for a local SWF (security error #2048), so the last resort is the relay itself:
       // RELAY|1|INFO|mygame on the server in use (typed, cached or built-in) answers with the same two files.
-      public static const BASES:Array = ["https://raw.githubusercontent.com/multiplayereverything/mods-info/main/",
-                                         "https://cdn.jsdelivr.net/gh/multiplayereverything/mods-info@main/"];
+      public static const BASES:Array = []; // e.g. ["https://raw.githubusercontent.com/<you>/<your-mods-info>/main/"]; empty = ask the relay only;
       private static const TIMEOUT_MS:int = 5000;
 
       public static var state:String = "idle";      // idle, loading, ok, failed

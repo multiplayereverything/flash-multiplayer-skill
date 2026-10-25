@@ -5,14 +5,14 @@
 
 Exits 1 and lists every hit. Looks for: tokens and keys, passwords, private key blocks, personal Windows and
 home paths, email addresses, private and VPN IP ranges, and files that must never be public (SWF, decompiled
-folders, .env, SSH keys). The public relay address and localhost are allowed.
+folders, .env, SSH keys). Localhost is allowed; add your relay's public address to ALLOWED_IPS.
 """
 import os
 import re
 import subprocess
 import sys
 
-ALLOWED_IPS = {"127.0.0.1", "0.0.0.0", "195.60.166.57"}
+ALLOWED_IPS = {"127.0.0.1", "0.0.0.0"}  # add your relay's public address here
 PATTERNS = [
     ("token or key", re.compile(r"\b(ghp_[A-Za-z0-9]{20,}|github_pat_[A-Za-z0-9_]{20,}|sk-[A-Za-z0-9]{20,}|xox[abp]-[A-Za-z0-9-]{10,}|AKIA[0-9A-Z]{16})")),
     ("private key", re.compile(r"-----BEGIN [A-Z ]*PRIVATE KEY-----")),

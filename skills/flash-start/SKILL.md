@@ -29,7 +29,8 @@ The first hour decides the whole mod. Don't write code in this step.
    closest mod in `references/games.md` and say which one you're borrowing from.
 6. **Pick the injection route** (`references/build.md`): AS3 importScript + stubs; AS2 new DoAction tags (default),
    splice for obfuscated games, patched frame scripts, or p-code for lockstep.
-7. **Pick a relay id** (short, lowercase, not in `DIRECTORY.md` or mods-info) and a lab port nobody else uses.
+7. **Pick a relay id** (short, lowercase, not in `DIRECTORY.md` or your relay's `games.json`) and a lab port nobody
+   else uses. No relay yet? Labs run the hub's `relay/` locally; putting it online for players is `relay/README.md`.
 8. **Write the plan** at the top of the mod's `MODLOG.md`: path, model and why, route, relay id, players, lab port,
    what's out of scope. Show it to the user before building.
 

@@ -1,9 +1,10 @@
 // Set N.GAME_ID = "<your relay id>" in your net code before miStart(): every request below uses it.
-// Mod template: mods-info (github.com/multiplayereverything/mods-info), from the global-mod-relay skill's AS2 example.
+// Mod template: mods-info, your own optional JSON files (servers.json, mods/<id>.json) that tell the mod your
+// relay's current address, the latest version and a notice. No bases set: it asks your relay (RELAY|1|INFO) only.
 // N.miStart() runs once at boot (not in lab builds unless a test URL is given).
 var N = _global.MYN;
    N.MI_VERSION = "1";
-   N.MI_BASES = _global.MY_MODINFO != undefined ? [_global.MY_MODINFO] : ["https://raw.githubusercontent.com/multiplayereverything/mods-info/main/","https://cdn.jsdelivr.net/gh/multiplayereverything/mods-info@main/"];
+   N.MI_BASES = _global.MY_MODINFO != undefined ? [_global.MY_MODINFO] : (N.MODINFO_BASES != undefined ? N.MODINFO_BASES : []);
    N.mi = {state:"idle",error:"",source:"none",address:"",serverStatus:"",serverNotice:"",latest:"",minimum:"",downloadUrl:"",notice:"",updateAvailable:false,tooOld:false,used:""};
    N.trimText = function(t)
    {
@@ -626,7 +627,7 @@ var N = _global.MYN;
             _global.MYN.miDone("failed",why.join("; "));
          }
       };
-      ask.connect(a[0],a.length > 1 ? Number(a[1]) : 25569);
+      ask.connect(a[0],a.length > 1 ? Number(a[1]) : N.DEFAULT_PORT);
    };
    // once per launch: the cached copy at once, then the download in the background
    N.miStart = function()

@@ -1,7 +1,8 @@
 # Network
 
 ## The relay (star mode)
-One TCP port for every game: `195.60.166.57:25569` (built in as the fallback; mods-info may name another). Messages
+Your relay (`relay/`): one TCP port for every game you make, built into each mod as its server (mods-info may name
+another, and players can type one). Messages
 are NUL-terminated UTF-8 text: AS2 `XMLSocket.send` adds the NUL itself, AS3 uses a raw `flash.net.Socket`
 (`writeUTFBytes(s); writeByte(0); flush()`), which works better in Ruffle than AS3 XMLSocket.
 

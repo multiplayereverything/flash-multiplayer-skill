@@ -1,5 +1,5 @@
 // Template from Ultimate Crab Battle Online (SWF 6 safe: no try/catch, no getNextHighestDepth).
-// Needs on _global.MYN: GAME_ID, VERSION, GLOBAL_RELAY, relayTyped, myName, publicRoom, mi (from modinfo.as),
+// Needs on _global.MYN: GAME_ID, VERSION, GLOBAL_RELAY (your relay, "host:port"), DEFAULT_PORT, relayTyped, myName, publicRoom, mi (from modinfo.as),
 // log(), clean(), labLog(), onHostMsg(id,msg), onGuestMsg(msg), and a game hook where removeShips() is called.
 // ---------------- relay: XMLSocket to the global mod relay (star mode) ----------------
 // Host: RELAY|1|HOST|<game>|<version>|<public>|<name> -> ROOM|<code>|<max>, W|0, then G|<id>|<msg> from guests.
@@ -14,7 +14,7 @@ N.splitAddress = function(addr)
    var c = addr.lastIndexOf(":");
    if(c < 1)
    {
-      return {host:addr,port:25569};
+      return {host:addr,port:N.DEFAULT_PORT};
    }
    return {host:addr.substr(0,c),port:Number(addr.substr(c + 1))};
 };
