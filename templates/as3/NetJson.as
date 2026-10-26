@@ -1,16 +1,17 @@
 package mynet
 {
-   // Minimal JSON reader (objects, arrays, strings, numbers, true/false/null), so the build doesn't depend on
-   // the player having the built-in JSON class.
+   // Minimal JSON, so the build doesn't depend on the player having the built-in JSON class (SWF 9 has
+   // none): parse() reads objects, arrays, strings, numbers, true/false/null; quote() writes a string
+   // literal (for LobbyBridge's messages). Strings are copied run by run, fast enough for a snapshot a frame.
    public class NetJson
    {
       private var s:String;
       private var i:int;
 
-      public static function parse(text:String) : *
+      public static function parse(param1:String) : *
       {
          var p:NetJson = new NetJson();
-         p.s = text;
+         p.s = param1;
          p.i = 0;
          var v:* = p.value();
          p.space();
@@ -19,6 +20,35 @@ package mynet
             throw new Error("extra text at " + p.i);
          }
          return v;
+      }
+
+      public static function quote(param1:String) : String
+      {
+         var out:String = "\"";
+         var start:int = 0;
+         for(var k:int = 0; k < param1.length; k++)
+         {
+            var c:Number = param1.charCodeAt(k);
+            if(c == 34 || c == 92 || c < 32)
+            {
+               out += param1.substring(start,k);
+               if(c == 34)
+               {
+                  out += "\\\"";
+               }
+               else if(c == 92)
+               {
+                  out += "\\\\";
+               }
+               else
+               {
+                  var h:String = c.toString(16);
+                  out += "\\u" + "0000".substr(h.length) + h;
+               }
+               start = k + 1;
+            }
+         }
+         return out + param1.substring(start) + "\"";
       }
 
       private function space() : void
@@ -54,14 +84,14 @@ package mynet
                {
                   throw new Error("expected a key at " + i);
                }
-               var k:String = string();
+               var key:String = string();
                space();
                if(s.charAt(i) != ":")
                {
                   throw new Error("expected : at " + i);
                }
                i++;
-               o[k] = value();
+               o[key] = value();
                space();
                if(s.charAt(i) == ",")
                {
@@ -107,17 +137,17 @@ package mynet
          {
             return string();
          }
-         if(s.substr(i, 4) == "true")
+         if(s.substr(i,4) == "true")
          {
             i += 4;
             return true;
          }
-         if(s.substr(i, 5) == "false")
+         if(s.substr(i,5) == "false")
          {
             i += 5;
             return false;
          }
-         if(s.substr(i, 4) == "null")
+         if(s.substr(i,4) == "null")
          {
             i += 4;
             return null;
@@ -127,7 +157,7 @@ package mynet
          {
             i++;
          }
-         var n:Number = Number(s.substring(start, i));
+         var n:Number = Number(s.substring(start,i));
          if(i == start || isNaN(n))
          {
             throw new Error("bad value at " + start);
@@ -135,23 +165,28 @@ package mynet
          return n;
       }
 
+      // copies the runs between escapes in one go
       private function string() : String
       {
          var out:String = "";
          i++;
-         while(i < s.length)
+         while(true)
          {
-            var c:String = s.charAt(i++);
-            if(c == "\"")
+            var q:int = s.indexOf("\"",i);
+            if(q < 0)
             {
+               throw new Error("unterminated string");
+            }
+            var b:int = s.indexOf("\\",i);
+            if(b < 0 || b > q)
+            {
+               out += s.substring(i,q);
+               i = q + 1;
                return out;
             }
-            if(c != "\\")
-            {
-               out += c;
-               continue;
-            }
-            var e:String = s.charAt(i++);
+            out += s.substring(i,b);
+            var e:String = s.charAt(b + 1);
+            i = b + 2;
             if(e == "n")
             {
                out += "\n";
@@ -164,9 +199,17 @@ package mynet
             {
                out += "\t";
             }
+            else if(e == "b")
+            {
+               out += "\b";
+            }
+            else if(e == "f")
+            {
+               out += "\f";
+            }
             else if(e == "u")
             {
-               out += String.fromCharCode(parseInt(s.substr(i, 4), 16));
+               out += String.fromCharCode(parseInt(s.substr(i,4),16));
                i += 4;
             }
             else
@@ -174,7 +217,7 @@ package mynet
                out += e;
             }
          }
-         throw new Error("unterminated string");
+         return out;
       }
    }
 }

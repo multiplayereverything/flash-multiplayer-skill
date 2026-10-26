@@ -55,6 +55,7 @@ Lab lines can also go through the relay as `D|LAB ...`, which helps when a windo
 | `--wrong-code`, `--wrong-version` | refused with a readable reason |
 | `--delay 80 --jitter 40` | still smooth and in sync with lag |
 | `--modinfo <url>` with a local `http.server`, and `--modinfo-relay` | mods-info download and the relay INFO fallback |
+| `--lobby`, `--lobby --drop`, `--lobby --host-leaves` | started the way the launcher's lobby starts the game, through `templates/lab/fake_bridge.py`; a dropped connection that comes back |
 | `--release-smoke` | the release build starts with the relay typed as a closed local port, never touching your live relay |
 
 Turn games: compare a `LAB| HASH <turn> <state>` line between host and guest at every turn start.

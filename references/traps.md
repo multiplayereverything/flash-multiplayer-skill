@@ -81,6 +81,12 @@ Each one cost a real mod time. The mod it came from is in brackets.
   The mod fixed both, online or not. [Bad Ice-Cream]
 - A minigame's win path acts for the local player only: disable it on guests. [Stealth Hunter 2]
 
+## Launcher lobby
+- Closing the game's bridge socket tells nobody: the launcher reports a `leave` when the game's process ends. Don't
+  rely on an in-game "leave" in lobby mode. [Bad Ice-Cream]
+- The launcher queues bridge messages for a game that hasn't connected yet and delivers them after `welcome`, so a
+  client must not treat the first `msg` as proof the host just started. [Bad Ice-Cream]
+
 ## Process
 - Two sessions building the same mod wiped each other's files: one build folder per run. [Gun Mayhem 2]
 - Python heredocs with `\n` broke `.as` edits: do exact-match replacements from files. [Territory War]

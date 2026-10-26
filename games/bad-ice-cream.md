@@ -9,5 +9,9 @@ Tile arcade game for two (Nitrome, 2010), AS3 SWF 9, unobfuscated, from a Poki b
 - **Why not lockstep:** `Math.random` and timeline scripts are everywhere, and update order decides kills and fruit.
 - **Hooks:** patched copies of 5 game classes (input, level loop, controller, sound filter, the Poki SDK), compiled over the originals after `CheckNamespaces` showed no broken subclasses.
 - **Also fixed:** the Poki build never started a level outside Poki's page (it waits for an ad), and froze a second in (a page call throws every frame).
-- **Lab:** host and guest windows, `--solo`, a control build without the ad fix that must fail, `--host-leaves`, `--delay 80 --jitter 40`.
+- **Launcher lobby:** with `lobby=1` the same relay messages go through `LobbyBridge` to the launcher's bridge; no F9
+  panel. `loaded` goes once the game is past its intro; the launcher's `go` is the guest's `J`. A dropped guest's P2
+  stands still and gets the level again on `back`. Lobby version `2` (`bic-online 2`).
+- **Lab:** host and guest windows, `--solo`, a control build without the ad fix that must fail, `--host-leaves`,
+  `--delay 80 --jitter 40`, and `--lobby` (plus `--drop`, `--host-leaves`, `--delay 80`) through the fake bridge.
 - **Lessons:** send the snapshot before the popup message; never switch a fruit's frame during its appear animation; drop snapshots left over from the previous level.

@@ -27,9 +27,34 @@ Templates: AS3 `templates/as3/RelayClient.as`, AS2 `templates/as2/relay.as`. In 
 `this == N.sock`, so a stale socket's late event is ignored. Handle each incoming message in its own try/catch (AS3):
 Flash Player hides script errors, and one throwing message froze a mod's whole stream.
 
+## The launcher's lobby bridge (second transport)
+The Multiplayer Everything launcher can run the room itself: central server or
+direct IP, passwords, version check, ready-up, a "loaded" barrier, chat, kick, reconnect. It starts each player's
+game with FlashVars `lobby=1`, `room`, `role` (`host`/`client`), `slot` (0 = host), `bridgePort`, `sessionToken`
+(32 hex), `seed`, plus the game action's own (`name`). The game then opens one socket to `127.0.0.1:bridgePort`
+and shows no HOST/JOIN panel. Each message is one JSON object, NUL after it; the bridge answers Flash's policy request
+on the same port.
+
+| Game to launcher | Launcher to game |
+|---|---|
+| `{"t":"hello","token":...}` first (a wrong token closes) | `welcome` (`slot`, `role`, `room`, `seed`, `name`, `players`) |
+| `{"t":"loaded"}`: ready to play | `go`: every game said loaded |
+| `{"t":"send","to":-1\|slot,"d":...}` | `msg` (`from`, `d`) |
+| `chat`, `log` (a line in the launcher's log) | `drop` / `back` (slot kept 30 s), `leave`, `end` (host's game closed), `closed` |
+
+The cheap way in: keep the relay messages and make the bridge a second transport. `templates/as3/LobbyBridge.as`
+(with `NetJson.as`) has RelayClient's callbacks and turns bridge events into relay text: the host's `welcome` is
+`onRoom`, `go` is `J|slot|name` for each other player, `msg` is `G|slot|d`, `leave` is `L|slot`; a client's `welcome`
+is `W|slot` and the host's `msg` arrives as the bare message. `drop`/`back` come out as `DR|slot`/`BK|slot`: keep
+the player's character idle, and on back resend what a late joiner gets. Send each message as a JSON string in `d`.
+Send `loaded` only once the game can take the host's first message (past preloader and intro), since `go` is what
+tells the host the others are there. Lab: `templates/lab/fake_bridge.py` plays the launchers (all games on one lab
+port, told apart by token; drop/back on a `log` line). [Bad Ice-Cream]
+
 ## Version
 `GAME` is the relay id (`bic`, `sh2`, `tw`...); `VERSION` is the protocol (`bic-1`, `sh2net-7`). The relay refuses a
-joiner whose version differs from the host's. Change it whenever any message changes. The mods-info version (latest,
+joiner whose version differs from the host's. The launcher's lobby has its own version string in `launcher.json`
+(`online.lobby.version`) and appends the SWF's hash, so only identical builds meet. Change it whenever any message changes. The mods-info version (latest,
 min) is the release version, a separate string. An offline test checks they agree with the docs.
 
 ## Choosing the sync model

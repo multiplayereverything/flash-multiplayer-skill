@@ -138,10 +138,85 @@ def test_relay(tmp):
         proc.wait()
 
 
+def test_fake_bridge():
+    import socket
+    import time
+    root = os.path.dirname(HERE)
+    with socket.socket() as s:
+        s.bind(("127.0.0.1", 0))
+        port = s.getsockname()[1]
+    tokens = ["a" * 32, "b" * 32]
+    proc = subprocess.Popen([sys.executable, "-I", os.path.join(root, "templates", "lab", "fake_bridge.py"),
+                             "--port", str(port), "--tokens", ",".join(tokens)],
+                            stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+
+    def connect():
+        for _ in range(50):
+            try:
+                c = socket.create_connection(("127.0.0.1", port), 2)
+                c.settimeout(2)
+                return c
+            except OSError:
+                time.sleep(0.1)
+        return None
+
+    def put(c, obj):
+        c.sendall(json.dumps(obj).encode() + b"\0")
+
+    def take(c, want):
+        buf = b""
+        end = time.time() + 3
+        while time.time() < end:
+            while b"\0" in buf:
+                raw, buf = buf.split(b"\0", 1)
+                m = json.loads(raw)
+                if m.get("t") == want:
+                    return m
+            try:
+                data = c.recv(4096)
+            except OSError:
+                return None
+            if not data:
+                return None
+            buf += data
+        return None
+    try:
+        c = connect()
+        c.sendall(b"<policy-file-request/>\0")
+        ok("fake bridge answers the Flash policy request", b"cross-domain-policy" in c.recv(512))
+        c.close()
+        bad = connect()
+        put(bad, {"t": "hello", "token": "c" * 32})
+        ok("twin: fake bridge closes a wrong token", take(bad, "welcome") is None)
+        bad.close()
+        host, guest = connect(), connect()
+        put(host, {"t": "hello", "token": tokens[0]})
+        put(guest, {"t": "hello", "token": tokens[1]})
+        w = take(guest, "welcome")
+        ok("fake bridge welcomes slot 1 as a client", w is not None and w["slot"] == 1 and w["role"] == "client")
+        ok("fake bridge welcomes the host", (take(host, "welcome") or {}).get("role") == "host")
+        put(host, {"t": "loaded"})
+        put(guest, {"t": "loaded"})
+        ok("fake bridge sends go once both loaded", take(host, "go") is not None and take(guest, "go") is not None)
+        put(host, {"t": "send", "to": -1, "d": "SN|1"})
+        m = take(guest, "msg")
+        ok("fake bridge routes host traffic", m is not None and m["from"] == 0 and m["d"] == "SN|1")
+        put(guest, {"t": "send", "to": 0, "d": "K|3"})
+        m = take(host, "msg")
+        ok("fake bridge routes client traffic", m is not None and m["from"] == 1 and m["d"] == "K|3")
+        host.close()
+        ok("fake bridge ends the round when the host's game closes", take(guest, "end") is not None)
+        guest.close()
+    finally:
+        proc.kill()
+        proc.wait()
+
+
 with tempfile.TemporaryDirectory() as tmp:
     test_use_network(tmp)
     test_check_public(tmp)
     test_relay(tmp)
+test_fake_bridge()
 test_directory()
 test_skills()
 print()

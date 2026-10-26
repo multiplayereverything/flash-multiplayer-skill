@@ -10,7 +10,7 @@
       "swf": 9,
       "path": "local-to-online",
       "players": "2",
-      "sync": "host snapshot every frame on change; guest runs no game logic",
+      "sync": "host snapshot every frame on change; guest runs no game logic; relay or the launcher's lobby bridge",
       "status": "released",
       "qa": "lab-2p",
       "flash_player": "untested",
