@@ -1,6 +1,7 @@
 """Self-test for the hub's tools. Each check also has a twin that must fail, so a broken check can't pass.
 
-  python -I tools/test_all.py        prints ALL OK, or the failing checks and exits 1
+  python -I tools/test_all.py         prints ALL OK, or the failing checks and exits 1
+  python -I tools/test_all.py --full  also runs the relay's 38-test suite (a few minutes)
 
 Needs only Python. It builds tiny SWF files in a temp folder; no game files are used.
 """
@@ -93,6 +94,22 @@ def test_directory():
     ok("DIRECTORY.md is up to date (run tools/directory.py render)", current == md)
 
 
+def test_modsinfo():
+    kit = os.path.join(os.path.dirname(HERE), "modsinfo")
+    v = os.path.join(kit, "tools", "validate.py")
+    r = subprocess.run([sys.executable, "-I", v, "--check"], capture_output=True, text=True, cwd=kit)
+    ok("mods-info kit is valid and its index is current", r.returncode == 0)
+    r = subprocess.run([sys.executable, "-I", v, "--test"], capture_output=True, text=True, cwd=kit)
+    ok("mods-info validator's own tests pass", r.returncode == 0)
+
+
+def test_relay_suite():
+    t = os.path.join(os.path.dirname(HERE), "relay", "tests", "test_relay.py")
+    r = subprocess.run([sys.executable, "-I", t], capture_output=True, text=True, timeout=900)
+    last = (r.stdout.strip().splitlines() or [""])[-1]
+    ok("relay test suite: " + last, r.returncode == 0)
+
+
 def test_skills():
     root = os.path.dirname(HERE)
     names = sorted(os.listdir(os.path.join(root, "skills")))
@@ -133,6 +150,12 @@ def test_relay(tmp):
         ok("relay lists rooms for a known game", ask(b"RELAY|1|LIST|tw").startswith(b"LIST|"))
         ok("twin: relay refuses an unknown game", ask(b"RELAY|1|LIST|nope").startswith(b"E|"))
         ok("relay gives a host a room code", ask(b"RELAY|1|HOST|bowman|1|1|test").startswith(b"ROOM|"))
+        chk = subprocess.run([sys.executable, "-I", os.path.join(HERE, "check_server.py"), "--game", "tw", "--server",
+                              "127.0.0.1:%d" % port, "--mode", "star"], capture_output=True, text=True, timeout=60)
+        ok("check_server passes against the relay", chk.returncode == 0 and "PASS room" in chk.stdout)
+        bad = subprocess.run([sys.executable, "-I", os.path.join(HERE, "check_server.py"), "--game", "nope", "--server",
+                              "127.0.0.1:%d" % port, "--mode", "star"], capture_output=True, text=True, timeout=60)
+        ok("twin: check_server fails for an unknown game", bad.returncode != 0)
     finally:
         proc.kill()
         proc.wait()
@@ -218,7 +241,10 @@ with tempfile.TemporaryDirectory() as tmp:
     test_relay(tmp)
 test_fake_bridge()
 test_directory()
+test_modsinfo()
 test_skills()
+if "--full" in sys.argv:
+    test_relay_suite()
 print()
 print("ALL OK" if not failures else "%d FAILED: %s" % (len(failures), "; ".join(failures)))
 sys.exit(1 if failures else 0)

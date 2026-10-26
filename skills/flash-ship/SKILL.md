@@ -10,8 +10,9 @@ Paths here are relative to the hub root, two folders up from this file (`../../`
 Steps in `references/release.md`:
 1. Lab green on the release candidate, including `--solo` and a 3-player run.
 2. **Your relay** (`relay/README.md`): running where players can reach it, with the game's id in its `games.json`;
-   the mod's built-in server is its public address. Check `RELAY|1|LIST|<id>` from another network.
-3. Optional mods-info, so you can move the relay or announce updates without a rebuild.
+   the mod's built-in server is its public address. Check it from another network:
+   `python tools/check_server.py --game <id> --server <host:port> --mode star`.
+3. Optional mods-info (`modsinfo/`), so you can move the relay or announce updates without a rebuild.
 4. The `*_online.swf` (never a lab build) published where players download it, with its SHA-256 checked after upload.
 5. A launcher entry with "Play online" first, if you have a launcher.
 6. The mod's README: how to host and join, controls, what syncs, known issues, Ruffle or Flash Player.

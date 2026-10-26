@@ -40,11 +40,12 @@ The paths:
 |---|---|
 | `SKILL.md` | the umbrella skill (`flash-multiplayer`): route and rules on one page |
 | `skills/` | the seven phase skills |
-| `references/` | recon, build, network, hooking, UI, lab, traps, the mods compared, release |
+| `references/` | recon, build, network, the relay protocol, hooking, UI, lab, traps, the mods compared, release |
 | `games/` | one write-up per game in the directory |
 | `data/games.json`, `DIRECTORY.md` | the directory (edit the JSON, then `python tools/directory.py render`) |
 | `tools/` | FFDec helpers, SWF readers, the UseNetwork flag, window capture, the public-data check, the directory tool, `test_all.py` |
-| `relay/` | the relay server players connect through; run your own |
+| `relay/` | the relay server players connect through; run your own (`relay/README.md`), with its tests |
+| `modsinfo/` | optional mods-info starter kit, published as its own repo |
 | `templates/` | relay clients, mods-info readers, build scripts, lab runners, offline checks |
 
 ## Before you finish

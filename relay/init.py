@@ -40,6 +40,12 @@ Version 2 (tunnel games; v1 keeps working) adds a password, a host-chosen size a
                  a teammate re-hosts the same room within the game's "handoff" seconds after the host left
                  -> ROOM|<code>|<max players>, then the tunnel host protocol
   RELAY|2|LIST|<game>  -> LIST|<code>,<players>,<max>,<locked 0/1>,<name>;...
+  RELAY|2|ROOMS|<game> -> ROOMS|<code>,<players>,<max>,<locked>,<state>,<region>,<ping>,<version>,<name>;...
+Star games take RELAY|2 HOST and JOIN too (password, size; no RESUME). In such a room the host may send
+"@META|state=lobby|ingame|region=<XX>|ping=<ms>"; the relay keeps it for ROOMS and doesn't forward it.
+  RELAY|2|PROBE|<game>|<port> -> PROBE|open|closed|other|<port>: the relay connects back to the caller's own address
+                 (a direct-IP host checking its port forwarding); "open" only when a Flash policy file answers.
+A version "<version>#<hash>" is matched exactly on join; the game's version whitelist sees only <version>.
 The password hash and the secret are opaque to the relay (the mods send hex SHA-256) and compared exactly.
 Old clients that start with "H|name" / "J|name" (no handshake) share one
 default star room, exactly like server/sh2_relay.py and gm2_relay.py (--no-legacy
@@ -49,7 +55,7 @@ Usage:
   python init.py                      port from $SERVER_PORT (Kinetic/Pterodactyl), else 7790
   python init.py --port 7790 --log    local run, with traffic and game debug lines
 Which games the relay serves (the whitelist), each with its settings, comes from three places, later ones winning:
-  1. the GAMES table below (built in, so the known games work even without internet);
+  1. the GAMES table in relay-common.py (empty in this copy: add yours to games.json);
   2. mods-info: every mod listed in index.json whose mods/<id>.json has a "relay" block (mode, max_players), refreshed
      every 10 minutes, so adding a mod is a push to mods-info with no change or restart here;
   3. games.json next to this file (same keys as GAMES), for local overrides and settings mods-info doesn't carry.
@@ -99,6 +105,7 @@ class Relay(flash.FlashRooms, unity.UnityRooms):
         self.conns_by_ip = collections.Counter()
         self.total_conns = 0
         self.join_fails = collections.defaultdict(collections.deque)
+        self.probes = collections.defaultdict(collections.deque)
 
     async def handle(self, reader, writer):
         peer = writer.get_extra_info("peername") or ("?", 0)
@@ -322,6 +329,15 @@ class Relay(flash.FlashRooms, unity.UnityRooms):
                     rows.append(f"{r.code},{r.players},{r.max_players},{clean(r.name)}")
         c.send("LIST|" + ";".join(rows[:50]))
 
+    def send_rooms(self, c, game):
+        """v2: every public room of the game with its lobby details (name last, it may hold anything clean allows)."""
+        rows = []
+        for r in sorted(self.rooms.values(), key=lambda r: r.created):
+            if r.game == game and r.public and not r.closed and not r.in_handoff:
+                rows.append(f"{r.code},{r.players},{r.max_players},{1 if r.password else 0},{r.state},{r.region},"
+                            f"{r.ping},{clean(r.version, 48)},{clean(r.name)}")
+        c.send("ROOMS|" + ";".join(rows[:50]))
+
     async def sweep(self):
         """Close rooms that went quiet (dead host, abandoned lobby)."""
         last_stats = time.monotonic()
@@ -344,6 +360,8 @@ async def main_async(args):
     common.SIM_DELAY, common.SIM_JITTER = args.sim_delay / 1000, args.sim_jitter / 1000
     if args.mods_info_refresh:
         common.MODS_INFO_REFRESH = args.mods_info_refresh
+    if args.probe_private:
+        LIMITS["probe_private"] = True
     for key in ("msg_rate", "msg_burst", "byte_rate", "byte_burst", "rooms_per_ip", "join_fails",
                 "handshake_timeout", "open_timeout"):
         val = getattr(args, key)
@@ -365,6 +383,7 @@ async def main_async(args):
     if not args.no_mods_info and args.mods_info:
         relay.info = ModsInfo(args.mods_info, relay, local)
         info_task = asyncio.ensure_future(relay.info.refresh_forever())
+    board = None if args.no_discord else start_discord(relay)
     async with server:
         try:
             await server.serve_forever()
@@ -372,6 +391,25 @@ async def main_async(args):
             sweeper.cancel()
             if info_task:
                 info_task.cancel()
+            if board:
+                await board.stop()
+
+
+def start_discord(relay):
+    """The Discord status board (relay-discord.py, next to this file or in ../discord-bot), if it's there and has a
+    token. It only reads the rooms; any problem with it is logged and the relay keeps running."""
+    here = os.path.dirname(os.path.abspath(__file__))
+    for path in (os.path.join(here, "relay-discord.py"), os.path.join(os.path.dirname(here), "discord-bot", "relay-discord.py")):
+        if os.path.exists(path):
+            try:
+                spec = importlib.util.spec_from_file_location("relay_discord", path)
+                module = importlib.util.module_from_spec(spec)
+                spec.loader.exec_module(module)
+                return module.start(relay)
+            except Exception as e:
+                log(f"discord: status board not started ({type(e).__name__}: {e})")
+                return None
+    return None
 
 
 def main():
@@ -390,6 +428,8 @@ def main():
     ap.add_argument("--no-legacy", action="store_true", help="refuse old clients that send H|/J| without a room")
     ap.add_argument("--mods-info", default=MODS_INFO_URL, help="base URL of mods-info, served to clients with RELAY|1|INFO")
     ap.add_argument("--no-mods-info", action="store_true", help="don't fetch or serve mods-info")
+    ap.add_argument("--probe-private", action="store_true", help="testing: let RELAY|2|PROBE test private/loopback addresses")
+    ap.add_argument("--no-discord", action="store_true", help="don't start the Discord status board (relay-discord.py)")
     ap.add_argument("--mods-info-refresh", type=float, help="testing: seconds between mods-info refreshes (default 600)")
     ap.add_argument("--idle", type=float, help="testing: idle timeout in seconds for every game")
     ap.add_argument("--sim-delay", type=float, default=0, help="testing: add N ms one-way delay (star)")

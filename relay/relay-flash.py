@@ -83,6 +83,9 @@ class FlashRooms:
             self.legacy_role(c, room, msg)
             return
         room.touch()
+        if room.meta and c.role == "host" and msg.startswith("@META|"):
+            self.star_meta(room, msg)
+            return
         if self.log_traffic and not msg.startswith(QUIET):
             log(f"{room.code} [{c.role}{c.id}] {msg[:200]}")
         if c.role == "host":
@@ -90,6 +93,20 @@ class FlashRooms:
                 g.send(msg)
         elif room.host is not None:
             room.host.send(f"G|{c.id}|{msg}")
+
+    def star_meta(self, room, msg):
+        """v2 star: "@META|state=lobby|region=NL|ping=40" from the host, kept for ROOMS and never forwarded."""
+        for part in msg.split("|")[1:]:
+            key, _, value = part.partition("=")
+            if key == "state" and value in ("lobby", "ingame"):
+                room.state = value
+            elif key == "region":
+                room.region = clean(value, 2).upper() if value.isalpha() else ""
+            elif key == "ping":
+                try:
+                    room.ping = max(-1, min(9999, int(value)))
+                except ValueError:
+                    pass
 
     def star_drop(self, c):
         room = c.room

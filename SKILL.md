@@ -26,7 +26,8 @@ Read the reference that matches the step you're on.
 | The self-driving lab and the offline checks | `references/lab.md` |
 | Every trap found so far (Ruffle, Flash Player 32, FFDec, AS2, AS3) | `references/traps.md` |
 | How each of the 10 mods was done, to borrow the closest one | `references/games.md` |
-| Run your own relay | `relay/README.md` |
+| Run your own relay | `relay/README.md`, protocol in `references/relay-protocol.md` |
+| Optional mods-info (server moves, update notices) | `modsinfo/README.md` |
 | Your relay's game list, optional mods-info, publishing, a launcher | `references/release.md` |
 
 ## The route
@@ -88,7 +89,9 @@ Read the reference that matches the step you're on.
 | `templates/as2/relay.as` | AS2 session layer on XMLSocket (SWF 6 safe) |
 | `templates/as2/modinfo.as` | AS2 mods-info reader (LoadVars, then relay INFO) |
 | `templates/build/*.py` | Build scripts: AS3 simple, AS3 with patches on fresh decompiled copies, AS2 insert, AS2 splice |
-| `relay/` | the relay server: run it locally for labs and online for players |
+| `relay/` | the relay server: run it locally for labs and online for players; `relay/tests/test_relay.py` |
+| `tools/check_server.py` | checks a relay from outside: known game, a room with a friend, messages both ways |
+| `modsinfo/` | optional mods-info starter kit: format, template, schema, validator |
 | `templates/lab/*` | Lab runners (AS3 and AS2), relay profile, relay and mods-info checks, message coverage check |
 
 The templates come from working mods. Each says what to rename (package, game id, version, ports, FlashVars). They

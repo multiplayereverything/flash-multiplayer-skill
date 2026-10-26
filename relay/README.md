@@ -10,7 +10,12 @@ port. **Run your own.** Python 3.7+, standard library only, one process for ever
 | `relay-flash.py` | star mode, used by Flash mods: guest messages reach the host as `G|<id>|<msg>`, host messages go to every guest |
 | `relay-unity.py` | tunnel mode for games with their own TCP protocol (not needed for Flash, kept because `init.py` loads it) |
 | `relay-common.py` | shared parts: limits, rooms, the optional mods-info reader |
+| `relay.py` | the old entry point, kept for older lab scripts: it just starts `init.py` |
 | `games.example.json` | profiles for the ten mods in this hub's directory, as examples |
+| `tests/test_relay.py` | 38 tests with fake clients (star, tunnel, version 2, limits, mods-info): `python tests/test_relay.py` |
+
+The full protocol (handshakes, star and tunnel, version 2 passwords, room sizes, `ROOMS`, `PROBE`) is in
+`../references/relay-protocol.md`.
 
 ## 1. Try it on your PC
 ```bash
@@ -65,11 +70,12 @@ WantedBy=multi-user.target
 `sudo systemctl enable --now flash-relay`, then open the port (`sudo ufw allow 25600/tcp`). Pick any free port; the
 relay refuses one that's already in use.
 
-Check it from another network:
+Check it from another network with the hub's checker (known game, a room with a friend, messages both ways):
 ```bash
-python -c "import socket; s=socket.create_connection(('your.host', 25600), 5); s.sendall(b'RELAY|1|LIST|mygame\0'); print(s.recv(200))"
+python tools/check_server.py --game mygame --server your.host:25600 --mode star
 ```
-`LIST|` means it works; `E|Unknown game` means it runs but `games.json` lacks the id.
+`FAIL known game` with `Unknown game` means the relay runs but `games.json` lacks the id; no answer means the port
+isn't reachable (firewall, wrong port, or the service isn't running).
 
 ## 4. Build your relay into your mods
 In each mod, set the built-in relay to your address (`GLOBAL_RELAY = "your.host:25600"` in AS2, the `builtIn` address
@@ -77,9 +83,8 @@ passed to `NetModInfo.pick` in AS3) and the default port to yours. Players can s
 panel's SERVER field.
 
 ## 5. Optional: mods-info
-If you might move the relay or want to tell players about updates without a rebuild, host two small JSON files
-anywhere (a public GitHub repo works): `servers.json` (your relay's current address) and `mods/<id>.json` (latest and
-minimum version, download link, notice, and a `relay` block with `mode` and `max_players`). Then:
+If you might move the relay or want to tell players about updates without a rebuild, publish the starter kit in
+`../modsinfo/` (format, template, validator) as its own public repo. Then:
 - start the relay with `--mods-info https://raw.githubusercontent.com/<you>/<repo>/main/` so it learns new games from
   those files and answers `RELAY|1|INFO|<id>` for Flash Player, which can't download them itself;
 - set the mod's mods-info bases to the same URL (`MODINFO_BASES` in AS2, `BASES` in `NetModInfo.as`).

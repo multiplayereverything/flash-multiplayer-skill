@@ -1,0 +1,20 @@
+{
+  "schema": 1,
+  "id": "mygame",
+  "name": "My Game Online",
+  "game": "My Game (Flash, 2009)",
+  "engine": "Flash AS3, FFDec injection",
+  "status": "in-progress",
+  "latest_version": "1.0.0",
+  "min_version": "1.0.0",
+  "protocol": "mygame-1",
+  "download_url": "",
+  "changelog_url": "",
+  "relay": {
+    "mode": "star",
+    "max_players": 4,
+    "server": "main"
+  },
+  "notice": "",
+  "updated": "2026-10-26"
+}

@@ -1,0 +1,10 @@
+{
+  "schema": 1,
+  "mods": [
+    {
+      "id": "mygame",
+      "name": "My Game Online",
+      "file": "mods/mygame.json"
+    }
+  ]
+}

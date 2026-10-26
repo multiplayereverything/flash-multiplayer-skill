@@ -4,6 +4,7 @@ import argparse
 import asyncio
 import collections
 import datetime
+import ipaddress
 import json
 import os
 import random
@@ -25,6 +26,8 @@ PROFILE_DEFAULTS = {"name": "", "mode": "star", "max_players": 4, "framing": "nu
 
 # Public-internet safety limits (all per connection unless noted).
 LIMITS = {
+    "probes_per_min": 6,        # RELAY|2|PROBE per IP
+    "probe_private": False,     # testing only: let PROBE connect to private/loopback addresses (labs on one PC)
     "max_conns": 2000,          # whole server
     "max_rooms": 1000,          # whole server
     "conns_per_ip": 32,
@@ -162,6 +165,10 @@ class Room:
         self.password = ""        # v2: opaque hash; "" = open
         self.secret = ""          # v2: handoff secret; "" = the room closes when its host leaves
         self.handoff_until = 0.0  # v2: monotonic deadline while waiting for a teammate to re-host
+        self.meta = False         # v2 star: the host may send @META| lines (lobby state, region, ping)
+        self.state = ""           # "lobby" | "ingame" | "" (unknown: a v1 room)
+        self.region = ""          # host's country, two letters
+        self.ping = -1            # host's round trip to this server, ms
         self.guests = {}          # star: id -> Conn
         self.next_id = 1
         self.pending = {}         # tunnel: token -> future

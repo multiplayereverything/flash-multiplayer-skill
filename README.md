@@ -37,8 +37,10 @@ for every game). The host connects and gets a room code, friends join with it, a
 3. **Put it online** on a small VPS, a Python game-server host, or a PC with one forwarded port.
 4. **Build its address into the mod** as the default server. Players can still type another one.
 
-[`relay/README.md`](relay/README.md) walks through each step, with a service file, a firewall line and a check from
-another network. Optional mods-info files let you move the relay or announce updates without rebuilding the mods.
+[`relay/README.md`](relay/README.md) walks through each step, with a service file, a firewall line, and
+`tools/check_server.py` to check it from another network. The relay has its own tests (`relay/tests/`), the full
+protocol is in [`references/relay-protocol.md`](references/relay-protocol.md), and the optional
+[mods-info kit](modsinfo/README.md) lets you move the relay or announce updates without rebuilding the mods.
 
 ## How it works
 Every Flash game here took one of three paths:
@@ -99,6 +101,7 @@ fail) and prints `ALL OK`.
 | `set_use_network.py` | the flag Flash Player needs to open sockets from a local SWF |
 | `case_scan.py` | SWF 6: names that collide when case is ignored |
 | `wincap.py` | screenshot a test window by process id, never focusing it |
+| `check_server.py` | checks a relay from outside: known game, a room with a friend, messages both ways |
 | `check_public.py` | refuses tokens, keys, passwords, personal paths, emails, home and VPN IPs, game files |
 | `directory.py` | validates the directory and renders `DIRECTORY.md` |
 

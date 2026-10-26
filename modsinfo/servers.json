@@ -1,0 +1,11 @@
+{
+  "schema": 1,
+  "servers": [
+    {
+      "id": "main",
+      "name": "Main server",
+      "address": "relay.example.com:25600",
+      "status": "online"
+    }
+  ]
+}

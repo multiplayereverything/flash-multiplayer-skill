@@ -1,6 +1,7 @@
 """Unity and other TCP games (tunnel mode): the host keeps a control connection; for each friend the relay asks it
-to open a data connection and then pipes raw bytes both ways (like playit.gg). Also RELAY|2 (tunnel only):
-room password, host-chosen size and host handoff."""
+to open a data connection and then pipes raw bytes both ways (like playit.gg). Also RELAY|2: room password and
+host-chosen size (star and tunnel), host handoff (tunnel), and ROOMS, the room list with each star room's lobby
+state, host region and ping."""
 
 import importlib.util
 import os
@@ -35,19 +36,30 @@ class UnityRooms:
         if prof is None:
             c.error(f"Unknown game '{clean(game, 32)}' on this server")
             return
-        if prof["mode"] != "tunnel":
-            c.error("RELAY|2 is for tunnel games")
-            return
+        star = prof["mode"] == "star"
         if verb == "LIST":
             self.send_list(c, game, v2=True)
             c.close_soon()
+            return
+        if verb == "ROOMS":
+            self.send_rooms(c, game)
+            c.close_soon()
+            return
+        if verb == "PROBE":
+            await self.probe(c, parts[4] if len(parts) > 4 else "")
+            c.close_soon()
+            return
+        if star and verb == "RESUME":
+            c.error("RELAY|2|RESUME is for tunnel games")
             return
         minimum = {"HOST": 10, "JOIN": 8, "RESUME": 8}.get(verb)
         if minimum is None or len(parts) < minimum:
             c.error("Bad handshake")
             return
         version = clean(parts[4], 48)
-        if prof["versions"] and version not in prof["versions"]:
+        # "<version>#<swf sha-256>": the launcher's lobby adds the file's hash so joins must match the exact
+        # build; the whitelist only knows the version
+        if prof["versions"] and version.split("#")[0] not in prof["versions"]:
             c.error(f"This server doesn't support version {version} of {prof['name'] or game}; update the mod")
             return
         if verb == "HOST":
@@ -62,6 +74,10 @@ class UnityRooms:
             if room is None:
                 return
             room.password = parts[7].strip()[:128]
+            if star:
+                room.meta = True
+                await self.star_host(c, room, rest)
+                return
             room.secret = parts[8].strip()[:128] if prof["handoff"] > 0 else ""
             await self.tunnel_host(c, room, rest)
             return
@@ -85,7 +101,55 @@ class UnityRooms:
         room = self.find_room(c, game, code, version, password=parts[6].strip())
         if room is None:
             return
+        if star:
+            await self.star_guest(c, room, rest)
+            return
         await self.tunnel_join(c, room)
+
+    async def probe(self, c, port_text):
+        """v2: can the internet reach <port> on the caller's own address? For players hosting by direct IP. Only the
+        caller's address is tried, a few times a minute, and only a Flash policy answer counts as open."""
+        # only public internet addresses: a caller on a private network (another container on the hosting box, a
+        # LAN, carrier-grade NAT) could otherwise use the relay to check ports inside that network
+        try:
+            addr = ipaddress.ip_address(c.ip.split("%")[0])
+            if addr.version == 6 and addr.ipv4_mapped:
+                addr = addr.ipv4_mapped
+        except ValueError:
+            addr = None
+        if not LIMITS["probe_private"] and (addr is None or not addr.is_global):
+            c.send("PROBE|error|Can't test a private or local address; test from your public internet connection")
+            return
+        q = self.probes[c.ip]
+        t = time.monotonic()
+        while q and t - q[0] > 60:
+            q.popleft()
+        if len(q) >= LIMITS["probes_per_min"]:
+            c.send("PROBE|error|Too many tests; wait a minute")
+            return
+        q.append(t)
+        try:
+            port = int(port_text)
+            if not 1 <= port <= 65535:
+                raise ValueError
+        except ValueError:
+            c.send("PROBE|error|Bad port")
+            return
+        try:
+            reader, writer = await asyncio.wait_for(asyncio.open_connection(c.ip, port), 4)
+        except (OSError, asyncio.TimeoutError):
+            c.send(f"PROBE|closed|{port}")
+            return
+        answer = b""
+        try:
+            writer.write(b"<policy-file-request/>\0")
+            await writer.drain()
+            answer = await asyncio.wait_for(reader.read(512), 4)
+        except (OSError, asyncio.TimeoutError):
+            pass
+        finally:
+            writer.close()
+        c.send(f"PROBE|open|{port}" if b"cross-domain-policy" in answer else f"PROBE|other|{port}")
 
     async def tunnel_host(self, c, room, rest):
         buf = rest

@@ -1,0 +1,7 @@
+{
+  "sh2": {"name": "Star game, 4 players", "mode": "star", "max_players": 4, "framing": "nul", "versions": [], "idle": 300},
+  "gm2": {"name": "Second star game", "mode": "star", "max_players": 4, "framing": "nul", "versions": [], "idle": 300},
+  "bic": {"name": "Star game, 2 players", "mode": "star", "max_players": 2, "framing": "nul", "versions": [], "idle": 300},
+  "baldi": {"name": "Tunnel game", "mode": "tunnel", "max_players": 4, "versions": [], "idle": 300},
+  "spooky": {"name": "Second tunnel game", "mode": "tunnel", "max_players": 4, "versions": [], "idle": 300}
+}

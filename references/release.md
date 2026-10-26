@@ -8,7 +8,7 @@ Online play needs a relay that your players can reach. This hub ships one in `re
 1. Pick a short lowercase relay id for the game (letters, digits, `-`).
 2. Add it to your relay's `games.json` (`"mode": "star"`, `"max_players"`, `"framing": "nul"`) and restart the relay.
 3. Build your relay's public address into the mod as the built-in server (`GLOBAL_RELAY`, default port).
-4. Check: `RELAY|1|LIST|<id>` answers `LIST|...`, not `E|Unknown game`.
+4. Check from another network: `python tools/check_server.py --game <id> --server <host:port> --mode star`.
 
 Players can always type another server in the panel's SERVER field (a friend's relay, a local test relay).
 
@@ -23,6 +23,8 @@ current address and status, and `mods/<id>.json` with the latest and minimum ver
   `RELAY|1|INFO|<id>`; start your relay with `--mods-info <base url>` so it can answer and learns new games from the
   same files.
 - Below `min_version` the mod refuses your server with the update line; a typed server still works.
+- Starter kit: `modsinfo/` (file format, a template mod file, `schema.json`, `tools/validate.py`). Copy it into its own
+  public repo.
 - Templates: `templates/as3/NetModInfo.as` (`BASES`), `templates/as2/modinfo.as` (`N.MODINFO_BASES`; set `N.GAME_ID`
   first). Leave the bases empty to skip it; the mod then uses its built-in address.
 
