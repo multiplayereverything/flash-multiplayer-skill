@@ -20,9 +20,11 @@ no functions worth hooking: the fight is timelines and clip events).
 - **Host leaves:** guests see "The host closed the room." and keep playing alone.
 - **Lab:** RELAY and DIRECT, 3 players with a late join, 4 players with a 5th refused, join from the loader, 80+30 ms
   lag, refusals, host leaving, mods-info over HTTP and over the relay, solo, release boot. At the end each guest's crab
-  HP, team HP, score (variable and HUD text) and fight timeline equal the host's exactly. Control runs
+  HP, team HP, the score shown on its HUD and the fight timeline equal the host's exactly. Control runs
   (`--no-torpedo-hold`, `--no-laser-fx`) show which checks can fail. Sessions start through the panel's own buttons,
-  and the real-keyboard path is checked at boot.
-- **Lessons:** AS1's 64 KB function-body cap; jumps to not-yet-loaded frames are ignored silently; frame scripts run
+  and the real-keyboard path is checked at boot. Real input: posted key messages to the lab window (F9, 1, Ctrl,
+  arrows, A all work while hosting) and real browser clicks in Ruffle's web player (MODE, typing, HOST, X, ONLINE).
+  That click test found 1.1.0's panel dead to real clicks (a handler on the panel clip); fixed in 1.1.1.
+- **Lessons:** a click-blocking handler on a parent clip kills its buttons; AS1's 64 KB function-body cap; jumps to not-yet-loaded frames are ignored silently; frame scripts run
   after enterFrame handlers, and bound text fields show the last value written; a game-over timeout can end a guest's
   game first; setting `_x` inside a tween freezes it; Ruffle's fps drops as more windows run.

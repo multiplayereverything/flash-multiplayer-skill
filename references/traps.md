@@ -20,6 +20,13 @@ Each one cost a real mod time. The mod it came from is in brackets.
   does too, so count them as the game's own errors. [Intrusion]
 - Colour codes sit between "ERROR" and the module in its log: strip ANSI before counting errors. [Stealth Hunter 2]
 - An attached clip's first-frame code runs during `attachMovie` (Flash Player runs it after). [Gun Mayhem 2]
+- Right after start-up the SWF's later frames may not be loaded yet, and `gotoAndPlay` to an unloaded frame is
+  ignored without an error: a guest joining from the loader restarted the fight on every snapshot. Wait for
+  `_framesloaded == _totalframes` before jumping (and in the lab's boot). [Ultimate Crab Battle]
+- Windows messages posted to an unfocused Ruffle window (PostMessage, not SendInput) move the mouse, hover and type
+  keys, but never press a button (the game's own buttons ignore them too). Prove real clicks in Ruffle's web player
+  (same core version, from unpkg) in the agent's own browser pane; prove real keys with posted key messages.
+  Neither touches the user's keyboard, mouse or focus. [Ultimate Crab Battle]
 - `--filesystem-access-mode` defaults to `ask`: any local file load (mods-info from disk, `LoadVars` of a path)
   opens a dialog the lab window waits on. Test mods-info through the relay's INFO instead. [Territory War]
 
@@ -90,6 +97,21 @@ Each one cost a real mod time. The mod it came from is in brackets.
   it in the wait. [Gun Mayhem 2]
 - A clip that doesn't exist yet on frame 1 gives NaN when you set it: move its frame instead. [Territory War]
 - Setting `_x` inside a tween freezes the tween. [Ultimate Crab Battle]
+- A MovieClip with button handlers (`onRelease`, `onPress`...) takes the mouse for all its children: an `onRelease`
+  on the online panel (to stop clicks reaching the game's buttons behind it) made every button in the panel dead to
+  real clicks, and a lab that calls `onRelease()` directly never notices. Block clicks with a background clip *under*
+  the buttons instead. [Ultimate Crab Battle]
+- AS1 caps one function body at 64 KB of bytecode (FFDec: "Function body is too large to fit into UI16"): a mod
+  wrapped in one setup function hits it; wrap each source file in its own. [Ultimate Crab Battle]
+- Frame scripts run after every enterFrame handler, so a value you pin in `onEnterFrame` loses to the game's own
+  `score += n` that frame. A text field bound to a variable shows the last value *written* (in Ruffle even through
+  `addProperty`): to show the host's value, unbind it (`tf.variable = null`) and set `tf.text`. [Ultimate Crab Battle]
+- A game-over clip that ends the game by itself after a timeout ends a guest's game before the host's; the next
+  snapshot then pulls the guest back into the fight. Patch it to wait for the host on guests. [Ultimate Crab Battle]
+- When every PC simulates every shot, short hit reactions (a 7-frame flinch) start a few frames apart. A mirror that
+  corrects stopped clips at once cuts them off: correct only once this PC's clip has been at rest on the wrong frame
+  for a few frames (crab pose corrections 0.22 -> 0.05 per snapshot). Never mirror the player's own launchers.
+  [Ultimate Crab Battle]
 - Always override `XMLSocket.onData`, or Flash parses messages as XML. [Bow Man]
 - `x += f()` reads `x` before it calls `f`: a hook that changes `x` inside is overwritten; return the correction
   instead. [Bow Man]
