@@ -15,6 +15,9 @@ Each one cost a real mod time. The mod it came from is in brackets.
 - AS2 `Key.isDown = f` is ignored in SWF 8: replace `_global.Key` with a wrapper object instead. [Territory War]
 - `_x` is truncated to twips (1316.65 reads back 1316.6), so hitTests differ from the host's. [Bow Man]
 - A FlashVar named `end` never reached the script. [Raft Wars]
+- A FlashVar with the name of a game function on `_root` (`direct`) arrives as that function. [Intrusion]
+- Ruffle logs `Unknown AVM1 opcode 137` hundreds of times for an obfuscator's junk bytes; the untouched SWF
+  does too, so count them as the game's own errors. [Intrusion]
 - Colour codes sit between "ERROR" and the module in its log: strip ANSI before counting errors. [Stealth Hunter 2]
 - An attached clip's first-frame code runs during `attachMovie` (Flash Player runs it after). [Gun Mayhem 2]
 
@@ -67,6 +70,17 @@ Each one cost a real mod time. The mod it came from is in brackets.
 - Setting `_x` inside a tween freezes the tween. [Ultimate Crab Battle]
 - Always override `XMLSocket.onData`, or Flash parses messages as XML. [Bow Man]
 - Lab builds must set the lab relay before mods-info starts, or the INFO fallback asks the live server. [Ultimate Crab Battle]
+  Read the test mods-info URL when the download starts, not when the script loads. [Intrusion]
+- Wrapping a class constructor in `_global` (`w.prototype = orig.prototype`) numbers every instance in creation
+  order on every PC: a cheap net id for level objects. [Intrusion]
+- A game's per-object `id` field can clash with yours: name the mod's fields `__pid`. [Intrusion]
+- Off-screen culling, `Alive()` and `InGame()` read the global screen edges: with players apart, set the edges
+  to the target player's view around each object's update, or enemies near a guest sleep and its bullets die.
+  [Intrusion]
+- Bullet constructors may reuse the shared `_root.p` point: capture the barrel position in a wrapper of the
+  method that computes it. [Intrusion]
+- Unnamed timeline parts (`instanceN`) are placed by the guest's own copy of the animation: skip them in a clip
+  stream, it halves the bytes. [Intrusion]
 
 ## AS3
 - `flash.display.Sprite` is sealed: dynamic fields need a `MovieClip`. [Bad Ice-Cream]

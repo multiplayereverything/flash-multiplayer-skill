@@ -132,17 +132,17 @@
     {
       "id": "intrusion",
       "game": "Intrusion",
-      "developer": null,
-      "year": null,
+      "developer": "vap",
+      "year": 2008,
       "engine": "AS2",
       "swf": 8,
       "path": "single-to-coop",
       "players": "2-4",
-      "sync": "own soldier local; host stand-ins; the game's one player swapped per enemy update",
-      "status": "in-progress",
-      "qa": "lab-2p",
+      "sync": "own soldier local; host stand-ins; the game's one player swapped to the nearest per object update; host streams its clips",
+      "status": "released",
+      "qa": "lab-3p+",
       "flash_player": "untested",
-      "release": null,
+      "release": "https://github.com/Multiplayer-Everything-Team/flash-games/tree/main/games/intrusion",
       "writeup": "games/intrusion.md"
     },
     {
