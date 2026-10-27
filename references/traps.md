@@ -91,6 +91,17 @@ Each one cost a real mod time. The mod it came from is in brackets.
 - A clip that doesn't exist yet on frame 1 gives NaN when you set it: move its frame instead. [Territory War]
 - Setting `_x` inside a tween freezes the tween. [Ultimate Crab Battle]
 - Always override `XMLSocket.onData`, or Flash parses messages as XML. [Bow Man]
+- `x += f()` reads `x` before it calls `f`: a hook that changes `x` inside is overwritten; return the correction
+  instead. [Bow Man]
+- Random or timing-dependent changes to an object in flight (wind changing when another arrow lands, a random
+  deflection) must be keyed to that object's own frame count, never to when a message arrives: guest copies run
+  behind the host by the network delay, and a stalling host or guest moves the arrival by 30 frames. Start guest
+  copies a few frames late and correct exactly when a report is still late. [Bow Man]
+- A random event in the middle of a frame (step 3 of 6) can't be fixed by a report at the next frame: the guest's
+  copy hits something in steps 4-6. Run the game's own deterministic test on the guest and hold the object there
+  until the host's result arrives. [Bow Man]
+- An arrow stuck in the ground has no `yanoe` clip, one stuck in an archer does: the game's deflection test only
+  sees the latter. Read what a test actually reads before building a lab case for it. [Bow Man]
 - Lab builds must set the lab relay before mods-info starts, or the INFO fallback asks the live server. [Ultimate Crab Battle]
   Safer: lab builds refuse the central relay's address outright (HOST, JOIN, LIST and INFO). [Territory War]
   Read the test mods-info URL when the download starts, not when the script loads. [Intrusion]
@@ -192,6 +203,15 @@ Each one cost a real mod time. The mod it came from is in brackets.
   end the guest's session on `X` itself. [Raft Wars]
 - A lab runner that blocks while it opens a new window takes the other windows' screenshots late; take pending
   shots first. [Stealth Assassin]
+- "Wait N frames, then snap the guest's copy" counted the guest's frames, so a guest window at 20 fps snapped fine
+  arrows. Send the host's frame count for the object and snap only when the guest's copy runs clearly past it.
+  [Bow Man]
+- A lab aim search run every frame dropped the guest window to 14 fps and looked exactly like a desync; run lab
+  solvers once per turn, and log each window's frame rate. [Bow Man]
+- A lab runner crashed deleting the previous run's log (a killed Ruffle still held it) and printed nothing, so a
+  filtered suite looked empty: retry the delete, and print a RESULT line even when the runner stops early. [Bow Man]
+- The bash sandbox couldn't see Ruffle's folder in `C:\Program Files` while PowerShell could: copy Ruffle into the mod's
+  `tools/ruffle/` and let the lab prefer that. [Bow Man]
 - FFDec decompiles constants that the constructor assigns as `public const X:uint;`; recompiled, the assignment
   throws #1074 (read-only). Rewrite them to `var` in the staged copy. [Intrusion 2]
 - Two classes whose names differ only in case (`Snowball` and the symbol class `snowball`): on Windows,

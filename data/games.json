@@ -90,7 +90,7 @@
       "swf": 6,
       "path": "local-to-online",
       "players": "2",
-      "sync": "turn-based events only (FIRE, LAND); both fly the arrow, the host corrects",
+      "sync": "turn-based events (FIRE, LAND); both fly each arrow, the host reports wind changes and arrow-on-arrow deflections per arrow flight frame (AW, DEFL), the guest replays them; RELAY room codes or DIRECT",
       "status": "released",
       "qa": "lab-2p",
       "flash_player": "not possible (SWF 6)",
