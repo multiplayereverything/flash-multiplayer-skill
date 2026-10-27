@@ -42,7 +42,7 @@
       "swf": 9,
       "path": "local-to-online",
       "players": "2-4",
-      "sync": "input lockstep from the host, seeded RNG, snapshot every 35 frames",
+      "sync": "input lockstep from the host, seeded RNG, waits hold gameplay timelines, snapshot every 35 frames",
       "status": "released",
       "qa": "lab-3p+",
       "flash_player": "partial",

@@ -72,6 +72,14 @@ Each one cost a real mod time. The mod it came from is in brackets.
   host's second match left the friends' sticks out: start a match on the second frame there. [Gun Mayhem 2, Raft Wars,
   Territory War]
 - `gotoAndStop` to the frame you're on doesn't re-run it: go through the frame before. [Gun Mayhem 2]
+- A clip told to `play()` this tick still shows its stopped frame until the next timeline phase, so a wait that
+  freezes it on that tick must count it as playing, or the shot is lost on the PC that waited. But only if it sat
+  on that frame last tick: a frame script that jumped back to the stopped frame (a reload's end) cancels the
+  `play()`. Keep last tick's frame per clip. [Gun Mayhem 2]
+- Pickups, crates and countdowns that ripen on their timeline (pickable from frame 20, `gamewin` on the last frame,
+  a child clip's `_parent.play()` starting its parent) kept playing during waits, so the PC that waited more got
+  them earlier. Find every timeline that gates gameplay (`_currentframe >=`, frame scripts setting state) and hold
+  it in the wait. [Gun Mayhem 2]
 - A clip that doesn't exist yet on frame 1 gives NaN when you set it: move its frame instead. [Territory War]
 - Setting `_x` inside a tween freezes the tween. [Ultimate Crab Battle]
 - Always override `XMLSocket.onData`, or Flash parses messages as XML. [Bow Man]
@@ -117,6 +125,12 @@ Each one cost a real mod time. The mod it came from is in brackets.
 
 ## Process
 - Two sessions building the same mod wiped each other's files: one build folder per run. [Gun Mayhem 2]
+- A friend that joins during a match gets a slot but no start message; if the host's wait counts every slot, the
+  host waits for it forever. Count only players that got the start; the newcomer plays from the next match.
+  [Gun Mayhem 2]
+- The global relay sends `X` and closes the friends' sockets when the host leaves, so code that ends the match on
+  "buffer ran dry after X" never runs: end the match in the socket's close handler too. [Gun Mayhem 2]
+- Editing a bash lab script while it runs breaks the run (bash reads the file as it goes). [Gun Mayhem 2]
 - Python heredocs with `\n` broke `.as` edits: do exact-match replacements from files. [Territory War]
 - The relay's legacy `H|`/`J|` room (DIRECT) checks no version and takes 16 players. Have every guest send its
   version first and admit it only after that check (plus the player count); admitting on `J|` let a refused guest
