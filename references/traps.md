@@ -74,6 +74,9 @@ Each one cost a real mod time. The mod it came from is in brackets.
   host's second match left the friends' sticks out: start a match on the second frame there. [Gun Mayhem 2, Raft Wars,
   Territory War]
 - `gotoAndStop` to the frame you're on doesn't re-run it: go through the frame before. [Gun Mayhem 2]
+- A shared spawn counter that cosmetic effects also bump (GM2's `pDepth`, depth and name of every spawn, wrapping
+  at 9900) drifts between PCs, because effects differ (own RNG, frame scripts during waits). At the wrap a new clip
+  replaces a different old one on each PC. Give effects their own depth band during a match. [Gun Mayhem 2]
 - A clip told to `play()` this tick still shows its stopped frame until the next timeline phase, so a wait that
   freezes it on that tick must count it as playing, or the shot is lost on the PC that waited. But only if it sat
   on that frame last tick: a frame script that jumped back to the stopped frame (a reload's end) cancels the

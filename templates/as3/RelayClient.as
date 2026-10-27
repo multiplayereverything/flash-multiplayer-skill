@@ -44,6 +44,14 @@ package mynet
          open(server, "RELAY|1|HOST|" + game + "|" + version + "|" + (listed ? "1" : "0") + "|" + clean(name));
       }
 
+      // DIRECT: a relay on the host's own PC, its legacy default room: H|name (host, answered with W|0, no ROOM|)
+      // or J|name (friend, W|id); after that the same star protocol. The room takes up to 16 players and
+      // checks no version: the host admits a friend only after its version message, and refuses extras.
+      public function direct(server:String, asHost:Boolean, name:String) : void
+      {
+         open(server, (asHost ? "H|" : "J|") + clean(name));
+      }
+
       public function join(server:String, code:String, name:String) : void
       {
          open(server, "RELAY|1|JOIN|" + game + "|" + version + "|" + code.toUpperCase().replace(/[^A-Z0-9]/g, "") + "|" + clean(name));
@@ -171,7 +179,19 @@ package mynet
                }
                else if(msg.substr(0, 2) == "E|")
                {
-                  error = msg.substr(2);  // the relay closes the connection next
+                  // a room refusal is followed by a close; the legacy room's "a host is already connected" is
+                  // not, so finish now with the relay's reason [Bad Ice-Cream]
+                  error = msg.substr(2);
+                  var s:Socket = sock;
+                  finish("Relay: " + error);
+                  try
+                  {
+                     s.close();
+                  }
+                  catch(err:Error)
+                  {
+                  }
+                  return;
                }
                else if(msg.length > 0 && onMessage != null)
                {

@@ -12,6 +12,13 @@ Tile arcade game for two (Nitrome, 2010), AS3 SWF 9, unobfuscated, from a Poki b
 - **Launcher lobby:** with `lobby=1` the same relay messages go through `LobbyBridge` to the launcher's bridge; no F9
   panel. `loaded` goes once the game is past its intro; the launcher's `go` is the guest's `J`. A dropped guest's P2
   stands still and gets the level again on `back`. Lobby version `2` (`bic-online 2`).
+- **DIRECT** next to RELAY (MODE button; RELAY is the default and the mode is never saved): `H|`/`J|` on the relay's
+  legacy room on the host's PC, no room code. The host admits a friend only after its version message (`VE|`) and
+  answers a second friend with `FU|id`.
+- **Fixed after release 2:** guest keys latched for 3 host frames (a tap was lost under jitter); a guest that joins
+  from its preloader waits for its intro before loading the level; the guest runs fruit's per-frame update itself
+  (the pop-in clip loops while the host is paused).
 - **Lab:** host and guest windows, `--solo`, a control build without the ad fix that must fail, `--host-leaves`,
-  `--delay 80 --jitter 40`, and `--lobby` (plus `--drop`, `--host-leaves`, `--delay 80`) through the fake bridge.
+  `--delay 80 --jitter 40`, `--lobby` (plus `--drop`, `--host-leaves`, `--delay 80`) through the fake bridge, `--direct`
+  (plus `--third`, `--host-leaves`, lag, a wrong version), `--third`, `--late-join`, `--help-hold 100`.
 - **Lessons:** send the snapshot before the popup message; never switch a fruit's frame during its appear animation; drop snapshots left over from the previous level.
