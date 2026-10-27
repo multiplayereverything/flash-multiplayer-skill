@@ -1,4 +1,5 @@
 # Flash Multiplayer
+[![GitGem](https://gitgem.org/api/badge/github/multiplayereverything/flash-multiplayer-skill.svg)](https://gitgem.org/github/multiplayereverything/flash-multiplayer-skill)
 
 **Old Flash games, played online with your friends. Your agent builds the mod.**
 
