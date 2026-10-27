@@ -16,6 +16,9 @@ no functions worth hooking: the fight is timelines and clip events).
   every 68. Stopped clips are corrected only once the guest's clip is at rest on the wrong frame for 8 frames; the
   player's own launchers are never mirrored. Crab HP, team HP and score come from the host; hits on a guest's own
   ship go to the host as `H|n`.
+- **Before mods-info lists the game:** the central relay refuses `ucb`; the panel says "This server doesn't host
+  the game yet: press MODE for DIRECT." (1.1.2), and DIRECT plays meanwhile. Flash Player 32 can't play it online
+  (it refuses sockets from a local SWF 6 file, and the game can't move to SWF 7+).
 - **Late join:** a friend can join mid-fight, also straight from the loader screen (launcher `join=`), and drops in.
 - **Host leaves:** guests see "The host closed the room." and keep playing alone.
 - **Lab:** RELAY and DIRECT, 3 players with a late join, 4 players with a 5th refused, join from the loader, 80+30 ms

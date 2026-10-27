@@ -58,6 +58,8 @@ Lab lines can also go through the relay as `D|LAB ...`, which helps when a windo
 | `--direct`, `--direct --third`, `--third` | DIRECT (the relay's legacy room) plays like RELAY; a second friend is turned away in both modes, and the host keeps its Player 2 |
 | `--late-join` | the host plays alone, the guest joins mid-level (from its own preloader); the host restarts the level for 2 |
 | `--help-hold 100` | the host's game stays paused (help popup) while the guest keeps drawing: what runs on timelines alone |
+| `--sweep 1-40` | every level in turn with random keys on both sides; the guest compares its own snapshot with each host snapshot it applied and reports differences that last a second (compare only what's visible) |
+| probes with no network (`solopopups`, `orphanprobe`) | which AVM errors are the game's own, and the exact mechanism behind a guest-only error |
 | `--lobby`, `--lobby --drop`, `--lobby --host-leaves` | started the way the launcher's lobby starts the game, through `templates/lab/fake_bridge.py`; a dropped connection that comes back |
 | `--release-smoke` | the release build starts with the relay typed as a closed local port, never touching your live relay |
 

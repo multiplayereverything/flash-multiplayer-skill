@@ -17,7 +17,9 @@ Tile arcade game for two (Nitrome, 2010), AS3 SWF 9, unobfuscated, from a Poki b
   answers a second friend with `FU|id`.
 - **Fixed after release 2:** guest keys latched for 3 host frames (a tap was lost under jitter); a guest that joins
   from its preloader waits for its intro before loading the level; the guest runs fruit's per-frame update itself
-  (the pop-in clip loops while the host is paused).
+  (the pop-in clip loops while the host is paused); snapshots are applied on arrival, between frames.
+- **Sweep:** all 40 levels with random play on both sides stay in sync (lab, 2 players). Open: breaker attack
+  clips call `resumeWalk()` with no parent on the guest now and then (harmless, cause not found).
 - **Lab:** host and guest windows, `--solo`, a control build without the ad fix that must fail, `--host-leaves`,
   `--delay 80 --jitter 40`, `--lobby` (plus `--drop`, `--host-leaves`, `--delay 80`) through the fake bridge, `--direct`
   (plus `--third`, `--host-leaves`, lag, a wrong version), `--third`, `--late-join`, `--help-hold 100`.

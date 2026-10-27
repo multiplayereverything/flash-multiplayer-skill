@@ -145,6 +145,11 @@ Each one cost a real mod time. The mod it came from is in brackets.
   wrong angle until the guest moved the mouse. Stream only values in the game's own aim range. [Raft Wars]
 
 ## AS3
+- Apply a guest's snapshot when it arrives (socket events come between frames), not inside the frame loop.
+  Switching an object's frame in an ENTER_FRAME handler removes a child animation whose frame script is due that
+  same frame; the script then runs with `parent == null` (#1009) and its callback into the game is lost. A probe
+  showed it: switching a fruit exactly when its pop-in clip reached its callback frame threw from ENTER_FRAME and
+  didn't from a Timer event. 67 of Bad Ice-Cream's clips call their parent like this. [Bad Ice-Cream]
 - Timeline clips that call back into game code (a pop-in that ends with `parent.finishAppearAnimation()`, no
   `stop()`, so it loops) keep running on a guest that runs no game logic. If the guest switches the object's frame
   only when a snapshot arrives, the clip replays and a switch can orphan its frame script (#1009). Snapshots slow down
