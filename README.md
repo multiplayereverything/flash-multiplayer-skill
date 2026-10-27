@@ -20,12 +20,12 @@ Tell your agent (Claude Code, Codex, Gemini CLI, Cursor, ...), in the folder wit
 Read https://github.com/multiplayereverything/flash-multiplayer-skill and follow AGENTS.md.
 I want to play <game>.swf online with my friends.
 ```
-To have the skills always on in Claude Code:
+To install it as a skill (Claude Code, Codex, Cursor and the other agents [skills.sh](https://skills.sh) supports):
 ```bash
-git clone https://github.com/multiplayereverything/flash-multiplayer-skill ~/flash-multiplayer
+npx skills add multiplayereverything/flash-multiplayer-skill
 ```
-Then link the folder as `~/.claude/skills/flash-multiplayer` and each `skills/<name>` folder as
-`~/.claude/skills/<name>` (or copy them). You need Java 21, [FFDec](https://github.com/jindrapetrik/jpexs-decompiler)
+Add `-g` to install it for every project instead of just this one. That installs one skill, `flash-multiplayer`, with
+the whole hub inside it: the seven phase skills (`skills/`), references, tools, templates and the relay. You need Java 21, [FFDec](https://github.com/jindrapetrik/jpexs-decompiler)
 26.x, Python 3.10+ and [Ruffle](https://ruffle.rs) desktop. The agent asks before installing anything.
 
 ## Your relay

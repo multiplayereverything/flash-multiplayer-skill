@@ -10,9 +10,11 @@ the build injects code into a copy of the SWF, the host's game runs the real gam
 show the host's world and send their own input. Everything goes through a relay you run (`relay/`, see `relay/README.md`), a text relay in
 star mode: the host gets a 5-letter room code and friends type it or pick the room from a public list.
 
-This page is the route and the checklist. The hub also has one skill per phase in `skills/` (`flash-start`,
-`flash-map`, `flash-lab`, `flash-inject`, `flash-sync`, `flash-ship`, `flash-share`), the phase map in `AGENTS.md`, and
-every game done so far in `DIRECTORY.md` (check it first: `python tools/directory.py find <game>`).
+This page is the route and the checklist. Paths here are relative to this file's folder, which holds the whole hub.
+For each phase, read its own file in `skills/`: `skills/flash-start/SKILL.md`, `skills/flash-map/SKILL.md`,
+`skills/flash-lab/SKILL.md`, `skills/flash-inject/SKILL.md`, `skills/flash-sync/SKILL.md`, `skills/flash-ship/SKILL.md`
+and `skills/flash-share/SKILL.md`. The phase map is in `AGENTS.md`, and every game done so far is in `DIRECTORY.md`
+(check it first: `python tools/directory.py find <game>`).
 
 Read the reference that matches the step you're on.
 
