@@ -146,6 +146,12 @@ Each one cost a real mod time. The mod it came from is in brackets.
   (`--mods-info file:///...`, no games.json). [Territory War]
 - A lab script that opens the map view at turn start was refused: the game enables the map button only once the
   camera reaches the stick. Wait for the button's state, not a fixed delay. [Territory War]
+- A lab that drives boats through shortcuts never tests the game's own input: also send real Flash KEY_DOWN/UP and
+  MOUSE_DOWN events inside the SWF (`dispatchEvent` on the stage and the level container; never OS input). [Air Battle]
+- Lab check on "key held, effect visible": compare only after the key stayed the same for 2 frames; stage listeners
+  and the game's frame run in no fixed order. [Air Battle]
+- A test tool that deletes and rewrites a folder the local relay is fetching from gives the relay a 404 at the wrong
+  moment: rewrite files in place. [Air Battle]
 - Save only what the player typed as the server: saving the address in use pinned an old server in three mods.
 - A lab runner that blocks while it opens a new window takes the other windows' screenshots late; take pending
   shots first. [Stealth Assassin]
