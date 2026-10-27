@@ -201,6 +201,8 @@ Each one cost a real mod time. The mod it came from is in brackets.
   looked like an intermittent desync. Build checks from the live object lists. [Raft Wars]
 - In the relay's legacy `H|`/`J|` room the relay sends `X` when the host leaves but keeps the guests connected:
   end the guest's session on `X` itself. [Raft Wars]
+- A game's turn counter restarted at 0 in each battle, so a lab bot that remembered "already fired on turn N"
+  never fired in the next battle and the run stalled. Reset turn-keyed lab state when a battle starts. [Raft Wars]
 - A lab runner that blocks while it opens a new window takes the other windows' screenshots late; take pending
   shots first. [Stealth Assassin]
 - "Wait N frames, then snap the guest's copy" counted the guest's frames, so a guest window at 20 fps snapped fine
