@@ -83,6 +83,7 @@ Read the reference that matches the step you're on.
 | `tools/swfinfo.py` | Frame labels of the main timeline and sprites |
 | `tools/swfmap.py` | Display tree from FFDec `-swf2xml`, for obfuscated AS2 games |
 | `tools/case_scan.py` | SWF 6: finds identifiers that collide when case is ignored |
+| `tools/unmochi.py` | Unwraps a MochiCrypt-protected SWF (RC4 + zlib payload) into the real game SWF |
 | `tools/wincap.py` | Screenshot of a window by PID (PrintWindow, BitBlt fallback), never focusing it |
 | `templates/as3/RelayClient.as` | AS3 star-mode relay client: host, join, list, INFO |
 | `templates/as3/NetModInfo.as`, `NetJson.as` | AS3 mods-info reader with cache and relay INFO fallback |

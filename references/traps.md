@@ -50,6 +50,8 @@ Each one cost a real mod time. The mod it came from is in brackets.
   recompiled. `CheckNamespaces.java` catches it. [Stealth Hunter 2]
 - AS2 "offset larger than maximum allowed for SI16": a branch over 32 KB. No giant `if` around the mod. [Territory War, Gun Mayhem 2]
 - `-deobfuscate` output is for reading only; on a wrapper SWF it wrote a 0-byte file. [Stealth Hunter 2]
+- FFDec 26 decompiles some loop exits as `§§goto(addrNNNN)` + a label, then can't compile its own output ("goto is
+  not available"). When the label sits right after the loop, delete both: it's a `break`. [Stealth Assassin]
 
 ## AS2 / AVM1
 - Never name a function `stop` (or `play`, `gotoAndStop`...): it compiles to the timeline action. A clean-up silently
@@ -96,6 +98,11 @@ Each one cost a real mod time. The mod it came from is in brackets.
 - Poki builds wait forever for an ad callback outside their page, and `ExternalInterface.call` throws #2067 each frame.
   The mod fixed both, online or not. [Bad Ice-Cream]
 - A minigame's win path acts for the local player only: disable it on guests. [Stealth Hunter 2]
+- MochiCrypt-wrapped games (`mochicrypt.Payload` binaryData) hide the real SWF: RC4 keyed with the payload's last
+  32 bytes over the first 128 KB, then zlib. Unwrap it once and build from the inner SWF; the dead Mochi ad wait goes
+  with it. [Ultimate Assassin series]
+- A menu frame script that sets its level command back to 0 eats a command sent while the intro still plays:
+  repeat it every frame until the screen changes. [Stealth Assassin]
 
 ## Launcher lobby
 - Closing the game's bridge socket tells nobody: the launcher reports a `leave` when the game's process ends. Don't
@@ -114,3 +121,5 @@ Each one cost a real mod time. The mod it came from is in brackets.
 - Ruffle desktop disappeared from `C:\Program Files` for a few minutes mid-session (a reinstall): let the lab also
   look for `tools/ruffle/ruffle.exe`. [Air Battle]
 - Save only what the player typed as the server: saving the address in use pinned an old server in three mods.
+- A lab runner that blocks while it opens a new window takes the other windows' screenshots late; take pending
+  shots first. [Stealth Assassin]

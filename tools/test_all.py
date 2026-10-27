@@ -19,6 +19,7 @@ sys.path.insert(0, HERE)
 import check_public  # noqa: E402
 import directory  # noqa: E402
 import set_use_network as sun  # noqa: E402
+import unmochi  # noqa: E402
 
 failures = []
 
@@ -161,6 +162,27 @@ def test_relay(tmp):
         proc.wait()
 
 
+def test_unmochi():
+    inner = tiny_swf(10)
+    key = bytes(range(32))
+    payload = bytes(unmochi.rc4_payload(zlib.compress(inner) + key))
+    def wrap(blob):
+        body = bytes([0x50, 0, 0, 0, 0, 0]) + struct.pack("<HH", 30 << 8, 1)
+        bd = struct.pack("<HI", 7, 0) + blob
+        body += struct.pack("<HI", (87 << 6) | 0x3F, len(bd)) + bd
+        sc = struct.pack("<HH", 1, 7) + b"mochicrypt.Payload" + bytes(1)
+        body += struct.pack("<HI", (76 << 6) | 0x3F, len(sc)) + sc + struct.pack("<H", 0)
+        return b"FWS" + bytes([10]) + struct.pack("<I", len(body) + 8) + body
+    ok("unmochi recovers the inner SWF", unmochi.unwrap(wrap(payload)) == inner)
+    broken = bytearray(payload)
+    broken[-1] ^= 0xFF
+    try:
+        unmochi.unwrap(wrap(bytes(broken)))
+        ok("twin: a wrong key is refused", False)
+    except ValueError:
+        ok("twin: a wrong key is refused", True)
+
+
 def test_fake_bridge():
     import socket
     import time
@@ -237,6 +259,7 @@ def test_fake_bridge():
 
 with tempfile.TemporaryDirectory() as tmp:
     test_use_network(tmp)
+    test_unmochi()
     test_check_public(tmp)
     test_relay(tmp)
 test_fake_bridge()

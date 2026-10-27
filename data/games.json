@@ -160,6 +160,22 @@
       "flash_player": "untested",
       "release": null,
       "writeup": "games/intrusion-2.md"
+    },
+    {
+      "id": "stealthassassin",
+      "game": "Stealth Assassin",
+      "developer": null,
+      "year": 2014,
+      "engine": "AS3",
+      "swf": 15,
+      "path": "single-to-coop",
+      "players": "2-4",
+      "sync": "each PC moves its own assassin; host owns guards, bullets, damage, targets; guards see the nearest player via a per-guard swap",
+      "status": "released",
+      "qa": "lab-3p+",
+      "flash_player": "untested",
+      "release": "flash-games: games/stealthassassin/StealthAssassin_online.swf",
+      "writeup": "games/stealth-assassin.md"
     }
   ]
 }
