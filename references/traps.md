@@ -39,6 +39,8 @@ Each one cost a real mod time. The mod it came from is in brackets.
 ## FFDec
 - `-importScript` can't add new AS3 classes: add stubs first (`AddClasses.java`). It prints nothing on success, so
   prove a replacement with a trace. [Stealth Hunter 2, Intrusion 2]
+- Some SWFs write the FileAttributes tag with the long header (6 bytes). Setting UseNetwork at "tag + 2" then
+  flips a bit of its length and corrupts every tag after it. Find the flags byte after the real header. [Ultimate Assassin 3]
 - FFDec often exits 0 after a compile error: fail on `SEVERE|Exception|error` in its output. [all]
 - Its compiler rejects its own decompiled `new [A,B,C][i]()` and `for each (x in a || b)`: use a local. [Bad Ice-Cream]
 - One class per file; no `var a:String, b:String;` declarations. [global-mod-relay]
