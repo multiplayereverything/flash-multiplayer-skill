@@ -33,6 +33,9 @@ Each one cost a real mod time. The mod it came from is in brackets.
 - Throttles hidden windows. Synthetic key messages never reach it. [Gun Mayhem 2]
 - A Flash Player host with a Ruffle friend gave a per-frame "Invalid object" error storm on the friend; never solved,
   and that mod dropped Flash Player. [Stealth Hunter 2]
+- Lab results from the projector: bake each window's flashvars into its own lab copy and send the LAB lines to the
+  relay as `D|` debug lines (printed with `--log`, never forwarded). A window that leaves the room can't report any
+  more, so report done before leaving. [Air Battle]
 - Starting the mods-info download during session start changed lab timing; test builds skip it unless given a test
   URL. [Stealth Hunter 2]
 
