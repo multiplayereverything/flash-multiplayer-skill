@@ -109,6 +109,14 @@ Each one cost a real mod time. The mod it came from is in brackets.
   wrong angle until the guest moved the mouse. Stream only values in the game's own aim range. [Raft Wars]
 
 ## AS3
+- Timeline clips that call back into game code (a pop-in that ends with `parent.finishAppearAnimation()`, no
+  `stop()`, so it loops) keep running on a guest that runs no game logic. If the guest switches the object's frame
+  only when a snapshot arrives, the clip replays and a switch can orphan its frame script (#1009). Snapshots slow down
+  while the host's game is paused (a help popup players read). Run on the guest, every frame, the same update the
+  host's loop runs for such objects. Lab: hold the host's help popup open (`--help-hold 100`). [Bad Ice-Cream]
+- A guest that gets the host's level while its own preloader or intro still runs: `gotoAndStop("game")` from
+  there throws in `startGame`/frame scripts and the level never loads. Hold the level until the intro is over.
+  Lab: the host plays alone, the guest window joins from its preloader (`--late-join`). [Bad Ice-Cream]
 - `flash.display.Sprite` is sealed: dynamic fields need a `MovieClip`. [Bad Ice-Cream]
 - `var` is hoisted to function scope: a local `key` shadowed a `key()` method (#1006), and two locals with one name
   merge. Give each a unique name. [Stealth Hunter 2]
@@ -135,6 +143,17 @@ Each one cost a real mod time. The mod it came from is in brackets.
   client must not treat the first `msg` as proof the host just started. [Bad Ice-Cream]
 
 ## Process
+- A short tap (4 frames) and its release can reach the host in the same frame when messages bunch (TCP, or the
+  relay's order-keeping `--sim-jitter`), and the game never sees the key held. Latch newly pressed remote keys for
+  a few host frames. [Bad Ice-Cream]
+- In-game lab runners that count `age = frameNo - stepStart` with `stepStart = 0`: `frameNo` is already 1 on the
+  first frame, so the first step's `age == 0` never fires. A title step before it hides the bug. [Bad Ice-Cream]
+- With 7 other sessions' labs running (about 18 Ruffle windows), some windows sat on the game's preloader for good
+  (its transition clip reset). Not reproducible alone. Let the runner spot it and run the scenario again, and keep
+  each failing run's window logs (the next run overwrites them). [Bad Ice-Cream]
+- The relay's legacy room answers a second `H|` with `E|A host is already connected` and keeps the socket open:
+  a client that waits for the close hangs on CONNECTING. Finish on `E|` at once (`templates/as3/RelayClient.as`).
+  [Bad Ice-Cream]
 - Two sessions building the same mod wiped each other's files: one build folder per run. [Gun Mayhem 2]
 - A friend that joins during a match gets a slot but no start message; if the host's wait counts every slot, the
   host waits for it forever. Count only players that got the start; the newcomer plays from the next match.
