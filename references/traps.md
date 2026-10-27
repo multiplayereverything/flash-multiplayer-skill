@@ -99,6 +99,12 @@ Each one cost a real mod time. The mod it came from is in brackets.
 - Unnamed timeline parts (`instanceN`) are placed by the guest's own copy of the animation: skip them in a clip
   stream, it halves the bytes. [Intrusion]
 
+- A mirror that removed `obj.mc._parent` for a vanished object took every penguin with it when the object was the
+  raft's dog, which sits straight in the shared container (penguins have their own wrapper clip). Remove the
+  object's own clip unless it lives in a per-object wrapper. [Raft Wars]
+- A shared aim global still held the enemy's last value (315) when a player's turn began, so the host showed a
+  wrong angle until the guest moved the mouse. Stream only values in the game's own aim range. [Raft Wars]
+
 ## AS3
 - `flash.display.Sprite` is sealed: dynamic fields need a `MovieClip`. [Bad Ice-Cream]
 - `var` is hoisted to function scope: a local `key` shadowed a `key()` method (#1006), and two locals with one name
@@ -153,5 +159,11 @@ Each one cost a real mod time. The mod it came from is in brackets.
 - A test tool that deletes and rewrites a folder the local relay is fetching from gives the relay a 404 at the wrong
   moment: rewrite files in place. [Air Battle]
 - Save only what the player typed as the server: saving the address in use pinned an old server in three mods.
+- A lab check that records only its first result hid two real bugs behind an earlier PASS: report every FAIL.
+  [Raft Wars]
+- A state check listing the objects from the battle's start reported penguins that had sunk as missing, which
+  looked like an intermittent desync. Build checks from the live object lists. [Raft Wars]
+- In the relay's legacy `H|`/`J|` room the relay sends `X` when the host leaves but keeps the guests connected:
+  end the guest's session on `X` itself. [Raft Wars]
 - A lab runner that blocks while it opens a new window takes the other windows' screenshots late; take pending
   shots first. [Stealth Assassin]
