@@ -91,6 +91,8 @@ Each one cost a real mod time. The mod it came from is in brackets.
 
 ## Games and portals
 - Click-to-continue sponsor preloaders block labs: wait for them, or test the inner SWF. [Air Battle, Stealth Hunter 2]
+- A portal score board on the end screen (BubbleBox's) shows the screen's MENU button only after it loads from the
+  internet, so offline everyone is stuck there. Online, show MENU at once on the host. [Air Battle]
 - Poki builds wait forever for an ad callback outside their page, and `ExternalInterface.call` throws #2067 each frame.
   The mod fixed both, online or not. [Bad Ice-Cream]
 - A minigame's win path acts for the local player only: disable it on guests. [Stealth Hunter 2]
@@ -104,4 +106,11 @@ Each one cost a real mod time. The mod it came from is in brackets.
 ## Process
 - Two sessions building the same mod wiped each other's files: one build folder per run. [Gun Mayhem 2]
 - Python heredocs with `\n` broke `.as` edits: do exact-match replacements from files. [Territory War]
+- The relay's legacy `H|`/`J|` room (DIRECT) checks no version and takes 16 players. Have every guest send its
+  version first and admit it only after that check (plus the player count); admitting on `J|` let a refused guest
+  flash into the room with a boat. [Air Battle]
+- A guest can finish a level by itself (a boat drifting into the open exit), so a lab's scripted shortcut steps must
+  check whether the level is already over and note a skip instead of failing. [Air Battle]
+- Ruffle desktop disappeared from `C:\Program Files` for a few minutes mid-session (a reinstall): let the lab also
+  look for `tools/ruffle/ruffle.exe`. [Air Battle]
 - Save only what the player typed as the server: saving the address in use pinned an old server in three mods.

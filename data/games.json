@@ -58,7 +58,7 @@
       "swf": 9,
       "path": "single-to-coop",
       "players": "2-4",
-      "sync": "host snapshot every frame (moved bodies plus 1 s keyframe) and events",
+      "sync": "host snapshot every frame (moved bodies plus 1 s keyframe) and events; room codes or Direct IP",
       "status": "released",
       "qa": "lab-3p+",
       "flash_player": "untested",
