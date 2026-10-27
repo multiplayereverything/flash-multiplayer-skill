@@ -62,6 +62,8 @@ Lab lines can also go through the relay as `D|LAB ...`, which helps when a windo
 | probes with no network (`solopopups`, `orphanprobe`) | which AVM errors are the game's own, and the exact mechanism behind a guest-only error |
 | `--lobby`, `--lobby --drop`, `--lobby --host-leaves` | started the way the launcher's lobby starts the game, through `templates/lab/fake_bridge.py`; a dropped connection that comes back |
 | `--release-smoke` | the release build starts with the relay typed as a closed local port, never touching your live relay |
+| `--live` (private room on the live relay, friends get the code as a FlashVar `-Pgmcode=`) | the real internet path through the central server, without listing the room for players or the Discord bot [Gun Mayhem 2] |
+| a slow friend (`GM_BURN=<ms>`: the friend's build busy-waits every frame) | the host's pacing keeps that friend's delay small instead of letting it sit at the hard limit [Gun Mayhem 2] |
 
 Turn games: compare a `LAB| HASH <turn> <state>` line between host and guest at every turn start.
 

@@ -196,6 +196,11 @@ Each one cost a real mod time. The mod it came from is in brackets.
   a client that waits for the close hangs on CONNECTING. Finish on `E|` at once (`templates/as3/RelayClient.as`).
   [Bad Ice-Cream]
 - Two sessions building the same mod wiped each other's files: one build folder per run. [Gun Mayhem 2]
+- Host pacing capped at one skipped frame in three can't follow a friend whose PC runs below 2/3 speed: its backlog
+  climbs to the hard wait limit and its input delay with it (GM2: 1 s at 14 fps). Skip every frame while a friend is
+  well over its buffer. [Gun Mayhem 2]
+- Sharing the hub checkout with other sessions: `git update-index` on the shared index replaced another session's
+  staged file just as it committed. Commit your own files through a temporary index (`GIT_INDEX_FILE`). [Gun Mayhem 2]
 - A friend that joins during a match gets a slot but no start message; if the host's wait counts every slot, the
   host waits for it forever. Count only players that got the start; the newcomer plays from the next match.
   [Gun Mayhem 2]
