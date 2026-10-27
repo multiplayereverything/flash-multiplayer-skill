@@ -61,7 +61,7 @@
       "sync": "host snapshot every frame (moved bodies plus 1 s keyframe) and events; room codes or Direct IP",
       "status": "released",
       "qa": "lab-3p+",
-      "flash_player": "untested",
+      "flash_player": "works (lab: host and 3 windows)",
       "release": "https://github.com/Multiplayer-Everything-Team/flash-games/tree/main/games/airbattle",
       "writeup": "games/air-battle.md"
     },
