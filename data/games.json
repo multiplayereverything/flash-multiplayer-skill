@@ -106,7 +106,7 @@
       "swf": 6,
       "path": "single-to-coop",
       "players": "2-4",
-      "sync": "own ship local; shots to the host; world mirror of every clip by depth path",
+      "sync": "own ship local; shots to the host; world mirror of every clip by depth path, corrected at rest; HUD from the host",
       "status": "released",
       "qa": "lab-3p+",
       "flash_player": "not possible (SWF 6)",

@@ -189,3 +189,27 @@ Each one cost a real mod time. The mod it came from is in brackets.
   end the guest's session on `X` itself. [Raft Wars]
 - A lab runner that blocks while it opens a new window takes the other windows' screenshots late; take pending
   shots first. [Stealth Assassin]
+- FFDec decompiles constants that the constructor assigns as `public const X:uint;`; recompiled, the assignment
+  throws #1074 (read-only). Rewrite them to `var` in the staged copy. [Intrusion 2]
+- Two classes whose names differ only in case (`Snowball` and the symbol class `snowball`): on Windows,
+  `-importScript` compiles `Snowball.as` over both ("Variable snowball is not defined"). Stage into a folder made
+  case-sensitive with `fsutil file setCaseSensitiveInfo <empty dir> enable` (no admin). [Intrusion 2]
+- A field named like a symbol class (the hero's `ammo_pack`, also a pickup graphic) compiles to the class: the
+  field stays null and the first hero spawn throws #1009. Qualify every use with `this.`. [Intrusion 2]
+- Level objects that wait in a frozen spatial map until a camera reaches them enter the update list in an order
+  that depends on each PC's camera. Give net ids where the game creates them, not where they first update.
+  [Intrusion 2]
+- A damage gate at the top of every `Damage()` override runs again in each `super.Damage()`: report a hit only
+  from the outermost override (the first gate call seen per object class), or every hit counts twice. [Intrusion 2]
+- Replaying a hit without the contact (hit point) throws in objects that read `contact.position`; send it along.
+  [Intrusion 2]
+- A game object updated by its level controller (a boss) is not in the world's object list: it needs its own
+  registration and the nearest-player swap at the controller's call. [Intrusion 2]
+- A teleported hero gets pulled back by camera bounds that open only after a level's scripted events: a lab fires
+  the level exit through the trigger code instead of moving the hero there. [Intrusion 2]
+- A screenshot fallback that copies the screen area of a lab window copies whatever covers it (other apps). Check
+  with `WindowFromPoint` that the window itself shows at those points before copying. [Intrusion 2]
+- Ruffle desktop wouldn't load a `file://` mods-info URL from a local SWF (timed out). Test the mods-info path
+  through the relay instead: `--mods-info` with `pathlib.Path(...).as_uri()` (a hand-built URL with `C%3A` breaks
+  urllib) and the mod's HTTP URL pointing at the relay port, so the download fails and `RELAY|1|INFO` answers.
+  [Intrusion 2]
