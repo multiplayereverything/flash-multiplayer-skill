@@ -235,6 +235,12 @@ Each one cost a real mod time. The mod it came from is in brackets.
   end the guest's session on `X` itself. [Raft Wars]
 - A game's turn counter restarted at 0 in each battle, so a lab bot that remembered "already fired on turn N"
   never fired in the next battle and the run stalled. Reset turn-keyed lab state when a battle starts. [Raft Wars]
+- A lab that calls the game's mouse handlers itself never tests the game's own aim-and-click path. Ruffle desktop
+  accepts `WM_MOUSEMOVE`/`WM_LBUTTONDOWN`/`WM_LBUTTONUP` posted to its window without focus, so the lab can drive one
+  window's mouse while the real cursor stays put: map the stage point below the 24-px menu bar, letterboxed, at the
+  window's DPI. [Raft Wars]
+- A host that sends its progress before the first Play sends `undefined` fields; a guest that joined at the menu
+  then held NaN credits and lives. Send state only once it exists, and drop incomplete copies. [Raft Wars]
 - A lab runner that blocks while it opens a new window takes the other windows' screenshots late; take pending
   shots first. [Stealth Assassin]
 - "Wait N frames, then snap the guest's copy" counted the guest's frames, so a guest window at 20 fps snapped fine

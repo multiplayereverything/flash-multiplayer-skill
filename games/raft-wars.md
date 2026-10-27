@@ -13,4 +13,6 @@ Turn-based artillery campaign (BubbleBox, 2007), AS2 SWF 8, obfuscated.
 - **Leaving:** a player who leaves is skipped; if they leave while aiming, the host takes that shot.
 - **Lab:** every scenario in RELAY and DIRECT: 3 players with a late join (mid-battle, in the shop, in the intro), 4 players plus a 5th refused, host leaving, guest leaving mid-aim, wrong version, 80+40 ms lag, solo, and the whole campaign end (win level 10, everyone reaches the ending); 0 script errors. Guests fire rockets and buy the raft upgrade, and a state check compares every object at each turn (0 px).
 - **Bugs the lab found late:** when the dog on the upgraded raft sank, guests removed its parent clip (the whole penguin container) and lost every penguin; the state check listed penguins that had already sunk (an "intermittent" missing object); a guest streamed the enemy's leftover aim (315) at the start of its turn. Two of them stayed hidden because the lab dropped a FAIL that came after a PASS.
-- **Untested:** Flash Player 32, two real PCs, real-mouse aiming on a guest (the lab calls the game's handlers).
+- **Real mouse:** `lab.py --realmouse` posts mouse messages to one guest's Ruffle window (the cursor never moves); the game's own listener aims and fires on every guest turn, and the host shows the aim live.
+- **Traffic:** about 3 KB/s from the host per guest (17 snapshots/s at ~190 bytes).
+- **Untested:** Flash Player 32 (no projector on the test PC), two real PCs.
