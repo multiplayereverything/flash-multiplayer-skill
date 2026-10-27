@@ -74,7 +74,7 @@
       "swf": 8,
       "path": "local-to-online",
       "players": "2-4",
-      "sync": "turn-based: host runs the match, the turn owner aims locally and sends the shot",
+      "sync": "turn-based: host runs the match, the turn owner aims locally and sends the shot; room codes or Direct IP",
       "status": "released",
       "qa": "lab-3p+",
       "flash_player": "untested",

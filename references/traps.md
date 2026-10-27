@@ -20,6 +20,8 @@ Each one cost a real mod time. The mod it came from is in brackets.
   does too, so count them as the game's own errors. [Intrusion]
 - Colour codes sit between "ERROR" and the module in its log: strip ANSI before counting errors. [Stealth Hunter 2]
 - An attached clip's first-frame code runs during `attachMovie` (Flash Player runs it after). [Gun Mayhem 2]
+- `--filesystem-access-mode` defaults to `ask`: any local file load (mods-info from disk, `LoadVars` of a path)
+  opens a dialog the lab window waits on. Test mods-info through the relay's INFO instead. [Territory War]
 
 ## Flash Player 32
 - Refuses every HTTP load from a local SWF (#2048, even with a crossdomain.xml): mods-info needs the relay INFO
@@ -66,12 +68,15 @@ Each one cost a real mod time. The mod it came from is in brackets.
 - `gamepaused` flags don't freeze timeline animations or `_root.onEnterFrame`: a netplay wait must freeze them all.
   [Gun Mayhem 2]
 - Clips created later run their onEnterFrame first; a clip's onEnterFrame runs before the root frame script.
-  [Gun Mayhem 2, Raft Wars]
+  So on the first frame at a match frame, the previous match's objects (`Team1`/`Team2`) were still there and the
+  host's second match left the friends' sticks out: start a match on the second frame there. [Gun Mayhem 2, Raft Wars,
+  Territory War]
 - `gotoAndStop` to the frame you're on doesn't re-run it: go through the frame before. [Gun Mayhem 2]
 - A clip that doesn't exist yet on frame 1 gives NaN when you set it: move its frame instead. [Territory War]
 - Setting `_x` inside a tween freezes the tween. [Ultimate Crab Battle]
 - Always override `XMLSocket.onData`, or Flash parses messages as XML. [Bow Man]
 - Lab builds must set the lab relay before mods-info starts, or the INFO fallback asks the live server. [Ultimate Crab Battle]
+  Safer: lab builds refuse the central relay's address outright (HOST, JOIN, LIST and INFO). [Territory War]
   Read the test mods-info URL when the download starts, not when the script loads. [Intrusion]
 - Wrapping a class constructor in `_global` (`w.prototype = orig.prototype`) numbers every instance in creation
   order on every PC: a cheap net id for level objects. [Intrusion]
@@ -120,6 +125,11 @@ Each one cost a real mod time. The mod it came from is in brackets.
   check whether the level is already over and note a skip instead of failing. [Air Battle]
 - Ruffle desktop disappeared from `C:\Program Files` for a few minutes mid-session (a reinstall): let the lab also
   look for `tools/ruffle/ruffle.exe`. [Air Battle]
+- An AS2 mods-info block copied without `N.GAME_ID` asks for `mods/undefined.json` and sends
+  `RELAY|1|INFO|undefined`. Test it with a relay that knows the game only from a mods-info folder
+  (`--mods-info file:///...`, no games.json). [Territory War]
+- A lab script that opens the map view at turn start was refused: the game enables the map button only once the
+  camera reaches the stick. Wait for the button's state, not a fixed delay. [Territory War]
 - Save only what the player typed as the server: saving the address in use pinned an old server in three mods.
 - A lab runner that blocks while it opens a new window takes the other windows' screenshots late; take pending
   shots first. [Stealth Assassin]
