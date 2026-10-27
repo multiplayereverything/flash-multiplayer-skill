@@ -88,7 +88,8 @@ def set_use_network(path):
     if code_len >> 6 != 69:
         sys.exit("network: first tag is not FileAttributes")
     body = bytearray(body)
-    body[off + 2] |= 1
+    # the flags byte follows the tag header, which some SWFs write in the long form (6 bytes)
+    body[off + (6 if code_len & 0x3F == 0x3F else 2)] |= 1
     open(path, "wb").write(b"CWS" + bytes([ver]) + struct.pack("<I", len(body) + 8) + zlib.compress(bytes(body), 9))
 
 

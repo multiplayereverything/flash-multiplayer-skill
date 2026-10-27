@@ -24,6 +24,11 @@ def first_tag_pos(body):
     return (5 + 4 * nbits + 7) // 8 + 4
 
 
+def flags_pos(body, pos):
+    """The FileAttributes flags byte: after a 2-byte tag header, or 6 when the tag uses the long form."""
+    return pos + (6 if struct.unpack("<H", body[pos:pos + 2])[0] & 0x3F == 0x3F else 2)
+
+
 def set_use_network(data):
     """Returns (new bytes, True if the flag is now set)."""
     body = body_of(data)
@@ -31,7 +36,8 @@ def set_use_network(data):
     code = struct.unpack("<H", body[pos:pos + 2])[0] >> 6
     found = code == 69
     if found:
-        body = body[:pos + 2] + bytes([body[pos + 2] | 1]) + body[pos + 3:]
+        f = flags_pos(body, pos)
+        body = body[:f] + bytes([body[f] | 1]) + body[f + 1:]
     head = b"CWS" + data[3:4] + struct.pack("<I", len(body) + 8)
     return head + zlib.compress(body, 9), found
 
@@ -39,7 +45,7 @@ def set_use_network(data):
 def has_use_network(data):
     body = body_of(data)
     pos = first_tag_pos(body)
-    return struct.unpack("<H", body[pos:pos + 2])[0] >> 6 == 69 and bool(body[pos + 2] & 1)
+    return struct.unpack("<H", body[pos:pos + 2])[0] >> 6 == 69 and bool(body[flags_pos(body, pos)] & 1)
 
 
 if __name__ == "__main__":

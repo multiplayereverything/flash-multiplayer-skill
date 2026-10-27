@@ -92,7 +92,8 @@ def set_use_network(path):
     pos = (5 + 4 * nbits + 7) // 8 + 4          # RECT, then frame rate and count
     code_len = struct.unpack("<H", body[pos:pos + 2])[0]
     if code_len >> 6 == 69:                     # FileAttributes; absent before SWF 8
-        body = body[:pos + 2] + bytes([body[pos + 2] | 1]) + body[pos + 3:]
+        f = pos + (6 if code_len & 0x3F == 0x3F else 2)   # some SWFs use the long tag header
+        body = body[:f] + bytes([body[f] | 1]) + body[f + 1:]
     head = b"CWS" + data[3:4] + struct.pack("<I", len(body) + 8)
     open(path, "wb").write(head + zlib.compress(body, 9))
 ```

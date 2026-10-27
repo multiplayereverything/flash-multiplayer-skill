@@ -45,6 +45,15 @@ def test_use_network(tmp):
     out, found = sun.set_use_network(data)
     ok("set_use_network sets the flag on SWF 9", found and sun.has_use_network(out) and out[:3] == b"CWS")
     ok("twin: the untouched file has no flag", not sun.has_use_network(data))
+    rect = bytes([0x50, 0x00, 0x00, 0x00, 0x00, 0x00])
+    longform = rect + struct.pack("<HH", 30 << 8, 1) + struct.pack("<HI", (69 << 6) | 0x3F, 4) + bytes([0x08, 0, 0, 0])         + struct.pack("<H", 1 << 6) + struct.pack("<H", 0)
+    longswf = b"FWS" + bytes([9]) + struct.pack("<I", len(longform) + 8) + longform
+    outl, foundl = sun.set_use_network(longswf)
+    bodyl = zlib.decompress(outl[8:])
+    lp = sun.first_tag_pos(bodyl) + 2
+    ok("long-form FileAttributes header: the flag goes in the flags byte, the length stays 4",
+       foundl and sun.has_use_network(outl) and struct.unpack("<I", bodyl[lp:lp + 4])[0] == 4)
+    ok("twin: the untouched long-form file has no flag", not sun.has_use_network(longswf))
     out6, found6 = sun.set_use_network(tiny_swf(6, False))
     ok("SWF 6 without FileAttributes is recompressed and reported", not found6 and out6[:3] == b"CWS")
     body = zlib.decompress(out[8:])

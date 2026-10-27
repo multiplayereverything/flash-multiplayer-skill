@@ -54,9 +54,10 @@ def set_use_network(path):
     b = bytearray(body(data))
     nbits = b[0] >> 3
     off = (5 + 4 * nbits + 7) // 8 + 4
-    if struct.unpack("<H", b[off:off + 2])[0] >> 6 != 69:
+    cl = struct.unpack("<H", b[off:off + 2])[0]
+    if cl >> 6 != 69:
         sys.exit("network: first tag is not FileAttributes")
-    b[off + 2] |= 1
+    b[off + (6 if cl & 0x3F == 0x3F else 2)] |= 1  # long-form tag header: flags after the 4-byte length
     open(path, "wb").write(b"CWS" + bytes([data[3]]) + struct.pack("<I", len(b) + 8) + zlib.compress(bytes(b), 9))
 
 
