@@ -20,6 +20,7 @@ import check_public  # noqa: E402
 import directory  # noqa: E402
 import set_use_network as sun  # noqa: E402
 import unmochi  # noqa: E402
+import swfsym  # noqa: E402
 
 failures = []
 
@@ -192,6 +193,23 @@ def test_unmochi():
         ok("twin: a wrong key is refused", True)
 
 
+def test_swfsym():
+    sprite = struct.pack("<HH", 5, 1) + struct.pack("<H", 1 << 6) + struct.pack("<H", 0)
+    body = bytes([0x50, 0, 0, 0, 0, 0]) + struct.pack("<HH", 30 << 8, 1)
+    body += struct.pack("<HI", (39 << 6) | 0x3F, len(sprite)) + sprite + struct.pack("<H", 1 << 6) + struct.pack("<H", 0)
+    swf = b"FWS" + bytes([10]) + struct.pack("<I", len(body) + 8) + body
+    out = swfsym.link(swf, 5, "mod.Thing")
+    tags = list(unmochi.tags(out[8:]))
+    codes = [c for c, t in tags]
+    ok("swfsym links a sprite right after its definition", codes[:2] == [39, 76] and b"mod.Thing" in tags[1][1]
+       and struct.unpack("<HH", tags[1][1][:4]) == (1, 5))
+    try:
+        swfsym.link(swf, 6, "mod.Thing")
+        ok("twin: an undefined sprite is refused", False)
+    except ValueError:
+        ok("twin: an undefined sprite is refused", True)
+
+
 def test_fake_bridge():
     import socket
     import time
@@ -269,6 +287,7 @@ def test_fake_bridge():
 with tempfile.TemporaryDirectory() as tmp:
     test_use_network(tmp)
     test_unmochi()
+    test_swfsym()
     test_check_public(tmp)
     test_relay(tmp)
 test_fake_bridge()

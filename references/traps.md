@@ -256,6 +256,11 @@ Each one cost a real mod time. The mod it came from is in brackets.
   window's DPI. [Raft Wars]
 - A host that sends its progress before the first Play sends `undefined` fields; a guest that joined at the menu
   then held NaN credits and lives. Send state only once it exists, and drop incomplete copies. [Raft Wars]
+- Window captures (PrintWindow, then BitBlt) pick up whatever covers the lab window when other sessions' windows are
+  on top. Capture inside the game: draw the stage into a BitmapData and print it; size it from the main timeline's
+  `loaderInfo` (`stageWidth` is the window's size under noScale, 0 when minimized). [Ultimate Assassin series]
+- Stopping a background shell on Windows leaves the lab it started running (and its relay holds the port): kill the
+  lab's process tree by PID. [Ultimate Assassin series]
 - A lab runner that blocks while it opens a new window takes the other windows' screenshots late; take pending
   shots first. [Stealth Assassin]
 - "Wait N frames, then snap the guest's copy" counted the guest's frames, so a guest window at 20 fps snapped fine

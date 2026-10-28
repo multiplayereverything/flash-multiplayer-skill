@@ -176,6 +176,54 @@
       "flash_player": "untested",
       "release": "flash-games: games/stealthassassin/StealthAssassin_online.swf",
       "writeup": "games/stealth-assassin.md"
+    },
+    {
+      "id": "ua1",
+      "game": "Ultimate Assassin",
+      "developer": "Games121",
+      "year": null,
+      "engine": "AS2",
+      "swf": 8,
+      "path": "single-to-coop",
+      "players": "2-4",
+      "sync": "each PC moves its own assassin; host owns guards, bullets or catching, targets; guards see the nearest player via a per-guard swap",
+      "status": "released",
+      "qa": "lab-3p+",
+      "flash_player": "untested",
+      "release": "flash-games: games/ultimateassassin1/UltimateAssassin1_online.swf",
+      "writeup": "games/ultimate-assassin.md"
+    },
+    {
+      "id": "ua2",
+      "game": "Ultimate Assassin 2",
+      "developer": "Games121",
+      "year": null,
+      "engine": "AS3",
+      "swf": 10,
+      "path": "single-to-coop",
+      "players": "2-4",
+      "sync": "each PC moves its own assassin; host owns guards, bullets or catching, targets; guards see the nearest player via a per-guard swap",
+      "status": "released",
+      "qa": "lab-3p+",
+      "flash_player": "untested",
+      "release": "flash-games: games/ultimateassassin2/UltimateAssassin2_online.swf",
+      "writeup": "games/ultimate-assassin.md"
+    },
+    {
+      "id": "ua3",
+      "game": "Ultimate Assassin 3",
+      "developer": "Games121",
+      "year": null,
+      "engine": "AS3",
+      "swf": 15,
+      "path": "single-to-coop",
+      "players": "2-4",
+      "sync": "each PC moves its own assassin; host owns guards, bullets or catching, targets; guards see the nearest player via a per-guard swap",
+      "status": "released",
+      "qa": "lab-3p+",
+      "flash_player": "untested",
+      "release": "flash-games: games/ultimateassassin3/UltimateAssassin3_online.swf",
+      "writeup": "games/ultimate-assassin.md"
     }
   ]
 }
