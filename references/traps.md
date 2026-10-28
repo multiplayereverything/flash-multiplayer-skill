@@ -31,6 +31,9 @@ Each one cost a real mod time. The mod it came from is in brackets.
   opens a dialog the lab window waits on. Test mods-info through the relay's INFO instead. [Territory War]
 
 ## Flash Player 32
+- A SWF 9 game in the release projector gets no `loaderInfo.uncaughtErrorEvents`: errors inside Flash Player can't be
+  counted by the lab. Run the same scenarios with one Ruffle window per pair (FP host + Ruffle friend and the reverse)
+  so Ruffle's log covers the network side. [Bad Ice-Cream]
 - Refuses every HTTP load from a local SWF (#2048, even with a crossdomain.xml): mods-info needs the relay INFO
   fallback. [Stealth Hunter 2, Air Battle]
 - Refuses XMLSocket from a local SWF 6 file, even with an SWF 8 header and UseNetwork. SWF 6 mods are Ruffle-only.
@@ -145,6 +148,14 @@ Each one cost a real mod time. The mod it came from is in brackets.
   wrong angle until the guest moved the mouse. Stream only values in the game's own aim range. [Raft Wars]
 
 ## AS3
+- Applying snapshots between frames (socket events) was not enough for every clip: breaker attack clips still
+  lost their `resumeWalk()` callback on the guest now and then. Queue the guest's frame switches and do them in
+  `Event.RENDER` (`stage.invalidate()`, Flash Player 9+, works in Ruffle), after every frame script: 0 orphans in the
+  sweep since. [Bad Ice-Cream]
+- "Static" pickups that move by themselves (Bad Ice-Cream's teleporting cherries extend the static class, not the
+  walking one) must follow the host's frame labels on the guest, never run their own `update()` there: it moves
+  them with the guest's own `Math.random`. A per-object desync checker (guest snapshot vs host snapshot) finds this
+  in minutes. [Bad Ice-Cream]
 - Apply a guest's snapshot when it arrives (socket events come between frames), not inside the frame loop.
   Switching an object's frame in an ENTER_FRAME handler removes a child animation whose frame script is due that
   same frame; the script then runs with `parent == null` (#1009) and its callback into the game is lost. A probe
