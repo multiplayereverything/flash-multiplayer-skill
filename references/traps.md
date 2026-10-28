@@ -162,6 +162,15 @@ Each one cost a real mod time. The mod it came from is in brackets.
 - `var` is hoisted to function scope: a local `key` shadowed a `key()` method (#1006), and two locals with one name
   merge. Give each a unique name. [Stealth Hunter 2]
 - Object key order isn't stable: sort by slot. [Stealth Hunter 2]
+- The hoisting trap again, in the lab script: a later step added `var back:Boolean` to the same function as a
+  takedown step's `var back:int`, so `DIR_X[back]` became undefined and the test player was placed at NaN,NaN.
+  The check failed every run for two days and looked like a flaky sync test. Log the computed position. [Stealth Hunter 2]
+- A level load asked for while another level is still building is dropped by the game, but `PlayLevelCommand`
+  already set `currentLevelIndex`: the friend looked like it was in the new level and stayed in the old one.
+  Check that the host's room exists in the loaded level; if not after 10 s, load again. [Stealth Hunter 2]
+- After the campaign's last level the game goes to the level menu with a new, empty model; a host that kept
+  sending snapshots from it made friends load the last level again. Send only on the game screen, and send a
+  "host is in the menu" message so friends leave their level too. [Stealth Hunter 2]
 - Assigning an Object where the game expects an Array throws #1034. Restore every swap in `finally`. [Intrusion 2]
 
 ## Games and portals
@@ -184,6 +193,9 @@ Each one cost a real mod time. The mod it came from is in brackets.
   client must not treat the first `msg` as proof the host just started. [Bad Ice-Cream]
 
 ## Process
+- A one-shot "this changed" message (a door's lock gone) is lost on a friend that is still loading the room (its
+  trigger list doesn't match yet), and a periodic state that doesn't carry the same field never repairs it. Resend
+  such changes with the periodic state while they still hold. Lab: make a friend drop the next one. [Stealth Hunter 2]
 - A short tap (4 frames) and its release can reach the host in the same frame when messages bunch (TCP, or the
   relay's order-keeping `--sim-jitter`), and the game never sees the key held. Latch newly pressed remote keys for
   a few host frames. [Bad Ice-Cream]

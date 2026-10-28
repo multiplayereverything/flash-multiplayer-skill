@@ -26,7 +26,7 @@
       "swf": 11,
       "path": "single-to-coop",
       "players": "2-4",
-      "sync": "host snapshot at 15 Hz plus events; each player moves their own character",
+      "sync": "host snapshot at 15 Hz plus events (one-shot changes resent with the periodic state); each player moves their own character",
       "status": "released",
       "qa": "lab-3p+",
       "flash_player": "dropped",
