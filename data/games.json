@@ -10,11 +10,11 @@
       "swf": 9,
       "path": "local-to-online",
       "players": "2",
-      "sync": "host snapshot every frame on change; guest runs no game logic; relay or the launcher's lobby bridge",
+      "sync": "now lockstep in Ruffle Together (no mod code); the retired relay mod: host snapshot every frame on change, guest runs no game logic",
       "status": "released",
       "qa": "lab-2p",
       "flash_player": "untested",
-      "release": "https://github.com/Multiplayer-Everything-Team/flash-games/tree/main/games/badicecream",
+      "release": "https://github.com/multiplayereverything/flash-games/tree/main/games/badicecream",
       "writeup": "games/bad-ice-cream.md"
     },
     {

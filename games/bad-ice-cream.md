@@ -2,6 +2,11 @@
 
 Relay id `bic`. Entry in [DIRECTORY.md](../DIRECTORY.md).
 
+**Retired 2026-10-28.** The released `BadIceCream_online.swf` is now the game with only the level-start fix, played
+online in [Ruffle Together](https://github.com/multiplayereverything/ruffle-coop) (lockstep co-op inside Ruffle: only
+key presses travel). The relay mod described below (host snapshots, F9 panel, DIRECT, the launcher lobby bridge)
+isn't released any more; its lessons stand.
+
 Tile arcade game for two (Nitrome, 2010), AS3 SWF 9, unobfuscated, from a Poki build.
 
 - **Path:** local multiplayer to online. The game already had a 2-player mode on one keyboard; P2's keys now come from the network.
