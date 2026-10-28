@@ -239,6 +239,9 @@ Each one cost a real mod time. The mod it came from is in brackets.
 - A test tool that deletes and rewrites a folder the local relay is fetching from gives the relay a 404 at the wrong
   moment: rewrite files in place. [Air Battle]
 - Save only what the player typed as the server: saving the address in use pinned an old server in three mods.
+- A host connection can die without the friend's socket closing (seen on the live relay: the host was dropped,
+  the guest heard nothing for 9 minutes). Ping both ways and end the session after ~15 s of silence. Test it with
+  a relay that is suspended, not killed (NtSuspendProcess: sockets stay open). [Bow Man]
 - A lab check that records only its first result hid two real bugs behind an earlier PASS: report every FAIL.
   [Raft Wars]
 - A state check listing the objects from the battle's start reported penguins that had sunk as missing, which
