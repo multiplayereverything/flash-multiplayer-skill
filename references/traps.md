@@ -228,6 +228,19 @@ Each one cost a real mod time. The mod it came from is in brackets.
   window. [Raft Wars]
 - In a `--coop-script`, a click right after a new menu appears misses: the replay's pointer only hovers what it moves over. Move one pixel off and back before each click. [Territory War]
 - Ruffle's `getBounds` returns NaN for AS2 Button instances; read `_x/_y/_width/_height` (via `localToGlobal`) to find click positions for a script. [Territory War]
+- A game that plays each sound effect on a fresh empty clip and removes the clip in `Sound.onSoundComplete` desyncs
+  Ruffle Together in real windows (the untouched game did): when a sound ends depends on each PC's audio device.
+  Headless replays and sessions never show it, because their sounds never end. Keep the clip (or remove it after a
+  fixed number of frames). [Smileys War]
+- To swap a bot for a human, wait until the attached bot's own frame-1 script has run (its `onEnterFrame` and
+  variables exist), then `removeMovieClip` it and attach the human sprite at the same name and depth with the bot's
+  fields as `attachMovie`'s init object. Install your per-slot `onEnterFrame` only once the new clip's own setup has
+  run too. That needs no assumption about when Ruffle runs an attached clip's first frame. [Smileys War]
+- The lab-only probe trick: make an empty clip whose `_x/_y` hold the numbers you need (kills, deaths, last hit)
+  and read them from the `COOP_DESCRIBE_AT` dump, since replays don't log traces. [Smileys War]
+- Macromedia V2 menus (List/ComboBox) gave a 1 px desync of a row highlight in a two-window lab, cause unknown.
+  Setting the global styles `openDuration` and `selectionDuration` to 0 (no animation) made the next runs pass.
+  [Smileys War]
 - `windows_lab.py` counts a frame late at > 1.25 frame times: 31 ms at 40 fps versus 50 ms at 25 fps, so a 40 fps game trips the 3-late-frame limit far more easily on a busy PC. [Territory War]
 - A one-shot "this changed" message (a door's lock gone) is lost on a friend that is still loading the room (its
   trigger list doesn't match yet), and a periodic state that doesn't carry the same field never repairs it. Resend

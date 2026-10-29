@@ -224,6 +224,22 @@
       "flash_player": "untested",
       "release": "flash-games: games/ultimateassassin3/UltimateAssassin3_online.swf",
       "writeup": "games/ultimate-assassin.md"
+    },
+    {
+      "id": "smileyswar",
+      "game": "Smileys War",
+      "developer": "Louissi",
+      "year": 2007,
+      "engine": "AS2",
+      "swf": 8,
+      "path": "single-to-coop",
+      "players": "1-4",
+      "sync": "lockstep in Ruffle Together: the mod adds 2-4 humans in place of bots on their own keys and their own mouse (co-op API), no netcode",
+      "status": "released",
+      "qa": "lab-3p+",
+      "flash_player": "untested",
+      "release": "https://github.com/Multiplayer-Everything-Team/flash-games/tree/main/games/smileyswar",
+      "writeup": "games/smileys-war.md"
     }
   ]
 }
