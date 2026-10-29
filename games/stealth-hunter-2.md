@@ -18,3 +18,10 @@ Stealth campaign (RacSeven), AS3 SWF 11, obfuscated and wrapped: the real game i
   whole 4-player run, then 308 script errors at the checkpoint restart), and friends follow the host to the menu
   (after the finale they loaded it again). Lab on one PC: 2p 178/178 (relay and direct), 3p 282/282, 4p 389/390,
   solo 9/9, sweep 2385/2386. Not played between two PCs on this build.
+- **Ruffle Together (2026-10-29):** the game has no local multiplayer, so a COOP build (`build.py --coop`) adds it with
+  no network: P2-P4 are the relay host's extra Buddies, each on key codes of its own (`--coop-keys stealth-hunter-2`),
+  the player count from `coop.players` (or a PLAYERS menu button), one shared camera on the players' middle, P2-P4
+  tinted. Frame time is `getTimer()`, which Ruffle Together's frame clock drives. Lab: one-window coop scenario 17/17
+  (1 player = original; slot keys move only their player; lock-pick on the shared screen); `--coop-replay` twice
+  identical; coop-lab 2-4 players, relay and direct, no desync. Waits for Ruffle Together 1.0.4 before release; not
+  played by two real players on two PCs. Limit: far-apart players can leave the shared view.

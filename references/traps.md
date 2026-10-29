@@ -204,6 +204,15 @@ Each one cost a real mod time. The mod it came from is in brackets.
   client must not treat the first `msg` as proof the host just started. [Bad Ice-Cream]
 
 ## Process
+- A single-player game can still go on Ruffle Together: add local co-op in the SWF (extra copies of the hero, each on
+  key codes the game never reads, routed to that copy's own keyboard before the game sees them). A relay mod's host
+  side (spawn next to P1, follow P1 between rooms, cutscene walking) is most of it already. [Stealth Hunter 2]
+- A minigame opened by an extra local player locks only that player's keyboard (it opens "as" that player). If the
+  extra players' keyboards follow P1's, P1 still being on re-enables it and its held action key opens another minigame
+  every frame (81 screens stacked). Lock P1 too while any minigame is open, before that follow runs. [Stealth Hunter 2]
+- Check a replay's screenshots, not only that two runs match: with another game's key map, P1's FIRE wasn't the
+  title's Space, and three "no desync" runs had sat on the title screen. Click menus with the host's mouse instead.
+  [Stealth Hunter 2]
 - A hot-seat game (both players on the same keys, taking turns) still fits Ruffle Together, but its key map must give every slot the same game keys, merged: a key is down while anyone holds it. Per-slot press/release would let one player's release cancel another's hold. [Territory War]
 - A turn-based game added to Ruffle Together can read each slot's own keys from an existing 4-slot map (Gun Mayhem 2's)
   and act only on the turn owner's: no new key map, and other players' keys on someone else's turn do nothing.
