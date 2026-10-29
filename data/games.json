@@ -138,7 +138,7 @@
       "swf": 8,
       "path": "single-to-coop",
       "players": "2-4",
-      "sync": "own soldier local; host stand-ins; the game's one player swapped to the nearest per object update; host streams its clips",
+      "sync": "Ruffle Together build: local co-op for 2-4 added to the SWF, lockstep, the game's one player swapped to the nearest slot per object update; paused relay mod: own soldier local, host stand-ins, host streams its clips",
       "status": "released",
       "qa": "lab-3p+",
       "flash_player": "untested",

@@ -213,6 +213,7 @@ Each one cost a real mod time. The mod it came from is in brackets.
 - Check a replay's screenshots, not only that two runs match: with another game's key map, P1's FIRE wasn't the
   title's Space, and three "no desync" runs had sat on the title screen. Click menus with the host's mouse instead.
   [Stealth Hunter 2]
+- Local co-op in a game whose one player variable (`_root.knight`) every object reads: set it to the nearest slot around each object's `Update` and try every slot in the hit tests, but only once slot 1 exists; one frame with it undefined breaks level intros. [Intrusion]
 - A hot-seat game (both players on the same keys, taking turns) still fits Ruffle Together, but its key map must give every slot the same game keys, merged: a key is down while anyone holds it. Per-slot press/release would let one player's release cancel another's hold. [Territory War]
 - A turn-based game added to Ruffle Together can read each slot's own keys from an existing 4-slot map (Gun Mayhem 2's)
   and act only on the turn owner's: no new key map, and other players' keys on someone else's turn do nothing.
