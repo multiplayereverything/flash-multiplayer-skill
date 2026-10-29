@@ -204,6 +204,10 @@ Each one cost a real mod time. The mod it came from is in brackets.
   client must not treat the first `msg` as proof the host just started. [Bad Ice-Cream]
 
 ## Process
+- A hot-seat game (both players on the same keys, taking turns) still fits Ruffle Together, but its key map must give every slot the same game keys, merged: a key is down while anyone holds it. Per-slot press/release would let one player's release cancel another's hold. [Territory War]
+- In a `--coop-script`, a click right after a new menu appears misses: the replay's pointer only hovers what it moves over. Move one pixel off and back before each click. [Territory War]
+- Ruffle's `getBounds` returns NaN for AS2 Button instances; read `_x/_y/_width/_height` (via `localToGlobal`) to find click positions for a script. [Territory War]
+- `windows_lab.py` counts a frame late at > 1.25 frame times: 31 ms at 40 fps versus 50 ms at 25 fps, so a 40 fps game trips the 3-late-frame limit far more easily on a busy PC. [Territory War]
 - A one-shot "this changed" message (a door's lock gone) is lost on a friend that is still loading the room (its
   trigger list doesn't match yet), and a periodic state that doesn't carry the same field never repairs it. Resend
   such changes with the periodic state while they still hold. Lab: make a friend drop the next one. [Stealth Hunter 2]
