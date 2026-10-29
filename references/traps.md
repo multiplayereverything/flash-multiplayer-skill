@@ -205,6 +205,17 @@ Each one cost a real mod time. The mod it came from is in brackets.
 
 ## Process
 - A hot-seat game (both players on the same keys, taking turns) still fits Ruffle Together, but its key map must give every slot the same game keys, merged: a key is down while anyone holds it. Per-slot press/release would let one player's release cancel another's hold. [Territory War]
+- A turn-based game added to Ruffle Together can read each slot's own keys from an existing 4-slot map (Gun Mayhem 2's)
+  and act only on the turn owner's: no new key map, and other players' keys on someone else's turn do nothing.
+  [Raft Wars]
+- `--coop-replay` runs before Ruffle sets up logging, so a game's `trace()` lines never appear; run a headless
+  session (`--coop-headless` host and join) for traces, and use `COOP_DESCRIBE_AT=<frames>` with the replay for
+  object dumps. [Raft Wars]
+- "1 player = the original" can't be shown with the sync fingerprint once the mod adds any clip (it hashes the whole
+  stage). Compare `COOP_DESCRIBE_AT` dumps of the original and the mod with the mod's own clip left out: the clock
+  and random-number lines must match too. [Raft Wars]
+- Headless Ruffle has no device fonts (`_sans` text is missing in replay screenshots); check HUD text in a real
+  window. [Raft Wars]
 - In a `--coop-script`, a click right after a new menu appears misses: the replay's pointer only hovers what it moves over. Move one pixel off and back before each click. [Territory War]
 - Ruffle's `getBounds` returns NaN for AS2 Button instances; read `_x/_y/_width/_height` (via `localToGlobal`) to find click positions for a script. [Territory War]
 - `windows_lab.py` counts a frame late at > 1.25 frame times: 31 ms at 40 fps versus 50 ms at 25 fps, so a 40 fps game trips the 3-late-frame limit far more easily on a busy PC. [Territory War]

@@ -4,6 +4,26 @@ Relay id `raftwars`. Entry in [DIRECTORY.md](../DIRECTORY.md).
 
 Turn-based artillery campaign (BubbleBox, 2007), AS2 SWF 8, obfuscated.
 
+## Now: Ruffle Together (released build)
+The game has no local multiplayer of its own (its two-player branch is dead code) and aims with the mouse, so the
+mod adds local turn co-op with no netcode (`build.py --coop`, one file `coop.as`), and Ruffle Together puts it online.
+- **Players:** PLAYERS 1-4 on the main menu (the host's mouse). 1 = the original game, untouched.
+- **Turns:** `operateCannon(1)` is wrapped; player turns rotate P1..PN. The turn owner aims with its slot's keys:
+  up/down angle, left/right power, fire, ammo, read with `Key.isDown` from Ruffle Together's `gun-mayhem-2` map, so
+  no new Ruffle key map was needed. Player 1 can also use the mouse (the host's mouse is the only one that travels);
+  on others' turns the game's mouse listener is removed and the ammo buttons disabled. A shared banner names the
+  turn. Shop: only the host's mouse reaches the game, so the host spends the team's credits.
+- **Lockstep:** Ruffle Together steps timers by one frame, so the game's `setInterval` timers (which call
+  `Math.random`) fire on the same frame everywhere; the per-frame `random()` is synced too.
+- **Proof:** `--coop-replay` identical twice and with jitter (the no-clock control differs); ruffle-coop's lab with
+  2/3/4 players over a lagged relay and direct, every player `desync_at=none`; the two-window lab at 35 fps; headless
+  sessions show turns rotating 1-2-3-4 and a player's FIRE on someone else's turn doing nothing. Solo = original:
+  the replay's object dumps (`COOP_DESCRIBE_AT`: clock, random state, every object) of the original and the co-op
+  build are identical at 6 frames once the mod's own clip is left out.
+- **Untested:** two real PCs; per-slot mouse aiming (waiting for Ruffle Together's API).
+
+## Before: the relay mod
+
 - **Path:** single player to co-op: 2-4 players on the brothers' raft, turns rotating through the room (host, P2, P3, P4, host...).
 - **Connect:** ONLINE (room codes on the global relay) by default; a MODE button switches to DIRECT IP (`H|name`/`J|name` to the relay the host runs on their own PC). DIRECT is saved only when the player picks it. In a direct room the host checks the version (READY carries it) and the 4-player limit itself and answers `BYE|reason`, and guests end their session on `X`, because the legacy room does neither.
 - **Sync:** host mirror snapshot every 2nd frame; guests play back 4 host frames behind with interpolation, plus effect and sound events. The turn owner aims locally (`AIM` at 10/s so others see it move, only values in the game's -60..60) and sends `FIRE` with the ammo; the host checks the stock. Shared credits in the shop: guests send `BUY`, the host applies the game's own cost and limit checks; the host presses DONE.
