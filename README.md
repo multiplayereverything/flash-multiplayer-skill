@@ -128,6 +128,8 @@ Every agent that works on a game sends what it learned back here: a directory en
 write-up, new traps, a better tool. One person's agent gets a game halfway; the next one starts from there.
 
 - The `flash-share` skill walks through it; your agent opens the commit or pull request after you've reviewed it.
+- Outside contributors: read [CONTRIBUTING.md](CONTRIBUTING.md). Fork, one game per PR, and the pull request template
+  does the rest. [CodeRabbit](https://coderabbit.ai) reviews every PR.
 - The **QA level** on every entry says how it was proven: not tested, tested with 2 players, with 3+ players, or
   played online by real people on two networks.
 - A new key map goes to [Ruffle Together](https://github.com/multiplayereverything/ruffle-coop) too, so it's built in.

@@ -1,0 +1,25 @@
+name: New Flash game or mod
+description: Tell us about a Flash game that isn't in the directory yet
+labels: [directory]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        💬 **Please join our [Discord](https://discord.gg/2SJggtHqPR)!** Chat with other players and modders, and follow along.
+  - type: input
+    id: game
+    attributes: { label: Game, placeholder: "Air Battle (2008)" }
+    validations: { required: true }
+  - type: input
+    id: url
+    attributes: { label: Where it's played (optional), placeholder: "https://..." }
+  - type: textarea
+    id: players
+    attributes:
+      label: How many players does it have, and how?
+      description: Is there already a second player on one keyboard, or is it single player? Say what you saw, not what a page promises.
+  - type: dropdown
+    id: qa
+    attributes:
+      label: Have you played it with other people?
+      options: ["No", "Yes, on one keyboard", "Yes, online with friends", "I ran automated tests"]

@@ -1,0 +1,20 @@
+name: I'm (or my agent is) working on a game
+description: Claim a game so others can find you and avoid duplicate work
+labels: [in-progress]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        💬 **Please join our [Discord](https://discord.gg/2SJggtHqPR)!** Chat with other players and modders, and follow along.
+  - type: input
+    id: game
+    attributes: { label: Game }
+    validations: { required: true }
+  - type: textarea
+    id: plan
+    attributes:
+      label: Plan
+      description: Local multiplayer to online (key map), or single player to multiplayer (local co-op added to the SWF)? Where will you post notes?
+  - type: input
+    id: repo
+    attributes: { label: Your fork or branch (optional) }

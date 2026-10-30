@@ -1,0 +1,52 @@
+# yaml-language-server: $schema=https://coderabbit.ai/integrations/schema.v2.json
+language: en-US
+tone_instructions: "Be direct and specific. Name the file and line, and say what to change. Skip praise."
+reviews:
+  profile: chill
+  high_level_summary: true
+  review_status: false
+  poem: false
+  auto_review:
+    enabled: true
+    drafts: false
+  path_instructions:
+    - path: "games/**"
+      instructions: |
+        Game write-ups hold no game code, SWFs, art or audio. Flag any code block that looks decompiled or
+        copied from the game (ActionScript dumps, long function bodies), and any download link to game files.
+        Check that the write-up matches the entry in data/games.json (name, path, key map, QA level).
+    - path: "data/games.json"
+      instructions: |
+        Check each entry against the allowed values in tools/directory.py. The QA level must be one of
+        none, lab-2p, lab-3p+, played-online, and must be backed by the evidence in the PR. Flag any entry
+        claiming a higher level than the PR's evidence supports. DIRECTORY.md must be re-rendered in the same PR.
+    - path: "DIRECTORY.md"
+      instructions: |
+        This file is generated from data/games.json. Flag any hand edit: the change belongs in data/games.json,
+        followed by python tools/directory.py render.
+    - path: "references/**"
+      instructions: |
+        Traps and technique notes. Each new trap needs its section and the game's name in brackets. Flag steps
+        that depend on a file or tool that does not exist in the repo, and any text that brings back the old
+        old relay-mod approach: network code written into the SWF or a per-game mod. The hub teaches only
+        Ruffle Together now; the relay in relay/ is Ruffle Together's own server and is fine.
+    - path: "skills/**"
+      instructions: |
+        Skill text must point only at files that exist in the repo. Check every path, script name and
+        command against the tree. Flag any step that tells an agent to publish, push or send something without
+        the owner's yes, and any step that tells an agent to write a QA level it did not reach.
+    - path: "tools/**"
+      instructions: |
+        Tools must be run with python -I. Flag any check that can pass on broken input (a check needs a twin
+        in tools/test_all.py that must fail). Flag any tool that writes outside the repo, reads a token from
+        the environment or sends data over the network without being asked.
+    - path: "templates/**"
+      instructions: |
+        Templates are taken from working games and must not contain game files, real paths with usernames,
+        emails, tokens or keys.
+    - path: ".github/**"
+      instructions: |
+        Workflows run on pull requests from forks, so flag any use of secrets, write permissions or
+        pull_request_target that would let a fork's code run with them.
+chat:
+  auto_reply: true

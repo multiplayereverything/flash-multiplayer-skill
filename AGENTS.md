@@ -47,6 +47,10 @@ The paths:
 | `relay/` | the relay server, if you run your own for Ruffle Together, with its tests |
 | `modsinfo/` | optional mods-info starter kit, published as its own repo |
 
+## Contributing
+Outside contributors follow [CONTRIBUTING.md](CONTRIBUTING.md): fork, one game per draft PR, and the template in
+`.github/PULL_REQUEST_TEMPLATE.md`. CI runs `tools/test_all.py`, `tools/check_public.py` and the directory check on every PR.
+
 ## Before you finish
 `python -I tools/test_all.py` prints `ALL OK`, `python tools/check_public.py` finds 0 problems, and the report table
 (Feature | What it does | How | Tested) is in your last message.

@@ -20,3 +20,13 @@ The next mod starts where this one stopped, but only if what you learned is writ
    and a twin that must fail), a better template replaces the old one in `templates/`.
 5. **Check:** `python -I tools/test_all.py` prints `ALL OK`, and `python tools/check_public.py` finds 0 problems.
 6. Commit and push (or open a pull request). The message says what the mod learned, not just which files changed.
+
+## If you don't own the hub
+
+If you are not the hub's owner, don't push. Follow [CONTRIBUTING.md](../../CONTRIBUTING.md):
+
+1. Fork the repo and branch `game/<game>` (or `directory/<what>`, `tool/<what>`).
+2. Do steps 1-5 above on that branch. One game per PR.
+3. Show the owner the diff and get their yes. Never open a PR the owner has not seen.
+4. Open a draft with `gh pr create --draft`, using `.github/PULL_REQUEST_TEMPLATE.md` as the body, with every
+   checkbox that is true ticked and the evidence filled in. End it with `🤖 Generated with [Claude Code](https://claude.com/claude-code)`.
