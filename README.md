@@ -1,5 +1,8 @@
 # Flash Multiplayer
 [![GitGem](https://gitgem.org/api/badge/github/multiplayereverything/flash-multiplayer-skill.svg)](https://gitgem.org/github/multiplayereverything/flash-multiplayer-skill)
+<a href="https://discord.gg/2SJggtHqPR"><img src="https://img.shields.io/badge/Discord-Join%20the%20server-5865F2?logo=discord&logoColor=white&style=for-the-badge" alt="Join the Discord" height="36"></a>
+
+
 
 **Old Flash games, played online with your friends. Your agent builds the mod.**
 
