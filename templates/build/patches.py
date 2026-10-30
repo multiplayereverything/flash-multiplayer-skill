@@ -8,7 +8,7 @@ folder), the exact old text, the new text, and how many times the old text must 
 EDITS = [
     # ("com/example/game/Player.as",
     #  "      public function update() : void\n      {\n",
-    #  "      public function update() : void\n      {\n         if(mynet.Net.skipUpdate(this)) { return; } // MOD\n",
+    #  "      public function update() : void\n      {\n         mycoop.Coop.readSlot(this); // MOD: this player's buttons from coop.buttons(slot)\n",
     #  1),
 ]
 

@@ -21,7 +21,7 @@ ENGINES = {"AS2", "AS3"}
 PATHS = {"local-to-online": "local multiplayer to online", "single-to-coop": "single player to co-op",
          "single-to-versus": "single player to versus", "fix-existing": "fix an existing online mod"}
 STATUS = ["idea", "in-progress", "built", "released"]
-QA = {"none": "not tested", "lab-2p": "lab, 2 players", "lab-3p+": "lab, 3+ players and late join",
+QA = {"none": "not tested", "lab-2p": "lab, 2 players", "lab-3p+": "lab, 3+ players",
       "played-online": "played between two PCs on different networks"}
 ID = re.compile(r"^[a-z0-9][a-z0-9-]{1,23}$")
 

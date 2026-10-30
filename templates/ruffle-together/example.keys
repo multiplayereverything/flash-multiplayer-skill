@@ -1,0 +1,5 @@
+# A 2-player key map for Ruffle Together (--coop-keys example.keys). Flash key codes.
+# slot N: what that player's buttons press in the game. local: what a player presses on their own PC.
+slot 0: UP=38 DOWN=40 LEFT=37 RIGHT=39 FIRE=32 ALT=17 MENU=27
+slot 1: UP=87 DOWN=83 LEFT=65 RIGHT=68 FIRE=70 ALT=71 MENU=27
+local: UP=38,87 DOWN=40,83 LEFT=37,65 RIGHT=39,68 FIRE=32,70 ALT=17,71 MENU=27

@@ -1,14 +1,11 @@
-"""Builds Territory War Online from the untouched ../territory-war-279.swf.
+"""Builds the co-op SWF for Ruffle Together from the untouched ../Game.swf (taken from the Territory War mod).
 
-  python build.py          dist/TerritoryWar_online.swf (release)
-  python build.py --lab    dist/TerritoryWar_lab.swf (runs the lab scripts in src/lab.as, prints LAB| traces)
+  python build.py    dist/Game_coop.swf
 
 Steps: tools/InsertAction.java compiles each module in src/ (AS2, FFDec's compiler) into its own new DoAction
 tag at the end of main-timeline frame 3, the first frame after the preloader. The game's own scripts are not
-decompiled or recompiled. Then the FileAttributes UseNetwork flag is set so Flash Player lets a local SWF open
-sockets. A check confirms the only changes are the added tags and that flag.
+decompiled or recompiled. A check confirms the only change is the added tags.
 """
-import argparse
 import os
 import struct
 import subprocess
@@ -16,13 +13,14 @@ import sys
 import zlib
 
 MOD = os.path.dirname(os.path.abspath(__file__))
-GAME = os.path.join(MOD, "..", "territory-war-279.swf")
+GAME = os.path.join(MOD, "..", "Game.swf")
+OUT_NAME = "Game_coop.swf"
 FFDEC = os.environ.get("FFDEC", os.path.join(MOD, "..", "..", "tools", "ffdec", "ffdec-cli.jar"))
 LIB = os.path.join(os.path.dirname(os.path.abspath(FFDEC)), "lib", "*")
 SRC = os.path.join(MOD, "src")
 BUILD = os.path.join(MOD, "build")
 DIST = os.path.join(MOD, "dist")
-MODULES = ["net.as", "host.as", "guest.as", "ui.as", "modinfo.as", "lab.as", "boot.as"]
+MODULES = ["coop.as", "boot.as"]  # load order: one DoAction tag each
 FRAME = 3
 
 
@@ -49,18 +47,6 @@ def tag_list(b):
     return out
 
 
-def set_use_network(path):
-    data = open(path, "rb").read()
-    b = bytearray(body(data))
-    nbits = b[0] >> 3
-    off = (5 + 4 * nbits + 7) // 8 + 4
-    cl = struct.unpack("<H", b[off:off + 2])[0]
-    if cl >> 6 != 69:
-        sys.exit("network: first tag is not FileAttributes")
-    b[off + (6 if cl & 0x3F == 0x3F else 2)] |= 1  # long-form tag header: flags after the 4-byte length
-    open(path, "wb").write(b"CWS" + bytes([data[3]]) + struct.pack("<I", len(b) + 8) + zlib.compress(bytes(b), 9))
-
-
 def check(original, built, added):
     """Every original tag is still there, byte for byte and in order; the new ones are DoAction tags."""
     a = tag_list(body(open(original, "rb").read()))
@@ -72,7 +58,7 @@ def check(original, built, added):
     while i < len(a):
         ta, da, _ = a[i]
         tb, db, _ = b[j]
-        if ta == tb and (da == db or ta == 69 and da[1:] == db[1:] and (da[0] | 1) == db[0]):
+        if ta == tb and da == db:
             i += 1
             j += 1
         elif tb == 12 and extra < added:
@@ -83,20 +69,16 @@ def check(original, built, added):
     return True
 
 
-def build(lab):
+def build():
     os.makedirs(BUILD, exist_ok=True)
     os.makedirs(DIST, exist_ok=True)
     staged = []
     for m in MODULES:
         s = open(os.path.join(SRC, m), encoding="utf-8").read()
-        if m == "net.as" and lab:
-            old = "_global.TWN.LAB = false;"
-            assert s.count(old) == 1
-            s = s.replace(old, "_global.TWN.LAB = true;")
         p = os.path.join(BUILD, m)
         open(p, "w", encoding="utf-8").write(s)
         staged.append(p)
-    out = os.path.join(DIST, "TerritoryWar_lab.swf" if lab else "TerritoryWar_online.swf")
+    out = os.path.join(DIST, OUT_NAME)
     patched = os.path.join(BUILD, "patched.swf")
     r = subprocess.run(["java", "-cp", LIB, os.path.join(MOD, "tools", "InsertAction.java"), GAME, patched, str(FRAME)]
                        + staged, capture_output=True, text=True, errors="replace")
@@ -105,7 +87,6 @@ def build(lab):
     if r.returncode != 0 or "SEVERE" in log or "Exception" in log:
         print(log[-4000:])
         sys.exit("compile failed")
-    set_use_network(patched)
     check(GAME, patched, len(MODULES))
     os.replace(patched, out)
     print("built", os.path.relpath(out, MOD), "(%d modules, game tags unchanged)" % len(MODULES))
@@ -113,6 +94,4 @@ def build(lab):
 
 
 if __name__ == "__main__":
-    ap = argparse.ArgumentParser()
-    ap.add_argument("--lab", action="store_true")
-    build(ap.parse_args().lab)
+    build()

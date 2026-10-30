@@ -1,8 +1,8 @@
 # mods-info starter kit (optional)
 
 Copy this folder into its own **public** repo (or any static web host) if you want to change your relay's address,
-announce updates or turn games on and off **without rebuilding the mods**. Without it, mods use their built-in relay
-address and the relay uses its `games.json`, which is fine for most people.
+announce updates or turn games on and off **without a new launcher**. Without it, a launcher uses its built-in
+relay address and the relay uses its `games.json`, which is fine for most people.
 
 | File | What |
 |---|---|
@@ -25,8 +25,8 @@ Every key is required.
 | `min_version` | the oldest build allowed on your server; not above `latest_version` |
 | `protocol` | the version string the mod sends in its handshake |
 | `download_url`, `changelog_url` | empty or an `https://` link; only ever shown to the player |
-| `relay` | `mode` (`star` for Flash), `max_players` (2-16, host included), `server` (an id in `servers.json`), optional `address` |
-| `notice` | one line shown in the mod's online panel, or empty |
+| `relay` | `mode` (`star` for Ruffle Together), `max_players` (2-16, host included), `server` (an id in `servers.json`), optional `address` |
+| `notice` | one line the launcher shows for the game, or empty |
 | `updated` | `YYYY-MM-DD` |
 
 ## Use it
@@ -34,13 +34,12 @@ Every key is required.
 2. `python tools/validate.py` (checks, then rewrites `index.json` and the table). `--check` only checks; `--test`
    runs the validator's own tests.
 3. Publish the folder, e.g. as a GitHub repo read at `https://raw.githubusercontent.com/<you>/<repo>/main/`.
-4. Start your relay with `--mods-info <that url>`: it learns new games from these files every 10 minutes and answers
-   `RELAY|1|INFO|<id>` for Flash Player, which can't download them itself.
-5. Put the same URL in each mod's mods-info bases (`BASES` in `NetModInfo.as`, `N.MODINFO_BASES` in AS2).
+4. Start your relay with `--mods-info <that url>`: it learns new games from these files every 10 minutes.
+5. Point your launcher at the same URL.
 
-How a mod uses it: download both files in the background (about 5 s timeout), check them with these rules, keep the
-last good copy, and pick the server: typed by the player > downloaded > cached > built in. Below `min_version` it
-refuses your server with the update line. It never downloads or runs anything else.
+How a launcher uses it: download both files in the background, check them with these rules, keep the last good copy,
+start Ruffle Together with the relay from `servers.json`, and below `min_version` show the update line instead of
+starting an old build. It never downloads or runs anything else.
 
 Public repo: no tokens or keys, no game files, no decompiled code, no private or home addresses.
 

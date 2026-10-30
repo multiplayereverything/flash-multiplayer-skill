@@ -1,22 +1,17 @@
 # Templates
 
-Taken from working mods. Rename before use:
+Taken from working games. Rename before use:
 
 | File | From | Change |
 |---|---|---|
-| `as3/RelayClient.as`, `NetModInfo.as`, `NetJson.as` | Air Battle Online | package `mynet`, `GAME_ID` and `VERSION` in `NetModInfo`, and its calls into your `Net` (`Net.log`, `Net.infoChanged`, `Net.address`, `Net.params`, `Net.LAB`) |
-| `as3/LobbyBridge.as` | Bad Ice-Cream Online | package `mynet`; call it instead of RelayClient when FlashVar `lobby=1`, and handle `DR\|slot` / `BK\|slot` |
-| `as2/relay.as` | Ultimate Crab Battle Online | `_global.MYN` fields listed in its header; the `removeShips()` call is a game hook |
-| `as2/modinfo.as` | Territory War Online | set `N.GAME_ID` before `miStart()`; `_global.MY_MODINFO` is the test URL |
-| `build/build_as3.py` | Bad Ice-Cream Online | game file, package, output names; drop the Poki ad-fix step |
-| `build/build_as3_patches.py` | Intrusion 2 Online | the `EDITS` list (yours goes in your own `patches.py`), class list, compile fixes |
-| `build/build_as2_insert.py` | Territory War Online | game file, frame, module list, lab flag line |
-| `build/build_as2_splice.py` | Intrusion Online | game file, spare slot frames, target frame |
-| `lab/lab_as3.py` | Air Battle Online | lab port, SWF name, FlashVars, `KNOWN_GAME_ERRORS` |
-| `lab/lab_as2.py` | Territory War Online | the same, plus the hash check |
-| `lab/lab_games.json` | | your id, name and max players |
-| `lab/fake_bridge.py` | Bad Ice-Cream Online | nothing: pass the lab port and one session token per window (host first) |
-| `lab/relay_check.py`, `modinfo_check.py`, `test_messages.py` | Air Battle Online | game id, version, message regexes |
+| `ruffle-together/example.keys` | | the key codes your game reads, one `slot` line per player (`python -I tools/keys_check.py` checks it) |
+| `ruffle-together/example-2p.txt` | | the clicks and keys that get through your game's menus, then what each player does |
+| `ruffle-together/replay_check.py` | | nothing: pass the Ruffle Together exe, the SWF, the key map and the script |
+| `ruffle-together/solo_check.py` | | nothing: pass the co-op SWF, the untouched SWF, a 1-slot key map and a script; `--allow` the mod's own menu frames |
+| `build/build_as3.py` | Bad Ice-Cream | `GAME`, `OUT_NAME`, `PACKAGE` (your new classes' package) |
+| `build/build_as3_patches.py` | Intrusion 2 | the same, plus the `EDITS` list (yours goes in your own `patches.py`) and compile fixes |
+| `build/build_as2_insert.py` | Territory War | `GAME`, `OUT_NAME`, the module list and the frame to insert on |
+| `build/build_as2_splice.py` | Intrusion | `GAME`, `OUT_NAME`, the source list, spare slot frames, target frame |
 
-The lab scripts read the relay path from the `MOD_RELAY` environment variable (the relay's `init.py`) and FFDec from
-`FFDEC`.
+The build scripts read FFDec from `FFDEC`. The co-op API helpers (`RuffleTogether.as` for AS2 and AS3) and a demo
+SWF that uses every call are in ruffle-coop's `tools/coop-api/`.

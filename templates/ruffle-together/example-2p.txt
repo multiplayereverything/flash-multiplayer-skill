@@ -1,0 +1,17 @@
+# A 2-player input script for --coop-script. Frames are the game's frames.
+# Start the game from its menu with the host's mouse (move one pixel off and back before a click).
+wait 30
+move 274 300
+move 275 300
+click 275 300
+wait 120
+# both players walk right, player 0 jumps, player 1 fires
+p0 RIGHT
+p1 RIGHT
+wait 40
+p0 RIGHT|UP
+p1 RIGHT|FIRE
+wait 10
+p0 0
+p1 0
+wait 200

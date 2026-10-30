@@ -11,21 +11,21 @@ Its own docs are the reference: the [user guide](https://github.com/multiplayere
 and the [co-op API](https://github.com/multiplayereverything/ruffle-coop/blob/coop/docs/coop-api.md). This page is
 what a Flash mod needs from them.
 
-## When to pick it
+## The paths
 
-| The game... | Ruffle Together | A relay mod (the rest of this hub) |
-|---|---|---|
-| already has 2-4 players on one keyboard | **First choice.** Often no mod at all: write a key map | only if it must run in Flash Player or the browser |
-| is single player | Add local co-op in the SWF (more heroes on the same screen, each read from its own slot), no network code | when players must see different places or rooms at once, or play in Flash Player |
-| is turn-based | Each slot's keys from a key map; act only on the turn owner's | the turn-based model |
+| The game... | What you build |
+|---|---|
+| already has 2-4 players on one keyboard | A key map. Often nothing in the SWF at all |
+| is single player | Local co-op in the SWF: more heroes on the same screen, each read from its own slot. No network code |
+| is turn-based | Each slot's keys from a key map; the game acts only on the turn owner's |
 
-Why it beats hand-made lockstep: lockstep failed between Flash Player and Ruffle, and between PCs with different
-clocks and audio devices (`references/network.md`). Here every player runs the same emulator build with a frame clock,
-so the whole game, timeline scripts and physics included, stays identical without seeding anything.
+Why lockstep works here: every player runs the same emulator build, and its frame clock makes the clock, randomness,
+timers and sound endings the same on every PC. The whole game, timeline scripts and physics included, stays
+identical without seeding anything or sending snapshots.
 
-What it costs: everyone needs Ruffle Together (Windows release; the Multiplayer Mods Launcher installs and updates
-it) and the **same SWF file** and **same version**; anything else is refused when they connect. Up to 4 players,
-no joining a game already started, the host leaving ends it (a friend leaving doesn't), and the game runs at the
+What it needs: everyone has Ruffle Together (Windows release; the Multiplayer Mods Launcher installs and updates it)
+and the **same SWF file** and **same version**; anything else is refused when they connect. Up to 4 players, no
+joining a game already started, the host leaving ends it (a friend leaving doesn't), and the game runs at the
 slowest PC's speed.
 
 ## Playing
@@ -35,8 +35,8 @@ ruffle_desktop --coop-host-relay <relay host:port> --coop-keys <map> --coop-play
 ruffle_desktop --coop-join-relay <relay host:port> --coop-code ABCDE --coop-keys <map> Game.swf
 ```
 
-or `--coop-host PORT` / `--coop-join IP:PORT` directly. The relay is the same `relay/` as the hub's, with a
-`ruffle-coop` game in its `games.json`. Host-only options: `--coop-players N`, `--coop-save coop|solo|new`,
+or `--coop-host PORT` / `--coop-join IP:PORT` directly. Use the public Ruffle Together relay (its address is in
+ruffle-coop's README), or run your own: the hub's `relay/` with a `ruffle-coop` game in its `games.json`. Host-only options: `--coop-players N`, `--coop-save coop|solo|new`,
 `--coop-option NAME=VALUE`, `--coop-delay N`.
 
 ## Key maps
@@ -94,9 +94,11 @@ keeps the same one).
 - One screen: keep everyone in view (a camera on the players' middle), or give each player a camera with
   `coop.camera`.
 - `coop.players` gives the player count; with 1 the game must be the untouched original.
-- A relay mod's host side (spawn next to P1, follow P1 between rooms) is most of the work already.
+- Keep P2-P4 with P1 between rooms and levels: spawn them next to P1, and move them along when P1 changes room.
 
 ## Testing
+
+The full checklist, in order and with what counts as passed, is `skills/flash-lab/SKILL.md`. The pieces:
 
 - `--coop-replay <swf> --coop-keys <map> --coop-script <file> --coop-frames N --coop-out <file>` runs the game
   headless from an input script and writes a fingerprint every frame. The same script must give the same file

@@ -1,7 +1,6 @@
-"""Builds Intrusion Online from the untouched ../intrusion.swf.
+"""Builds the co-op SWF for Ruffle Together from the untouched ../Game.swf (taken from the Intrusion mod).
 
-  python build.py          dist/intrusion_online.swf (release)
-  python build.py --lab    dist/intrusion_lab.swf (runs the scripted lab, prints LAB| traces, ignores real input)
+  python build.py    dist/Game_coop.swf
 
 The game's own scripts are obfuscated and don't survive a decompile/recompile, so no game script is ever
 recompiled. Instead:
@@ -9,10 +8,8 @@ recompiled. Instead:
      (the one-line stop() scripts of frames 6, 8, 10...), eight files per FFDec run.
   2. Those compiled DoAction tags are copied, unchanged, into the original SWF at the end of frame 5
      (the menu frame, after its own script). They run every time the menu is entered; the mod's
-     boot code runs once (it checks _global.INTR).
-  3. The FileAttributes UseNetwork flag is set, so Flash Player lets a local SWF open sockets.
+     boot code runs once (it checks a _global flag of its own).
 """
-import argparse
 import os
 import shutil
 import struct
@@ -21,17 +18,17 @@ import sys
 import zlib
 
 MOD = os.path.dirname(os.path.abspath(__file__))
-GAME = os.path.join(MOD, "..", "intrusion.swf")
+GAME = os.path.join(MOD, "..", "Game.swf")
+OUT_NAME = "Game_coop.swf"
 FFDEC = os.environ.get("FFDEC", os.path.join(MOD, "..", "..", "tools", "ffdec", "ffdec-cli.jar"))
 SRC = os.path.join(MOD, "src")
 BUILD = os.path.join(MOD, "build")
 DIST = os.path.join(MOD, "dist")
 
 # load order: each file becomes one DoAction tag; keep each under 32 KB of bytecode (AS2 jumps are 16-bit)
-SOURCES = ["core.as", "relay.as", "modinfo.as", "session.as", "world.as", "players.as", "coop.as", "levelsync.as", "vehicle.as", "life.as", "fx.as", "ui.as", "menu.as", "lab.as", "boot.as"]
+SOURCES = ["core.as", "players.as", "coop.as", "boot.as"]
 SLOTS = [6, 8, 10, 12, 14, 16, 18, 20]  # main-timeline frames whose stop() script is the compile target
 INSERT_FRAME = 5  # the "menu" frame
-LAB_FLAG = ("N.LAB = false;", "N.LAB = true;")
 
 
 def swf_read(path):
@@ -73,23 +70,19 @@ def frame_doactions(tag_list):
     return res
 
 
-def stage(batch, lab):
+def stage(batch):
     dest = os.path.join(BUILD, "as")
     shutil.rmtree(dest, ignore_errors=True)
     for i, name in enumerate(batch):
         text = open(os.path.join(SRC, name), encoding="utf-8").read()
-        if name == "core.as":
-            assert text.count(LAB_FLAG[0]) == 1, "core.as must contain exactly one " + LAB_FLAG[0]
-            if lab:
-                text = text.replace(*LAB_FLAG)
         slot = os.path.join(dest, "frame_%d" % SLOTS[i])
         os.makedirs(slot)
         open(os.path.join(slot, "DoAction.as"), "w", encoding="utf-8").write(text)
     return dest
 
 
-def compile_batch(batch, lab, original):
-    scripts = stage(batch, lab)
+def compile_batch(batch, original):
+    scripts = stage(batch)
     scratch = os.path.join(BUILD, "compiled.swf")
     if os.path.exists(scratch):
         os.remove(scratch)
@@ -112,53 +105,42 @@ def compile_batch(batch, lab, original):
     return out
 
 
-def sources(lab):
-    """lab.as (the scripted tests) only goes into lab builds."""
-    return [f for f in SOURCES if lab or f != "lab.as"]
-
-
-def compile_sources(lab):
+def compile_sources():
     """FFDec runs once per batch of len(SLOTS) files."""
     original = frame_doactions(tags(swf_read(GAME)[2]))
     open(os.path.join(BUILD, "import.log"), "w").close()
-    files, out = sources(lab), []
+    files, out = SOURCES, []
     for i in range(0, len(files), len(SLOTS)):
-        out += compile_batch(files[i:i + len(SLOTS)], lab, original)
+        out += compile_batch(files[i:i + len(SLOTS)], original)
     return out
 
 
 def splice(new_tags):
     ver, header, raw = swf_read(GAME)
     tl = tags(raw)
-    result, frame, inserted, net = [], 1, False, False
+    result, frame, inserted = [], 1, False
     for code, t in tl:
-        if code == 69 and not net:  # FileAttributes: UseNetwork
-            t = bytearray(t)
-            t[2] |= 1
-            t, net = bytes(t), True
         if code == 1 and frame == INSERT_FRAME:
             result.extend(new_tags)
             inserted = True
         result.append(t)
         if code == 1:
             frame += 1
-    if not (inserted and net):
-        sys.exit("splice failed (frame %d found: %s, FileAttributes found: %s)" % (INSERT_FRAME, inserted, net))
+    if not inserted:
+        sys.exit("splice failed: frame %d not found" % INSERT_FRAME)
     body = header + b"".join(result)
     return b"CWS" + bytes([ver]) + struct.pack("<I", len(body) + 8) + zlib.compress(body, 9)
 
 
-def build(lab):
+def build():
     os.makedirs(BUILD, exist_ok=True)
     os.makedirs(DIST, exist_ok=True)
-    new_tags = compile_sources(lab)
-    out = os.path.join(DIST, "intrusion_lab.swf" if lab else "intrusion_online.swf")
+    new_tags = compile_sources()
+    out = os.path.join(DIST, OUT_NAME)
     open(out, "wb").write(splice(new_tags))
-    print("built %s (%s)" % (os.path.relpath(out, MOD), ", ".join("%s %d B" % (n, len(t)) for n, t in zip(sources(lab), new_tags))))
+    print("built %s (%s)" % (os.path.relpath(out, MOD), ", ".join("%s %d B" % (n, len(t)) for n, t in zip(SOURCES, new_tags))))
     return out
 
 
 if __name__ == "__main__":
-    ap = argparse.ArgumentParser()
-    ap.add_argument("--lab", action="store_true")
-    build(ap.parse_args().lab)
+    build()

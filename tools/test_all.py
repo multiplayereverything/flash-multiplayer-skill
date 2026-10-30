@@ -18,7 +18,7 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
 import check_public  # noqa: E402
 import directory  # noqa: E402
-import set_use_network as sun  # noqa: E402
+import keys_check  # noqa: E402
 import unmochi  # noqa: E402
 import swfsym  # noqa: E402
 
@@ -41,24 +41,8 @@ def tiny_swf(version=9, file_attributes=True):
     return b"FWS" + bytes([version]) + struct.pack("<I", len(body) + 8) + body
 
 
-def test_use_network(tmp):
+def test_swfheader(tmp):
     data = tiny_swf()
-    out, found = sun.set_use_network(data)
-    ok("set_use_network sets the flag on SWF 9", found and sun.has_use_network(out) and out[:3] == b"CWS")
-    ok("twin: the untouched file has no flag", not sun.has_use_network(data))
-    rect = bytes([0x50, 0x00, 0x00, 0x00, 0x00, 0x00])
-    longform = rect + struct.pack("<HH", 30 << 8, 1) + struct.pack("<HI", (69 << 6) | 0x3F, 4) + bytes([0x08, 0, 0, 0])         + struct.pack("<H", 1 << 6) + struct.pack("<H", 0)
-    longswf = b"FWS" + bytes([9]) + struct.pack("<I", len(longform) + 8) + longform
-    outl, foundl = sun.set_use_network(longswf)
-    bodyl = zlib.decompress(outl[8:])
-    lp = sun.first_tag_pos(bodyl) + 2
-    ok("long-form FileAttributes header: the flag goes in the flags byte, the length stays 4",
-       foundl and sun.has_use_network(outl) and struct.unpack("<I", bodyl[lp:lp + 4])[0] == 4)
-    ok("twin: the untouched long-form file has no flag", not sun.has_use_network(longswf))
-    out6, found6 = sun.set_use_network(tiny_swf(6, False))
-    ok("SWF 6 without FileAttributes is recompressed and reported", not found6 and out6[:3] == b"CWS")
-    body = zlib.decompress(out[8:])
-    ok("length field matches the body", struct.unpack("<I", out[4:8])[0] == len(body) + 8)
     p = os.path.join(tmp, "t.swf")
     open(p, "wb").write(data)
     r = subprocess.run([sys.executable, "-I", os.path.join(HERE, "swfheader.py"), p], capture_output=True, text=True)
@@ -210,87 +194,31 @@ def test_swfsym():
         ok("twin: an undefined sprite is refused", True)
 
 
-def test_fake_bridge():
-    import socket
-    import time
-    root = os.path.dirname(HERE)
-    with socket.socket() as s:
-        s.bind(("127.0.0.1", 0))
-        port = s.getsockname()[1]
-    tokens = ["a" * 32, "b" * 32]
-    proc = subprocess.Popen([sys.executable, "-I", os.path.join(root, "templates", "lab", "fake_bridge.py"),
-                             "--port", str(port), "--tokens", ",".join(tokens)],
-                            stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-
-    def connect():
-        for _ in range(50):
-            try:
-                c = socket.create_connection(("127.0.0.1", port), 2)
-                c.settimeout(2)
-                return c
-            except OSError:
-                time.sleep(0.1)
-        return None
-
-    def put(c, obj):
-        c.sendall(json.dumps(obj).encode() + b"\0")
-
-    def take(c, want):
-        buf = b""
-        end = time.time() + 3
-        while time.time() < end:
-            while b"\0" in buf:
-                raw, buf = buf.split(b"\0", 1)
-                m = json.loads(raw)
-                if m.get("t") == want:
-                    return m
-            try:
-                data = c.recv(4096)
-            except OSError:
-                return None
-            if not data:
-                return None
-            buf += data
-        return None
-    try:
-        c = connect()
-        c.sendall(b"<policy-file-request/>\0")
-        ok("fake bridge answers the Flash policy request", b"cross-domain-policy" in c.recv(512))
-        c.close()
-        bad = connect()
-        put(bad, {"t": "hello", "token": "c" * 32})
-        ok("twin: fake bridge closes a wrong token", take(bad, "welcome") is None)
-        bad.close()
-        host, guest = connect(), connect()
-        put(host, {"t": "hello", "token": tokens[0]})
-        put(guest, {"t": "hello", "token": tokens[1]})
-        w = take(guest, "welcome")
-        ok("fake bridge welcomes slot 1 as a client", w is not None and w["slot"] == 1 and w["role"] == "client")
-        ok("fake bridge welcomes the host", (take(host, "welcome") or {}).get("role") == "host")
-        put(host, {"t": "loaded"})
-        put(guest, {"t": "loaded"})
-        ok("fake bridge sends go once both loaded", take(host, "go") is not None and take(guest, "go") is not None)
-        put(host, {"t": "send", "to": -1, "d": "SN|1"})
-        m = take(guest, "msg")
-        ok("fake bridge routes host traffic", m is not None and m["from"] == 0 and m["d"] == "SN|1")
-        put(guest, {"t": "send", "to": 0, "d": "K|3"})
-        m = take(host, "msg")
-        ok("fake bridge routes client traffic", m is not None and m["from"] == 1 and m["d"] == "K|3")
-        host.close()
-        ok("fake bridge ends the round when the host's game closes", take(guest, "end") is not None)
-        guest.close()
-    finally:
-        proc.kill()
-        proc.wait()
+def test_keys_check():
+    slots, local, shared = keys_check.parse("# two players\nslot 0: UP=38 FIRE=32\nslot 1: UP=87 FIRE=70\n"
+                                            "local: UP=38,87 FIRE=32,70\n")
+    ok("keys_check reads slots and local keys", len(slots) == 2 and slots[1]["FIRE"] == 70 and local["UP"] == [38, 87]
+       and not shared)
+    ok("keys_check reads a hot-seat map", keys_check.parse("shared\nslot 0: KEY1=49\n")[2])
+    for bad, why in [("slot 1: UP=38\n", "slots out of order"), ("slot 0: JUMP=38\n", "an unknown button"),
+                     ("slot 0: UP=999\n", "a key code Ruffle Together can't press"),
+                     ("slot 0: UP=38,40\n", "two keys on one slot button"), ("local: UP=38\n", "no slots")]:
+        try:
+            keys_check.parse(bad)
+            ok("twin: keys_check refuses " + why, False)
+        except ValueError:
+            ok("twin: keys_check refuses " + why, True)
+    example = os.path.join(os.path.dirname(HERE), "templates", "ruffle-together", "example.keys")
+    ok("the template key map parses", len(keys_check.parse(open(example, encoding="utf-8").read())[0]) == 2)
 
 
 with tempfile.TemporaryDirectory() as tmp:
-    test_use_network(tmp)
+    test_swfheader(tmp)
     test_unmochi()
     test_swfsym()
     test_check_public(tmp)
     test_relay(tmp)
-test_fake_bridge()
+test_keys_check()
 test_directory()
 test_modsinfo()
 test_skills()

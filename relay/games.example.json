@@ -1,4 +1,12 @@
 {
+  "ruffle-coop": {
+    "name": "Ruffle Together",
+    "mode": "star",
+    "max_players": 4,
+    "framing": "nul",
+    "versions": [],
+    "idle": 300
+  },
   "bic": {
     "name": "Bad Ice-Cream Online",
     "mode": "star",
