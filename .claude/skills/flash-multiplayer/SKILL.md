@@ -1,6 +1,6 @@
 ---
 name: flash-multiplayer
-description: "Make a single-player or local-multiplayer Flash game (.swf, AS2/AVM1 or AS3/AVM2) playable online with friends in Ruffle Together, a Ruffle fork where every PC runs the same game in lockstep and only key presses travel, with room codes and no port forwarding. Covers recon of the SWF, key maps, adding local co-op to a single-player game (FFDec: AS3 importScript plus stub classes, AS2 new DoAction tags or spliced tags), the co-op API (players, buttons, mouse, cameras, HUD, name tags, events), input scripts, replays and two-window tests, and releasing (the co-op SWF, its launch line, mods-info, an optional relay of your own). Built from the Bad Ice-Cream, Gun Mayhem 2, Territory War, Bow Man, Stealth Hunter 2, Raft Wars, Intrusion, Stealth Assassin, Smileys War, Fireboy & Watergirl and Dad 'n Me games. Use this whenever someone wants to make a Flash game online, co-op, versus or multiplayer, add players to a SWF, write a Ruffle Together key map, or debug a Ruffle Together game's desync, build or tests, even if they only say \"make this swf multiplayer\"."
+description: "Make a single-player or local-multiplayer Flash game (.swf, AS2/AVM1 or AS3/AVM2) playable online with friends in Ruffle Together, a Ruffle fork where every PC runs the same game in lockstep and only key presses travel, with room codes and no port forwarding. Covers recon of the SWF, key maps, adding local co-op to a single-player game (FFDec: AS3 importScript plus stub classes, AS2 new DoAction tags or spliced tags), the co-op API (players, buttons, mouse, cameras, HUD, name tags, events), input scripts, replays and two-window tests, and releasing (the co-op SWF, its launch line, mods-info, an optional relay of your own). Built from the Bad Ice-Cream, Gun Mayhem 2, Territory War, Bow Man, Stealth Hunter 2, Air Battle, Ultimate Crab Battle, Raft Wars, Intrusion, Stealth Assassin, Smileys War and Ultimate Assassin games. Use this whenever someone wants to make a Flash game online, co-op, versus or multiplayer, add players to a SWF, write a Ruffle Together key map, or debug a Ruffle Together game's desync, build or tests, even if they only say \"make this swf multiplayer\"."
 ---
 
 # Flash multiplayer
@@ -13,7 +13,7 @@ and every frame runs on every PC with every player's input. The host gets a 5-le
 - A **single-player** game needs local co-op added to the SWF (more heroes on the same screen, each read from its own
   player slot), still with no network code. The original file is never edited.
 
-This page is the route and the checklist. Paths here are relative to this file's folder, which holds the whole hub.
+This page is the route and the checklist. Paths here are relative to the hub root, three folders up from this file (`../../../`).
 For each phase, read its own file in `.claude/skills/`: `.claude/skills/flash-start/SKILL.md`, `.claude/skills/flash-map/SKILL.md`,
 `.claude/skills/flash-lab/SKILL.md`, `.claude/skills/flash-inject/SKILL.md`, `.claude/skills/flash-coop/SKILL.md`, `.claude/skills/flash-ship/SKILL.md`
 and `.claude/skills/flash-share/SKILL.md`. The phase map is in `AGENTS.md`, and every game done so far is in `DIRECTORY.md`
@@ -75,7 +75,7 @@ Read the reference that matches the step you're on.
 | `tools/wincap.py` | Screenshot of a window by PID (PrintWindow, BitBlt fallback), never focusing it |
 | `tools/check_server.py` | Checks a relay from outside: known game, a room with a friend, messages both ways |
 | `templates/ruffle-together/` | An example key map, an input script, and `replay_check.py` (two replays that must match) |
-| `templates/build/*.py` | Build scripts for the co-op SWF: AS3 simple, AS3 with patches on fresh decompiled copies, AS2 insert, AS2 splice |
+| `templates/build/` | Build scripts for the co-op SWF: AS3 simple, AS3 with patches on fresh decompiled copies, AS2 insert, AS2 splice |
 | `relay/` | The relay server Ruffle Together's room codes go through, if you run your own; `relay/tests/test_relay.py` |
 | `modsinfo/` | Optional mods-info starter kit: format, template, schema, validator |
 

@@ -37,7 +37,7 @@ The paths:
 ## Layout
 | Path | What |
 |---|---|
-| `SKILL.md` | the umbrella skill (`flash-multiplayer`): route and rules on one page |
+| `.claude/skills/flash-multiplayer/SKILL.md` | the umbrella skill (`flash-multiplayer`): route and rules on one page |
 | `.claude/skills/` | the seven phase skills |
 | `playbook/` | the technique pages (index in `playbook/README.md`): Ruffle Together, recon, build, traps, release, the relay protocol |
 | `games/` | one write-up per game in the directory |
