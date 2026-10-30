@@ -124,6 +124,10 @@ Each one cost a real mod time. The mod it came from is in brackets.
   repeat it every frame until the screen changes. [Stealth Assassin]
 
 ## Process
+- Turn ownership can be proven without game hooks: run a script where every non-owner presses keys (and the host clicks) against a twin with the same timing and mouse path but none of that input; the fingerprint files must be identical. [Territory War]
+- `--coop-replay` always runs the key map's maximum player count, so `coop.players` there is the max (4), not the session's. [Territory War]
+- Headless replay PNGs have no device fonts: `_sans` text is invisible. Debug with drawn bars whose widths encode values. [Territory War]
+- Shared hot-seat keys hide script timing mistakes (any player's keys move any stick); re-check a script with shots once turns are owned. [Territory War]
 - A single-player game goes on Ruffle Together by adding local co-op in the SWF (extra copies of the hero, each on
   key codes the game never reads, routed to that copy's own keyboard before the game sees them). Keeping P2-P4 with
   P1 (spawn next to P1, follow P1 between rooms, cutscene walking) is most of the work. [Stealth Hunter 2]
