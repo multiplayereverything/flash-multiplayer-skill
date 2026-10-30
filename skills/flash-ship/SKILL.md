@@ -19,6 +19,11 @@ Steps in `references/release.md`:
 7. Before every public push: `python tools/check_public.py` (no tokens, keys, passwords, personal paths, emails, home
    or VPN IPs, game files except the release SWF, decompiled code).
 
+**On Ruffle Together** (`references/ruffle-together.md`, "Releasing") steps 2-3 change: no relay of your own for the
+game, but its launch line (key map, player counts), the minimum Ruffle Together version it needs, and the same SWF
+bytes for every player. Prove it with `--coop-replay` twice identical (screenshots looked at), the coop-lab with 2-4
+players, and two real windows.
+
 Report with a table: Feature | What it does | How | Tested. Internet play stays ⚠️ until two players on two networks
 tried it.
 

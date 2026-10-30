@@ -231,7 +231,13 @@ Each one cost a real mod time. The mod it came from is in brackets.
 - A game that plays each sound effect on a fresh empty clip and removes the clip in `Sound.onSoundComplete` desyncs
   Ruffle Together in real windows (the untouched game did): when a sound ends depends on each PC's audio device.
   Headless replays and sessions never show it, because their sounds never end. Keep the clip (or remove it after a
-  fixed number of frames). [Smileys War]
+  fixed number of frames). Fixed in Ruffle Together itself since: sounds end on the frame clock. [Smileys War]
+- AS2 `on(keyPress "a")` buttons hear only the typed character, not the key. Ruffle Together 1.0.3.6 and 1.0.3.7
+  didn't type it for a pressed key (fixed in 1.0.3.8), so in those versions an A press in a replay or a game-set
+  `coop.keys` map never reached the menu, in the untouched game too. Check menus by key in a replay, with
+  screenshots; `on(keyPress "A")` (capital) still needs Shift, as in Flash. [Dad 'n Me]
+- A game that sets its own key map with `coop.keys` on frame 1 can still be launched with any built-in map that has
+  enough slots: the game's map replaces it on the next frame, the same on every PC. [Dad 'n Me]
 - To swap a bot for a human, wait until the attached bot's own frame-1 script has run (its `onEnterFrame` and
   variables exist), then `removeMovieClip` it and attach the human sprite at the same name and depth with the bot's
   fields as `attachMovie`'s init object. Install your per-slot `onEnterFrame` only once the new clip's own setup has

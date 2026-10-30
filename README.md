@@ -11,6 +11,11 @@ mod without touching the original file, tests it with self-playing copies of the
 a 5-letter room code through **your own relay server**, which is included: players open no ports and type no IPs, and
 one relay serves every game you make.
 
+Many games don't even need netcode: in [Ruffle Together](https://github.com/multiplayereverything/ruffle-coop), a
+Ruffle fork, every PC runs the same game in lockstep and only key presses travel. A local-multiplayer game needs just a
+key map there, and a single-player game needs local co-op added to the SWF. The agent checks that first
+([`references/ruffle-together.md`](references/ruffle-together.md)).
+
 Heavily inspired by [Co-op Anything](https://github.com/cranebeaker/coop-anything) by cranebeaker: the quick start,
 the agent guide, the directory with honest QA levels and the "share back" loop all come from there, adapted to how we
 make Flash games online.
@@ -47,7 +52,8 @@ protocol is in [`references/relay-protocol.md`](references/relay-protocol.md), a
 [mods-info kit](modsinfo/README.md) lets you move the relay or announce updates without rebuilding the mods.
 
 ## How it works
-Every Flash game here took one of three paths:
+Every Flash game here took one of three paths, and went online one of two ways: in **Ruffle Together** (lockstep in
+the emulator, no netcode in the SWF) or as a **relay mod** (the SWF talks to your relay itself).
 
 | | A. Local multiplayer to online | B. Single player to multiplayer | C. Fix an existing online mod |
 |---|---|---|---|
@@ -59,6 +65,7 @@ Then the sync model follows from the kind of game:
 
 | The game is... | Sync | Proven on |
 |---|---|---|
+| Anything every player can run in Ruffle Together | lockstep in the emulator: a key map, plus local co-op in the SWF for single-player games | Bad Ice-Cream, Territory War, Raft Wars, Intrusion, Stealth Assassin, Smileys War, Stealth Hunter 2 |
 | Turn-based (artillery, archers) | the host runs the match; the player whose turn it is aims locally and sends the shot | Territory War, Raft Wars, Bow Man |
 | Arcade, tile or physics | the host sends a snapshot every frame; the other games only draw it | Bad Ice-Cream, Air Battle |
 | Action platformer or shooter | everyone moves their own character; the host owns enemies, damage and pickups | Intrusion 1 and 2, Ultimate Crab Battle, Stealth Hunter 2 |
@@ -78,16 +85,19 @@ The phases, rules and skills are in [AGENTS.md](AGENTS.md).
 ## Games so far
 | Game | Path | Players | Status |
 |---|---|---|---|
-| [Bad Ice-Cream](games/bad-ice-cream.md) | A | 2 | released |
+| [Bad Ice-Cream](games/bad-ice-cream.md) | A | 2 | released (Ruffle Together) |
 | [Gun Mayhem 2](games/gun-mayhem-2.md) | A | 2-4 | released |
 | [Territory War](games/territory-war.md) | A | 2-4 | released |
 | [Bow Man](games/bow-man.md) | A | 2 | released (Ruffle) |
 | [Stealth Hunter 2](games/stealth-hunter-2.md) | B | 2-4 | released (Ruffle) |
 | [Air Battle](games/air-battle.md) | B | 2-4 | released |
 | [Ultimate Crab Battle](games/ultimate-crab-battle.md) | B | 2-4 | released (Ruffle) |
-| [Raft Wars](games/raft-wars.md) | B | 2-4 | released |
-| [Intrusion](games/intrusion.md) | B | 2-4 | in progress |
+| [Raft Wars](games/raft-wars.md) | B | 1-4 | released (Ruffle Together) |
+| [Intrusion](games/intrusion.md) | B | 2-4 | released (Ruffle Together) |
 | [Intrusion 2](games/intrusion-2.md) | B | 2-4 | in progress |
+| [Stealth Assassin](games/stealth-assassin.md) | B | 2-4 | released (Ruffle Together) |
+| [Ultimate Assassin 1-3](games/ultimate-assassin.md) | B | 2-4 | released |
+| [Smileys War](games/smileys-war.md) | B | 1-4 | released (Ruffle Together) |
 
 The [directory](DIRECTORY.md) has the details: relay id, engine, sync model and how each one was proven. The finished
 builds are in [flash-games](https://github.com/Multiplayer-Everything-Team/flash-games), which the Multiplayer
@@ -119,7 +129,8 @@ Pull requests welcome.
 
 ## FAQ
 <details><summary>Do my friends need anything?</summary>
-The mod's SWF and Ruffle desktop. No accounts and no port forwarding: only whoever runs the relay opens one port.
+The mod's SWF and Ruffle desktop (Ruffle Together for the games played in it, the same version for everyone). No
+accounts and no port forwarding: only whoever runs the relay opens one port.
 </details>
 
 <details><summary>Do I need a server?</summary>

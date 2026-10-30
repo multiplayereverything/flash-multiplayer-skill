@@ -1,6 +1,6 @@
 ---
 name: flash-multiplayer
-description: Turn a single-player or local-multiplayer Flash game (.swf, AS2/AVM1 or AS3/AVM2) into an online multiplayer mod that plays through your own relay server (included, Python, one port for every game), with room codes and no port forwarding for players. Covers recon of the SWF, injecting code with FFDec (AS3 importScript plus stub classes, AS2 new DoAction tags, spliced or patched frame scripts, p-code), host-authoritative sync for turn-based, realtime and physics games, input injection for remote players, the in-game online panel, the self-driving Ruffle lab, and releasing (your relay online, optional mods-info, publishing the build). Built from the Bad Ice-Cream, Stealth Hunter 2, Gun Mayhem 2, Air Battle, Intrusion 1 and 2, Territory War, Bow Man, Ultimate Crab Battle and Raft Wars mods. Use this whenever someone wants to make a Flash game online, co-op, versus or multiplayer, add room codes or a relay to a SWF, or debug a Flash mod's sync, build or lab, even if they only say "make this swf multiplayer".
+description: Turn a single-player or local-multiplayer Flash game (.swf, AS2/AVM1 or AS3/AVM2) into an online multiplayer game: either played in Ruffle Together (lockstep inside the emulator, no netcode in the SWF, the first choice for local-multiplayer games) or as a mod that plays through your own relay server (included, Python, one port for every game), with room codes and no port forwarding for players. Covers recon of the SWF, injecting code with FFDec (AS3 importScript plus stub classes, AS2 new DoAction tags, spliced or patched frame scripts, p-code), host-authoritative sync for turn-based, realtime and physics games, input injection for remote players, the in-game online panel, the self-driving Ruffle lab, and releasing (your relay online, optional mods-info, publishing the build). Built from the Bad Ice-Cream, Stealth Hunter 2, Gun Mayhem 2, Air Battle, Intrusion 1 and 2, Territory War, Bow Man, Ultimate Crab Battle, Raft Wars, Stealth Assassin, Smileys War and Dad 'n Me mods. Use this whenever someone wants to make a Flash game online, co-op, versus or multiplayer, add room codes or a relay to a SWF, or debug a Flash mod's sync, build or lab, even if they only say "make this swf multiplayer".
 ---
 
 # Flash multiplayer
@@ -9,6 +9,12 @@ A Flash game knows one player and one keyboard. These mods add online play witho
 the build injects code into a copy of the SWF, the host's game runs the real game, and the other players' games
 show the host's world and send their own input. Everything goes through a relay you run (`relay/`, see `relay/README.md`), a text relay in
 star mode: the host gets a 5-letter room code and friends type it or pick the room from a public list.
+
+There is a shorter way for many games: **Ruffle Together** (`references/ruffle-together.md`), a Ruffle fork that
+runs the same game on every PC in lockstep and sends only key presses. A game with local multiplayer often needs no
+mod at all, just a key map; a single-player game needs local co-op added to the SWF, with no network code. Check it
+first; build a relay mod when the game must run in Flash Player or the browser, or players must be in different
+places at once.
 
 This page is the route and the checklist. Paths here are relative to this file's folder, which holds the whole hub.
 For each phase, read its own file in `skills/`: `skills/flash-start/SKILL.md`, `skills/flash-map/SKILL.md`,
@@ -22,12 +28,13 @@ Read the reference that matches the step you're on.
 |---|---|
 | Find out what the SWF is, and where each system lives | `references/recon.md` |
 | Build: AS3 (`importScript` + stubs) or AS2 (new DoAction tags, splice, patch, p-code) | `references/build.md` |
+| Play it in Ruffle Together instead: key maps, the co-op API, adding local co-op, replay tests | `references/ruffle-together.md` |
 | Choose the sync model, write messages, handle join, leave and late join | `references/network.md` |
 | Hook the game: remote input, "the player" swaps, guest gates | `references/hooking.md` |
 | The online panel, online by default, FlashVars | `references/ui.md` |
 | The self-driving lab and the offline checks | `references/lab.md` |
 | Every trap found so far (Ruffle, Flash Player 32, FFDec, AS2, AS3) | `references/traps.md` |
-| How each of the 10 mods was done, to borrow the closest one | `references/games.md` |
+| How each mod was done, to borrow the closest one | `references/games.md` |
 | Run your own relay | `relay/README.md`, protocol in `references/relay-protocol.md` |
 | Optional mods-info (server moves, update notices) | `modsinfo/README.md` |
 | Your relay's game list, optional mods-info, publishing, a launcher | `references/release.md` |
@@ -37,7 +44,9 @@ Read the reference that matches the step you're on.
    AS2 or AS3, fps, size, wrappers or sponsor preloaders, obfuscation. Export with FFDec, then map each system to the
    one place it runs through: frame loop, level load, player and input, enemies' target, damage, pickups, win and
    lose, randomness, pause, saves, sounds. Write it in `CODE_MAP.md`.
-2. **Pick the sync model** from the game type (`references/network.md`):
+2. **Pick the sync model** from the game type (`references/network.md`). First ask whether Ruffle Together fits
+   (`references/ruffle-together.md`): local multiplayer → a key map; single player → local co-op in the SWF. If it
+   does, steps 3-7 become: replay and coop-lab checks, the co-op build, a key map, and the release line. Otherwise:
    turn-based → the host runs the match and the player whose turn it is aims locally and sends the shot;
    arcade or physics → host-authoritative snapshots every frame plus events, guests run no game logic;
    action platformer or shooter → each player moves their own character locally, the host owns enemies and damage;

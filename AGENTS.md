@@ -21,6 +21,11 @@ The paths:
 - **B. Single player to multiplayer:** add co-op (or versus where it fits). The game's one player has to become many.
 - **C. Fix or update an existing online mod:** find it in `DIRECTORY.md`, read its write-up and the mod's own notes.
 
+Paths A and B have two ways online. **Ruffle Together** (`references/ruffle-together.md`) runs the same game on every
+PC in lockstep and sends only key presses: a local-multiplayer game needs just a key map, a single-player game needs
+local co-op added to the SWF, and no relay code. It's the first choice when every player can use it. A **relay mod**
+(phases 3-6 as below) is for Flash Player or the browser, or when players must be in different places at once.
+
 ## Rules
 1. **Never edit the original SWF**, and never put decompiled game code in the mod's source, a release or this hub.
 2. **The host's game is the world.** Others send input or requests; the host decides and tells everyone.
@@ -40,7 +45,7 @@ The paths:
 |---|---|
 | `SKILL.md` | the umbrella skill (`flash-multiplayer`): route and rules on one page |
 | `skills/` | the seven phase skills |
-| `references/` | recon, build, network, the relay protocol, hooking, UI, lab, traps, the mods compared, release |
+| `references/` | recon, build, network, Ruffle Together, the relay protocol, hooking, UI, lab, traps, the mods compared, release |
 | `games/` | one write-up per game in the directory |
 | `data/games.json`, `DIRECTORY.md` | the directory (edit the JSON, then `python tools/directory.py render`) |
 | `tools/` | FFDec helpers, SWF readers, the UseNetwork flag, window capture, the public-data check, the directory tool, `test_all.py` |

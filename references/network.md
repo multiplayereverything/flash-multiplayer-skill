@@ -65,8 +65,11 @@ min) is the release version, a separate string. An offline test checks they agre
 | Action platformer or shooter | Each player moves their own character locally (no input lag) and sends its pose and shots. The host owns enemies, damage, pickups and triggers; damage to a player is sent back to its owner. Remote characters are real game characters fed by input and steered to the reported pose, or tinted puppets. | Intrusion 1 and 2, Ultimate Crab Battle, Stealth Hunter 2 (later) |
 | Already local multiplayer and nearly deterministic | Input lockstep driven by the host: `F|frame|inputs` every frame, a 2-frame jitter buffer, seeded RNG replacing `Math.random`/`random()`, a full snapshot plus RNG state every ~35 frames, hard wait only when a guest is >15 frames behind. | Gun Mayhem 2 |
 
-Lockstep without a host failed or was rejected everywhere else: Ruffle and Flash Player differ in `hitTest`, timers and
+Lockstep without a host failed or was rejected everywhere else, inside a Flash mod: Ruffle and Flash Player differ in `hitTest`, timers and
 trig, `Math.random` and timeline scripts run everywhere, Box2D drifts within a second, and wall-clock timers differ.
+It works in **Ruffle Together** (`references/ruffle-together.md`), because there every player runs the same emulator
+build and the emulator makes the clock, randomness, timers and sound endings the same on every PC: no seeding, no
+snapshots, and nothing to sync in the SWF.
 
 ## Messages
 Text, `|` between fields, `;` between entities, `,` inside one. Types are 1-3 capital letters. Typical set:
