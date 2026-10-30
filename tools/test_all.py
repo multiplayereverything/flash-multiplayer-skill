@@ -107,13 +107,13 @@ def test_relay_suite():
 
 def test_skills():
     root = os.path.dirname(HERE)
-    names = sorted(os.listdir(os.path.join(root, "skills")))
+    names = sorted(os.listdir(os.path.join(root, ".claude", "skills")))
     for n in names:
-        p = os.path.join(root, "skills", n, "SKILL.md")
+        p = os.path.join(root, ".claude", "skills", n, "SKILL.md")
         text = open(p, encoding="utf-8").read() if os.path.exists(p) else ""
         head = text.split("---")[1] if text.startswith("---") else ""
         ok("skill %s has name and description" % n, ("name: %s" % n) in head and "description:" in head)
-        refs = [w for w in text.split("`") if w.startswith(("references/", "tools/", "templates/", "games/"))]
+        refs = [w for w in text.split("`") if w.startswith(("playbook/", "tools/", "templates/", "games/"))]
         for ref in [r for r in refs if "<" not in r]:
             ok("skill %s: %s exists" % (n, ref), os.path.exists(os.path.join(root, ref.split(" ")[0])))
 

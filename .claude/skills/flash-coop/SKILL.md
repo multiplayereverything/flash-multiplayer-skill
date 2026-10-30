@@ -5,9 +5,9 @@ description: Add players to a Flash game for Ruffle Together - local co-op in a 
 
 # Flash co-op
 
-Paths here are relative to the hub root, two folders up from this file (`../../`), where `references/`, `tools/`, `templates/`, `games/` and `DIRECTORY.md` live.
+Paths here are relative to the hub root, three folders up from this file (`../../../`), where `playbook/`, `tools/`, `templates/`, `games/` and `DIRECTORY.md` live.
 
-Read `references/ruffle-together.md` first (the co-op API, "Adding players to a single-player game"). Ruffle
+Read `playbook/ruffle-together.md` first (the co-op API, "Adding players to a single-player game"). Ruffle
 Together keeps every PC's game the same; your job is only to make the game have more than one player.
 
 Checklist:
@@ -40,4 +40,4 @@ like a single-player game outside Ruffle Together. `ruffle-coop/tools/coop-api/d
 
 Desync? Ruffle Together writes a report of what differs on each PC. Look for a local answer reaching gameplay, a
 sound removed in `onSoundComplete` on an old build, or objects ordered by something only one PC has
-(`references/traps.md`, Process).
+(`playbook/traps.md`, Process).

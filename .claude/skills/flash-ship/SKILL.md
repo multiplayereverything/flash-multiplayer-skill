@@ -5,10 +5,10 @@ description: Release a Flash game for Ruffle Together - the co-op SWF and its ke
 
 # Flash ship
 
-Paths here are relative to the hub root, two folders up from this file (`../../`), where `references/`, `tools/`, `templates/`, `games/` and `DIRECTORY.md` live.
+Paths here are relative to the hub root, three folders up from this file (`../../../`), where `playbook/`, `tools/`, `templates/`, `games/` and `DIRECTORY.md` live.
 
-Steps in `references/release.md`:
-1. The lab's steps 0-9 green on the release candidate (`skills/flash-lab`), with the release exe: replays twice
+Steps in `playbook/release.md`:
+1. The lab's steps 0-9 green on the release candidate (`.claude/skills/flash-lab`), with the release exe: replays twice
    identical with screenshots looked at, 1 player = the original, a run to the ending, every player can do
    everything, the coop-lab with 2-4 players, the leave test, two real windows.
 2. The key map: a built-in name, or a `.keys` file shipped next to the SWF (`tools/keys_check.py` clean). A map

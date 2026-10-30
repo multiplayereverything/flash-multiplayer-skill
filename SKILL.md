@@ -1,11 +1,11 @@
 ---
 name: flash-multiplayer
-description: Make a single-player or local-multiplayer Flash game (.swf, AS2/AVM1 or AS3/AVM2) playable online with friends in Ruffle Together, a Ruffle fork where every PC runs the same game in lockstep and only key presses travel, with room codes and no port forwarding. Covers recon of the SWF, key maps, adding local co-op to a single-player game (FFDec: AS3 importScript plus stub classes, AS2 new DoAction tags or spliced tags), the co-op API (players, buttons, mouse, cameras, HUD, name tags, events), input scripts, replays and two-window tests, and releasing (the co-op SWF, its launch line, mods-info, an optional relay of your own). Built from the Bad Ice-Cream, Gun Mayhem 2, Territory War, Bow Man, Stealth Hunter 2, Raft Wars, Intrusion, Stealth Assassin, Smileys War, Fireboy & Watergirl and Dad 'n Me games. Use this whenever someone wants to make a Flash game online, co-op, versus or multiplayer, add players to a SWF, write a Ruffle Together key map, or debug a Ruffle Together game's desync, build or tests, even if they only say "make this swf multiplayer".
+description: "Make a single-player or local-multiplayer Flash game (.swf, AS2/AVM1 or AS3/AVM2) playable online with friends in Ruffle Together, a Ruffle fork where every PC runs the same game in lockstep and only key presses travel, with room codes and no port forwarding. Covers recon of the SWF, key maps, adding local co-op to a single-player game (FFDec: AS3 importScript plus stub classes, AS2 new DoAction tags or spliced tags), the co-op API (players, buttons, mouse, cameras, HUD, name tags, events), input scripts, replays and two-window tests, and releasing (the co-op SWF, its launch line, mods-info, an optional relay of your own). Built from the Bad Ice-Cream, Gun Mayhem 2, Territory War, Bow Man, Stealth Hunter 2, Raft Wars, Intrusion, Stealth Assassin, Smileys War, Fireboy & Watergirl and Dad 'n Me games. Use this whenever someone wants to make a Flash game online, co-op, versus or multiplayer, add players to a SWF, write a Ruffle Together key map, or debug a Ruffle Together game's desync, build or tests, even if they only say \"make this swf multiplayer\"."
 ---
 
 # Flash multiplayer
 
-A Flash game knows one keyboard. **Ruffle Together** (`references/ruffle-together.md`) puts it online without any
+A Flash game knows one keyboard. **Ruffle Together** (`playbook/ruffle-together.md`) puts it online without any
 network code in the game: every PC runs the same SWF in the same Ruffle build, only key presses and the mouse travel,
 and every frame runs on every PC with every player's input. The host gets a 5-letter room code; friends join with it.
 
@@ -14,34 +14,34 @@ and every frame runs on every PC with every player's input. The host gets a 5-le
   player slot), still with no network code. The original file is never edited.
 
 This page is the route and the checklist. Paths here are relative to this file's folder, which holds the whole hub.
-For each phase, read its own file in `skills/`: `skills/flash-start/SKILL.md`, `skills/flash-map/SKILL.md`,
-`skills/flash-lab/SKILL.md`, `skills/flash-inject/SKILL.md`, `skills/flash-coop/SKILL.md`, `skills/flash-ship/SKILL.md`
-and `skills/flash-share/SKILL.md`. The phase map is in `AGENTS.md`, and every game done so far is in `DIRECTORY.md`
+For each phase, read its own file in `.claude/skills/`: `.claude/skills/flash-start/SKILL.md`, `.claude/skills/flash-map/SKILL.md`,
+`.claude/skills/flash-lab/SKILL.md`, `.claude/skills/flash-inject/SKILL.md`, `.claude/skills/flash-coop/SKILL.md`, `.claude/skills/flash-ship/SKILL.md`
+and `.claude/skills/flash-share/SKILL.md`. The phase map is in `AGENTS.md`, and every game done so far is in `DIRECTORY.md`
 (check it first: `python tools/directory.py find <game>`).
 
 Read the reference that matches the step you're on.
 
 | Step | Reference |
 |---|---|
-| Ruffle Together: playing, key maps, the co-op API, adding players, tests, releasing | `references/ruffle-together.md` |
-| Find out what the SWF is, and where each system lives | `references/recon.md` |
-| Build: AS3 (`importScript` + stubs) or AS2 (new DoAction tags, splice, patched frame scripts) | `references/build.md` |
-| Every trap found so far (Ruffle, Ruffle Together, FFDec, AS2, AS3) | `references/traps.md` |
-| The co-op SWF, its launch line, mods-info, a launcher | `references/release.md` |
-| Run your own relay (optional) | `relay/README.md`, protocol in `references/relay-protocol.md` |
+| Ruffle Together: playing, key maps, the co-op API, adding players, tests, releasing | `playbook/ruffle-together.md` |
+| Find out what the SWF is, and where each system lives | `playbook/recon.md` |
+| Build: AS3 (`importScript` + stubs) or AS2 (new DoAction tags, splice, patched frame scripts) | `playbook/build.md` |
+| Every trap found so far (Ruffle, Ruffle Together, FFDec, AS2, AS3) | `playbook/traps.md` |
+| The co-op SWF, its launch line, mods-info, a launcher | `playbook/release.md` |
+| Run your own relay (optional) | `relay/README.md`, protocol in `playbook/relay-protocol.md` |
 | Optional mods-info (server moves, update notices) | `modsinfo/README.md` |
 
 ## The route
 1. **Recon.** Read the SWF header (`tools/swfheader.py`): SWF version, AS2 or AS3, fps, size, wrappers or sponsor
    preloaders, obfuscation. Does it already have 2+ players on one keyboard?
-2. **Local multiplayer:** write a key map (`references/ruffle-together.md`, Key maps), check it with
+2. **Local multiplayer:** write a key map (`playbook/ruffle-together.md`, Key maps), check it with
    `tools/keys_check.py`, and test it. Often that's the whole job.
 3. **Single player:** export with FFDec and map each system to the one place it runs through: frame loop, input,
-   "the player", camera, levels, menus, saves (`CODE_MAP.md`). Then add the players (`skills/flash-coop`): each
+   "the player", camera, levels, menus, saves (`CODE_MAP.md`). Then add the players (`.claude/skills/flash-coop`): each
    one's input from its slot, every "the player" pointing at the right copy, a camera that keeps everyone in view.
-4. **Test from the start** (`skills/flash-lab`): an input script that gets through the menus, a replay that matches
+4. **Test from the start** (`.claude/skills/flash-lab`): an input script that gets through the menus, a replay that matches
    twice with screenshots looked at, 1 player = the original, 2-4 players in the coop-lab, two real windows.
-5. **Release** (`references/release.md`): the co-op SWF (or the untouched game), the key map, the launch line and the
+5. **Release** (`playbook/release.md`): the co-op SWF (or the untouched game), the key map, the launch line and the
    minimum Ruffle Together version.
 
 ## Rules that held on every game

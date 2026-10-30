@@ -43,7 +43,7 @@ Read https://github.com/multiplayereverything/flash-multiplayer-skill and follow
 I want to play <game>.swf online with my friends.
 ```
 
-The agent follows [AGENTS.md](AGENTS.md) and the skills in [`skills/`](skills).
+The agent follows [AGENTS.md](AGENTS.md) and the skills in [`.claude/skills/`](.claude/skills).
 
 ### Install it as a skill
 
@@ -52,7 +52,7 @@ npx skills add multiplayereverything/flash-multiplayer-skill
 ```
 
 Add `-g` to install it for every project. That installs one skill, `flash-multiplayer`, with the whole hub inside it:
-the seven phase skills, references, tools and templates. You need
+the seven phase skills, playbook, tools and templates. You need
 [Ruffle Together](https://github.com/multiplayereverything/ruffle-coop/releases/latest), and for games that need
 changes, Java 21, [FFDec](https://github.com/jindrapetrik/jpexs-decompiler) 26.x and Python 3.10+. The agent asks
 before installing anything.
@@ -66,7 +66,7 @@ Your agent takes one of two paths.
 | When | The game already has 2+ players on one keyboard | One player only |
 | How | Write a key map: which game keys each player's buttons press. Test it with scripted players, ship it | Map the game's code, add more heroes that each read their own player's input, keep everyone on screen, test, ship |
 | Skills | `flash-start`, `flash-lab`, `flash-ship` | `flash-start`, `flash-map`, `flash-inject`, `flash-coop`, `flash-lab`, `flash-ship` |
-| Guide | [Ruffle Together](references/ruffle-together.md) | [Ruffle Together](references/ruffle-together.md), [build](references/build.md) |
+| Guide | [Ruffle Together](playbook/ruffle-together.md) | [Ruffle Together](playbook/ruffle-together.md), [build](playbook/build.md) |
 
 Both end the same way: replays that match twice with screenshots looked at, 2-4 players in the co-op lab, two real
 windows, a release, and what was learned sent back here (`flash-share`).
@@ -128,8 +128,8 @@ Every agent that works on a game sends what it learned back here: a directory en
 write-up, new traps, a better tool. One person's agent gets a game halfway; the next one starts from there.
 
 - The `flash-share` skill walks through it; your agent opens the commit or pull request after you've reviewed it.
-- Outside contributors: read [CONTRIBUTING.md](CONTRIBUTING.md). Fork, one game per PR, and the pull request template
-  does the rest. [CodeRabbit](https://coderabbit.ai) reviews every PR.
+- Contributors: read [CONTRIBUTING.md](CONTRIBUTING.md). Open a draft PR, one game per PR, and the pull request template
+  does the rest. Fork only if you can't push to the repo.
 - The **QA level** on every entry says how it was proven: not tested, tested with 2 players, with 3+ players, or
   played online by real people on two networks.
 - A new key map goes to [Ruffle Together](https://github.com/multiplayereverything/ruffle-coop) too, so it's built in.
@@ -167,10 +167,10 @@ holders can ask for removal.
 ## Documentation
 
 - [AGENTS.md](AGENTS.md): rules and phase map for agents · [SKILL.md](SKILL.md): the route on one page ·
-  [skills](skills)
-- References: [Ruffle Together](references/ruffle-together.md) · [recon](references/recon.md) ·
-  [build](references/build.md) · [traps](references/traps.md) · [release](references/release.md) ·
-  [relay protocol](references/relay-protocol.md)
+  [skills](.claude/skills)
+- References: [Ruffle Together](playbook/ruffle-together.md) · [recon](playbook/recon.md) ·
+  [build](playbook/build.md) · [traps](playbook/traps.md) · [release](playbook/release.md) ·
+  [relay protocol](playbook/relay-protocol.md)
 - [DIRECTORY.md](DIRECTORY.md) and the [game write-ups](games) · [templates](templates/README.md) ·
   [relay](relay/README.md) · [mods-info kit](modsinfo/README.md)
 

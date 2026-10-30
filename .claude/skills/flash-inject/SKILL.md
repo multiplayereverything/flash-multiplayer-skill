@@ -5,9 +5,9 @@ description: Get a mod's code into a Flash game for Ruffle Together without edit
 
 # Flash inject
 
-Paths here are relative to the hub root, two folders up from this file (`../../`), where `references/`, `tools/`, `templates/`, `games/` and `DIRECTORY.md` live.
+Paths here are relative to the hub root, three folders up from this file (`../../../`), where `playbook/`, `tools/`, `templates/`, `games/` and `DIRECTORY.md` live.
 
-Path A games often need no injection at all: try a key map first. The route is in `references/build.md`. Start
+Path A games often need no injection at all: try a key map first. The route is in `playbook/build.md`. Start
 from a template in `templates/build/` and rename what `templates/README.md` lists.
 
 | Game | Start from |
@@ -24,6 +24,6 @@ Every build:
 - makes one `dist/<Game>_coop.swf` (every player needs these exact bytes);
 - checks AS2 output: original tags unchanged, SWF version unchanged, `tools/case_scan.py` clean for SWF 6.
 
-When something breaks, look it up in `references/traps.md` (FFDec, AS2, AS3 sections) before guessing.
+When something breaks, look it up in `playbook/traps.md` (FFDec, AS2, AS3 sections) before guessing.
 
-Then add the players (`skills/flash-coop`) and prove each change with a replay (`skills/flash-lab`).
+Then add the players (`.claude/skills/flash-coop`) and prove each change with a replay (`.claude/skills/flash-lab`).
