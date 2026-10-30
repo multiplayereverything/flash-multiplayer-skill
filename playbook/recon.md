@@ -9,7 +9,7 @@ python tools/swfheader.py game.swf
 ```
 | Field | What it decides |
 |---|---|
-| `AS3=True` (DoABC tags) | AS3 route: `importScript` + stub classes (`references/build.md`, AS3) |
+| `AS3=True` (DoABC tags) | AS3 route: `importScript` + stub classes (`playbook/build.md`, AS3) |
 | `AS3=False`, `doaction>0` | AS2/AVM1 route: new DoAction tags, splicing or patched frame scripts |
 | SWF version 6 | case-insensitive identifiers, no `try/catch`, no `getNextHighestDepth`, `ExternalInterface` hidden (unhide it for `coop.*`). Never raise the version: from SWF 7 `undefined+1` is NaN and old code breaks |
 | fps | Frames per second: input scripts count in frames, so `wait 30` is a second at 30 fps |
@@ -58,6 +58,6 @@ The `CODE_MAP.md` of Bad Ice-Cream Online is the model: packages, boot and scree
 and input, enemies, pathfinding, popups, saves, then known bugs of the original game.
 
 ## 4. Pick the route
-With the map, choose the path (a key map, or local co-op in the SWF: `references/ruffle-together.md`) and the
-injection method (`references/build.md`), and write both, with the reason, in `MODLOG.md`. Then make a replay
-get into play (`skills/flash-lab`) before any feature.
+With the map, choose the path (a key map, or local co-op in the SWF: `playbook/ruffle-together.md`) and the
+injection method (`playbook/build.md`), and write both, with the reason, in `MODLOG.md`. Then make a replay
+get into play (`.claude/skills/flash-lab`) before any feature.

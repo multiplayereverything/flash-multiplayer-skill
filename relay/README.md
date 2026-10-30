@@ -16,7 +16,7 @@ Python 3.7+, standard library only, one process for every game.
 | `tests/test_relay.py` | 38 tests with fake clients (star, tunnel, version 2, limits, mods-info): `python tests/test_relay.py` |
 
 The full protocol (handshakes, star and tunnel, version 2 passwords, room sizes, `ROOMS`, `PROBE`) is in
-`../references/relay-protocol.md`.
+`../playbook/relay-protocol.md`.
 
 ## 1. Try it on your PC
 ```bash

@@ -2,15 +2,15 @@
 
 - [ ] Directory entry (new or corrected) in `data/games.json`, with `DIRECTORY.md` re-rendered
 - [ ] Game write-up in `games/<game>.md`
-- [ ] New traps in `references/traps.md`
+- [ ] New traps in `playbook/traps.md`
 - [ ] New key map (also sent to Ruffle Together: link the PR there)
 - [ ] Tool or template change (with a check in `tools/test_all.py`)
-- [ ] Skill text (`skills/`, `SKILL.md`, `AGENTS.md`, `README.md`)
+- [ ] Skill text (`.claude/skills/`, `SKILL.md`, `AGENTS.md`, `README.md`)
 
 ## Evidence
 
 - QA level: none / lab-2p / lab-3p+ / played-online
-- Which [flash-lab](skills/flash-lab/SKILL.md) steps ran, with what result (for example "0-9 passed with 2 players, twice identical"):
+- Which [flash-lab](.claude/skills/flash-lab/SKILL.md) steps ran, with what result (for example "0-9 passed with 2 players, twice identical"):
 - Sources for every claim (links):
 
 ## Checklist

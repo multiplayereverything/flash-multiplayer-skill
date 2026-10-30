@@ -90,7 +90,7 @@ keeps the same one).
 
 - Extra heroes are copies of the game's own hero, each driven by its slot: `coop.buttons(slot)`, or key codes the
   game never reads routed to that copy before the game sees them. The game's one-player variable (`_root.hero`)
-  has to point at the right copy wherever the game reads it (`references/traps.md`, Process).
+  has to point at the right copy wherever the game reads it (`playbook/traps.md`, Process).
 - One screen: keep everyone in view (a camera on the players' middle), or give each player a camera with
   `coop.camera`.
 - `coop.players` gives the player count; with 1 the game must be the untouched original.
@@ -98,7 +98,7 @@ keeps the same one).
 
 ## Testing
 
-The full checklist, in order and with what counts as passed, is `skills/flash-lab/SKILL.md`. The pieces:
+The full checklist, in order and with what counts as passed, is `.claude/skills/flash-lab/SKILL.md`. The pieces:
 
 - `--coop-replay <swf> --coop-keys <map> --coop-script <file> --coop-frames N --coop-out <file>` runs the game
   headless from an input script and writes a fingerprint every frame. The same script must give the same file
@@ -119,3 +119,17 @@ The full checklist, in order and with what counts as passed, is `skills/flash-la
 - In mods-info and the launcher, the game entry names the Ruffle Together key map, the player counts and the
   minimum Ruffle Together version it needs (a map built in from 1.0.3.7 doesn't exist in 1.0.3.6).
 - Every player must use the same SWF bytes: a rebuilt SWF is a new version for everyone.
+
+## The pinned build
+Mods are tested on Ruffle Together **1.0.3.8** (release `v1.0.3.8`, published 2026-10-30). Everyone in a room must run
+the same build: 1.0.3.7 and 1.0.3.8 players can't join each other.
+
+| | |
+|---|---|
+| Zip | `RuffleTogether-1.0.3.8-windows-x64.zip`, SHA-256 `630847feb0443f50a677cfd5f09635aaaf772b018cc1fe13d94e3d14622c8a59` |
+| Exe | `ruffle_desktop.exe`, SHA-256 `d269dd6e367e9462ca933803f63a302f135e5c6f5b659c2c790bd0c590934c7c` |
+| Get it | `python -I tools/fetch_ruffle.py` downloads the release, checks both hashes and copies the exe |
+
+Do not test on the stock Ruffle in `C:\Program Files\ruffle\bin` (no co-op flags), or on the older stable build
+`048c81d` (1.0.3.3 code, can't join 1.0.3.7 or 1.0.3.8). When the pin changes, update `tools/fetch_ruffle.py` and this
+section together, then check every mod's tests still pass.

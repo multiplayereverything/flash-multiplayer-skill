@@ -5,9 +5,9 @@ description: Prove a Flash game works in Ruffle Together without a human - the r
 
 # Flash lab
 
-Paths here are relative to the hub root, two folders up from this file (`../../`), where `references/`, `tools/`, `templates/`, `games/` and `DIRECTORY.md` live.
+Paths here are relative to the hub root, three folders up from this file (`../../../`), where `playbook/`, `tools/`, `templates/`, `games/` and `DIRECTORY.md` live.
 
-The method is in `references/ruffle-together.md` (Testing). Start from `templates/ruffle-together/`:
+The method is in `playbook/ruffle-together.md` (Testing). Start from `templates/ruffle-together/`:
 `example-2p.txt` (an input script), `replay_check.py` (two replays that must match), `solo_check.py` (1 player
 against the untouched game) and `example.keys` (`python -I tools/keys_check.py` checks a key map).
 
