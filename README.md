@@ -166,7 +166,7 @@ holders can ask for removal.
 
 ## Documentation
 
-- [AGENTS.md](AGENTS.md): rules and phase map for agents · [SKILL.md](SKILL.md): the route on one page ·
+- [AGENTS.md](AGENTS.md): rules and phase map for agents · [SKILL.md](.claude/skills/flash-multiplayer/SKILL.md): the route on one page ·
   [skills](.claude/skills)
 - References: [Ruffle Together](playbook/ruffle-together.md) · [recon](playbook/recon.md) ·
   [build](playbook/build.md) · [traps](playbook/traps.md) · [release](playbook/release.md) ·
