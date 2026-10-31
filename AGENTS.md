@@ -1,7 +1,7 @@
 # Agent guide: Flash multiplayer hub
 
 You're here because someone wants to play a Flash game online with friends. Every game here goes online through
-[Ruffle Together](https://github.com/multiplayereverything/ruffle-coop): every PC runs the same game in lockstep and
+[Ruffle Together](https://github.com/multiplayereverything/ruffle-together): every PC runs the same game in lockstep and
 only key presses travel, so the SWF never gets network code. This hub has the method, the tools, a directory of every
 Flash game done so far, and the skills in `.claude/skills/`. Follow the phases in order; each phase's skill says what to read.
 

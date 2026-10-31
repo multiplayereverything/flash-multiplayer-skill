@@ -1,7 +1,7 @@
 # Ruffle Together co-op API (version 2)
 
 Every call a Flash game (AS2 or AS3) can make to Ruffle Together, and what Ruffle Together does for a game
-without being asked. The user guide is at [ruffle-together.md in ruffle-coop](https://github.com/multiplayereverything/ruffle-coop/blob/coop/docs/ruffle-together.md).
+without being asked. The user guide is at [ruffle-together.md in ruffle-together](https://github.com/multiplayereverything/ruffle-together/blob/coop/docs/ruffle-together.md).
 The code is in the ruffle-coop repo: `desktop/src/coop/api.rs` (answers), `frame.rs` (the Stepper), `session.rs`
 (the network) and `core/src/coop_view.rs` (camera and HUD).
 

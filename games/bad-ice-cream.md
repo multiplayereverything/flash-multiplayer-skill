@@ -3,7 +3,7 @@
 Relay id `bic`. Entry in [DIRECTORY.md](../DIRECTORY.md).
 
 **Retired 2026-10-28.** The released `BadIceCream_online.swf` is now the game with only the level-start fix, played
-online in [Ruffle Together](https://github.com/multiplayereverything/ruffle-coop) (lockstep co-op inside Ruffle: only
+online in [Ruffle Together](https://github.com/multiplayereverything/ruffle-together) (lockstep co-op inside Ruffle: only
 key presses travel). The relay mod described below (host snapshots, F9 panel, DIRECT, the launcher lobby bridge)
 isn't released any more; its lessons stand.
 

@@ -80,7 +80,7 @@ Read the reference that matches the step you're on.
 | `modsinfo/` | Optional mods-info starter kit: format, template, schema, validator |
 
 The templates come from working games. Each says what to rename. They need `FFDEC` (path to `ffdec-cli.jar`, FFDec
-26.x), Java 21, Python 3.10+ and [Ruffle Together](https://github.com/multiplayereverything/ruffle-coop).
+26.x), Java 21, Python 3.10+ and [Ruffle Together](https://github.com/multiplayereverything/ruffle-together).
 
 ## Report
 End each step with a table: Feature | What it does | How | Tested (✅ with the evidence, or ⚠️ with why not).
