@@ -124,6 +124,8 @@ Each one cost a real mod time. The mod it came from is in brackets.
   repeat it every frame until the screen changes. [Stealth Assassin]
 
 ## Process
+- Owning sticks per player starves a player when a team has more players than sticks (or loses sticks): rotate each team's turns round its players instead, counting the game's own turn changes. [Territory War]
+- `--coop-replay` (1.0.3.8) never passes `--coop-option` to the game, and headless session fingerprints differ between runs even with a fixed `--coop-delay`; prove an option with a `trace` per decision read from the host's log (RUST_LOG=info). [Territory War]
 - Turn ownership can be proven without game hooks: run a script where every non-owner presses keys (and the host clicks) against a twin with the same timing and mouse path but none of that input; the fingerprint files must be identical. [Territory War]
 - `--coop-replay` always runs the key map's maximum player count, so `coop.players` there is the max (4), not the session's. [Territory War]
 - Headless replay PNGs have no device fonts: `_sans` text is invisible. Debug with drawn bars whose widths encode values. [Territory War]
