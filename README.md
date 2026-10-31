@@ -1,3 +1,5 @@
+<p align="center"><i>This project was heavily inspired by <a href="https://github.com/cranebeaker/coop-anything">coop-anything</a>.</i></p>
+
 <p align="center">
   <img src="assets/brand/flash-multiplayer-skill-logo.png" alt="Flash Multiplayer Skill" width="320">
 </p>
