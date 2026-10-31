@@ -1,14 +1,14 @@
 # Ruffle Together
 
-[Ruffle Together](https://github.com/multiplayereverything/ruffle-coop) is a fork of Ruffle desktop that plays a
+[Ruffle Together](https://github.com/multiplayereverything/ruffle-together) is a fork of Ruffle desktop that plays a
 local-multiplayer Flash game online with no netcode in the SWF. Every PC runs the same game in the same Ruffle build;
 only key presses and the mouse travel, and every frame runs on every PC with every player's input (lockstep). The
 emulator makes the game deterministic: `getTimer`, `Date`, timers, `Math.random`/`random()`, sound endings, script
 time limits and window size are the same on every PC. Every 25 frames the PCs compare a fingerprint of the whole
 stage; if they ever differ, every window says OUT OF SYNC and each PC writes a report.
 
-Its own docs are the reference: the [user guide](https://github.com/multiplayereverything/ruffle-coop/blob/coop/docs/ruffle-together.md)
-and the [co-op API](https://github.com/multiplayereverything/ruffle-coop/blob/coop/docs/coop-api.md). This page is
+Its own docs are the reference: the [user guide](https://github.com/multiplayereverything/ruffle-together/blob/coop/docs/ruffle-together.md)
+and the [co-op API](https://github.com/multiplayereverything/ruffle-together/blob/coop/docs/coop-api.md). This page is
 what a Flash mod needs from them.
 
 ## The paths
@@ -121,15 +121,17 @@ The full checklist, in order and with what counts as passed, is `.claude/skills/
 - Every player must use the same SWF bytes: a rebuilt SWF is a new version for everyone.
 
 ## The pinned build
-Mods are tested on Ruffle Together **1.0.3.8** (release `v1.0.3.8`, published 2026-10-30). Everyone in a room must run
-the same build: 1.0.3.7 and 1.0.3.8 players can't join each other.
+Mods target Ruffle Together **1.0.3.9** (release `v1.0.3.9`, published 2026-10-31, commit `1a56efb`). Everyone in a
+room must run the same build: 1.0.3.8 and 1.0.3.9 players can't join each other. Its release notes list Bad Ice-Cream,
+Gun Mayhem 2 (4 players) and Territory War replays as unchanged from 1.0.3.8; rerun a mod's own tests on it before
+calling that mod tested on 1.0.3.9.
 
 | | |
 |---|---|
-| Zip | `RuffleTogether-1.0.3.8-windows-x64.zip`, SHA-256 `630847feb0443f50a677cfd5f09635aaaf772b018cc1fe13d94e3d14622c8a59` |
-| Exe | `ruffle_desktop.exe`, SHA-256 `d269dd6e367e9462ca933803f63a302f135e5c6f5b659c2c790bd0c590934c7c` |
+| Zip | `RuffleTogether-1.0.3.9-windows-x64.zip`, SHA-256 `d7d0a0560891193f6504b1d2fe19f2ee5cc6bbb20089be06b087eede746c4eb0` |
+| Exe | `ruffle_desktop.exe`, SHA-256 `c459ed434c0fc185c27b424871d59d166508a7ff499fda26ad66b3fa0d928c27` |
 | Get it | `python -I tools/fetch_ruffle.py` downloads the release, checks both hashes and copies the exe |
 
 Do not test on the stock Ruffle in `C:\Program Files\ruffle\bin` (no co-op flags), or on the older stable build
-`048c81d` (1.0.3.3 code, can't join 1.0.3.7 or 1.0.3.8). When the pin changes, update `tools/fetch_ruffle.py` and this
+`048c81d` (1.0.3.3 code, can't join any later build). When the pin changes, update `tools/fetch_ruffle.py` and this
 section together, then check every mod's tests still pass.

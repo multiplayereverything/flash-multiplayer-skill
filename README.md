@@ -6,7 +6,7 @@
 
 <p align="center">
 <a href="https://discord.gg/2SJggtHqPR"><img src="https://img.shields.io/badge/Discord-Join%20the%20server-5865F2?logo=discord&logoColor=white&style=for-the-badge" alt="Join the Discord" height="36"></a>
-<a href="https://github.com/multiplayereverything/ruffle-coop"><img src="https://img.shields.io/badge/Ruffle%20Together-Play%20them%20online-f5a623?style=for-the-badge" alt="Ruffle Together: play them online" height="36"></a>
+<a href="https://github.com/multiplayereverything/ruffle-together"><img src="https://img.shields.io/badge/Ruffle%20Together-Play%20them%20online-f5a623?style=for-the-badge" alt="Ruffle Together: play them online" height="36"></a>
 <a href="https://gitgem.org/github/multiplayereverything/flash-multiplayer-skill"><img src="https://gitgem.org/api/badge/github/multiplayereverything/flash-multiplayer-skill.svg" alt="GitGem" height="36"></a>
 </p>
 
@@ -24,7 +24,7 @@ Want to play an old Flash game with your friends over the internet? Point your A
 the game. It reads the SWF, works out how to give it more players, **tests it with scripted players and real
 windows**, and ships it, all without touching the original file.
 
-Every game here plays in **[Ruffle Together](https://github.com/multiplayereverything/ruffle-coop)**, a fork of the
+Every game here plays in **[Ruffle Together](https://github.com/multiplayereverything/ruffle-together)**, a fork of the
 Ruffle Flash emulator: every PC runs the same game in lockstep and only the key presses travel. The host gets a
 5-letter room code, friends type it, and nobody forwards a port. A game that already has two players on one keyboard
 usually needs nothing but a key map. A single-player game gets local co-op added to the SWF, still with no network
@@ -53,7 +53,7 @@ npx skills add multiplayereverything/flash-multiplayer-skill
 
 Add `-g` to install it for every project. That installs one skill, `flash-multiplayer`, with the whole hub inside it:
 the seven phase skills, playbook, tools and templates. You need
-[Ruffle Together](https://github.com/multiplayereverything/ruffle-coop/releases/latest), and for games that need
+[Ruffle Together](https://github.com/multiplayereverything/ruffle-together/releases/latest), and for games that need
 changes, Java 21, [FFDec](https://github.com/jindrapetrik/jpexs-decompiler) 26.x and Python 3.10+. The agent asks
 before installing anything.
 
@@ -132,7 +132,7 @@ write-up, new traps, a better tool. One person's agent gets a game halfway; the 
   does the rest. Fork only if you can't push to the repo.
 - The **QA level** on every entry says how it was proven: not tested, tested with 2 players, with 3+ players, or
   played online by real people on two networks.
-- A new key map goes to [Ruffle Together](https://github.com/multiplayereverything/ruffle-coop) too, so it's built in.
+- A new key map goes to [Ruffle Together](https://github.com/multiplayereverything/ruffle-together) too, so it's built in.
 
 Chat with other players and modders on [Discord](https://discord.gg/2SJggtHqPR).
 

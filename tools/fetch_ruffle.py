@@ -5,7 +5,7 @@
 
 Downloads RuffleTogether-<VERSION>-windows-x64.zip from GitHub, checks the zip's SHA-256,
 extracts ruffle_desktop.exe, checks its SHA-256, and copies it to <dest>/ruffle_desktop.exe.
-Standard library only. Change the pin here when a new release is out, and update playbook/ruffle.md.
+Standard library only. Change the pin here when a new release is out, and update playbook/ruffle-together.md.
 """
 import argparse
 import hashlib
@@ -16,11 +16,11 @@ import tempfile
 import urllib.request
 import zipfile
 
-VERSION = "1.0.3.8"
+VERSION = "1.0.3.9"
 ZIP_NAME = "RuffleTogether-%s-windows-x64.zip" % VERSION
-URL = "https://github.com/multiplayereverything/ruffle-coop/releases/download/v%s/%s" % (VERSION, ZIP_NAME)
-ZIP_SHA256 = "630847feb0443f50a677cfd5f09635aaaf772b018cc1fe13d94e3d14622c8a59"
-EXE_SHA256 = "d269dd6e367e9462ca933803f63a302f135e5c6f5b659c2c790bd0c590934c7c"
+URL = "https://github.com/multiplayereverything/ruffle-together/releases/download/v%s/%s" % (VERSION, ZIP_NAME)
+ZIP_SHA256 = "d7d0a0560891193f6504b1d2fe19f2ee5cc6bbb20089be06b087eede746c4eb0"
+EXE_SHA256 = "c459ed434c0fc185c27b424871d59d166508a7ff499fda26ad66b3fa0d928c27"
 DEFAULT_DEST = os.path.join(os.environ.get("USERPROFILE", "~"), "Documents", "MultiplayerEverythingLauncher",
                             "players", "ruffle-together")
 

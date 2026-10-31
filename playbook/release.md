@@ -3,7 +3,7 @@
 ## 1. The key map
 - A built-in map (`--coop-keys gun-mayhem-2`) needs nothing shipped.
 - A new map is a `.keys` file next to the SWF, checked with `python -I tools/keys_check.py game.keys`. Send it to
-  [ruffle-coop](https://github.com/multiplayereverything/ruffle-coop) (`desktop/src/coop/keys/`) so the next Ruffle
+  [ruffle-together](https://github.com/multiplayereverything/ruffle-together) (`desktop/src/coop/keys/`) so the next Ruffle
   Together release has it built in, and note which version first does.
 - A game that sets its own map with `coop.keys` still needs a launch map with enough slots.
 
