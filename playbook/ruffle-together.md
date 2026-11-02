@@ -63,6 +63,24 @@ local: UP=38,87 DOWN=40,83 LEFT=37,65 RIGHT=39,68 FIRE=90,84 ALT=88,89
   scripts and replays too (from Ruffle Together 1.0.3.8).
 - Only the host's mouse reaches the game's own mouse; a game built for co-op reads every player's with the API.
 
+## TV mode (after 1.0.5, not released yet)
+
+For a couch or TV launcher: `RUFFLE_TOGETHER_TV=1` (an environment variable, so older builds just ignore it; an
+unknown flag would stop them starting). It turns on fullscreen, overlays at 2x, and a controller (any gilrs pad).
+
+- The controller presses key map buttons: D-pad or left stick = UP/DOWN/LEFT/RIGHT, A = FIRE, B = ALT, X = KEY1,
+  Y = KEY2, RB = KEY3, LB = KEY4, RT = YES (if the map uses it), LT = NO, View = VIEW, L3 = QUIT, a tapped Start =
+  MENU. In a session they travel like key presses (ORed into the player's input), so nothing about lockstep changes.
+- Held Start (1 s) opens a menu: Resume, Quit to launcher (leaves the room cleanly, exit code 0).
+- The right stick moves the mouse, R3 (or RT when the map has no YES) clicks.
+- The controller is read only while the window has focus. `RUFFLE_TOGETHER_PAD=xbox|playstation|nintendo` forces the
+  button names on screen.
+- Solo, it presses slot 0 of the `--coop-keys` given on the command line, else the built-in `controller` map (arrows,
+  Z, X, Space, Enter, Shift, C, Esc, P). Solo maps built in: `dad-n-me-solo`, `hobo-solo`, `zombotron-solo`,
+  `intrusion-solo`, `intrusion-2-solo` (each the game's own one-player keys).
+- Labs: `--coop-pad-script FILE` (`wait MS`, `press PAD [MS]`, `hold PAD`, `release PAD`, `stick left|right X Y [MS]`)
+  drives a fake controller; never press a real one in tests.
+
 ## The co-op API (for SWFs made for Ruffle Together)
 
 Calls go through `ExternalInterface.call("coop.<name>", ...)`, AS2 and AS3. The helpers
