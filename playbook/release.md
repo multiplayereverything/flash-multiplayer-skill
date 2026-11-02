@@ -29,6 +29,10 @@ works): `servers.json` with the relay's address, and `mods/<id>.json` with the l
 download link and a notice. Starter kit: `modsinfo/` (file format, a template mod file, `schema.json`,
 `tools/validate.py`).
 
+For TV mode the launcher sets `RUFFLE_TOGETHER_TV=1` and passes `--fullscreen`, and every action, solo included,
+passes the game's `--coop-keys` (a solo map where the game has one). Builds with TV mode have a new build id, so they
+can't join 1.0.5 players: release it as a new version for everyone.
+
 ## 5. A relay (optional)
 Players can use the public Ruffle Together relay (its address is in ruffle-coop's README). To run your own, use the
 hub's `relay/` with a `ruffle-coop` star game (`relay/README.md`) and check it from another network:

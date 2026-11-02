@@ -164,6 +164,9 @@ Each one cost a real mod time. The mod it came from is in brackets.
   screenshots; `on(keyPress "A")` (capital) still needs Shift, as in Flash. [Dad 'n Me]
 - A game that sets its own key map with `coop.keys` on frame 1 can still be launched with any built-in map that has
   enough slots: the game's map replaces it on the next frame, the same on every PC. [Dad 'n Me]
+- A mod that calls `coop.keys` only when `coop.players > 1` has no key map in solo, so a controller (TV mode) moves
+  the player on the default map's arrows but can't attack: the punch keys (A, S) are on no button. Give solo its own
+  map (`dad-n-me-solo`) and have the launcher pass `--coop-keys <map>` on the solo action too. [Dad 'n Me]
 - To swap a bot for a human, wait until the attached bot's own frame-1 script has run (its `onEnterFrame` and
   variables exist), then `removeMovieClip` it and attach the human sprite at the same name and depth with the bot's
   fields as `attachMovie`'s init object. Install your per-slot `onEnterFrame` only once the new clip's own setup has
