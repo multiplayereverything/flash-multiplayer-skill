@@ -63,7 +63,7 @@ local: UP=38,87 DOWN=40,83 LEFT=37,65 RIGHT=39,68 FIRE=90,84 ALT=88,89
   scripts and replays too (from Ruffle Together 1.0.3.8).
 - Only the host's mouse reaches the game's own mouse; a game built for co-op reads every player's with the API.
 
-## TV mode (after 1.0.5, not released yet)
+## TV mode (from 1.0.6)
 
 For a couch or TV launcher: `RUFFLE_TOGETHER_TV=1` (an environment variable, so older builds just ignore it; an
 unknown flag would stop them starting). It turns on fullscreen, overlays at 2x, and a controller (any gilrs pad).

@@ -30,8 +30,8 @@ download link and a notice. Starter kit: `modsinfo/` (file format, a template mo
 `tools/validate.py`).
 
 For TV mode the launcher sets `RUFFLE_TOGETHER_TV=1` and passes `--fullscreen`, and every action, solo included,
-passes the game's `--coop-keys` (a solo map where the game has one). Builds with TV mode have a new build id, so they
-can't join 1.0.5 players: release it as a new version for everyone.
+passes the game's `--coop-keys` (a solo map where the game has one). TV mode needs Ruffle Together 1.0.6, which can't
+join 1.0.5 players.
 
 ## 5. A relay (optional)
 Players can use the public Ruffle Together relay (its address is in ruffle-coop's README). To run your own, use the
