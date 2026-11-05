@@ -194,6 +194,21 @@ def test_swfsym():
         ok("twin: an undefined sprite is refused", True)
 
 
+def test_case_scan(tmp):
+    scan = os.path.join(HERE, "case_scan.py")
+    folder = os.path.join(tmp, "as")
+    os.makedirs(folder)
+
+    def run():
+        return subprocess.run([sys.executable, "-I", scan, folder], capture_output=True).returncode
+
+    ok("twin: case_scan refuses a folder with no .as files", run() != 0)
+    open(os.path.join(folder, "a.as"), "w").write("var total = 1;\nfunction fire() {}\n")
+    ok("case_scan passes distinct names", run() == 0)
+    open(os.path.join(folder, "a.as"), "w").write("var cpk = 1;\nfunction cpK() {}\n")
+    ok("twin: case_scan catches cpk and cpK", run() != 0)
+
+
 def test_keys_check():
     slots, local, shared = keys_check.parse("# two players\nslot 0: UP=38 FIRE=32\nslot 1: UP=87 FIRE=70\n"
                                             "local: UP=38,87 FIRE=32,70\n")
@@ -218,6 +233,7 @@ with tempfile.TemporaryDirectory() as tmp:
     test_swfsym()
     test_check_public(tmp)
     test_relay(tmp)
+    test_case_scan(tmp)
 test_keys_check()
 test_directory()
 test_modsinfo()

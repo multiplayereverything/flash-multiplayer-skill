@@ -336,6 +336,22 @@
       "flash_player": "untested",
       "release": "flash-games: games/worldshardestgame/WorldsHardestGame_online.swf",
       "writeup": "games/worlds-hardest-game.md"
+    },
+    {
+      "id": "electricman2hs",
+      "game": "Electricman 2 HS",
+      "developer": "Free World Group version",
+      "year": 2007,
+      "engine": "AS2",
+      "swf": 6,
+      "path": "single-to-coop",
+      "players": "1-4",
+      "sync": "lockstep in Ruffle Together, no netcode: the mod adds players 2-4 in the one arena, enemies pick the nearest hero who is up, a hero stays down until the match ends",
+      "status": "released",
+      "qa": "lab-3p+",
+      "flash_player": "untested",
+      "release": "flash-games: games/electricman2hs/Electricman2HS_online.swf",
+      "writeup": "games/electricman-2-hs.md"
     }
   ]
 }

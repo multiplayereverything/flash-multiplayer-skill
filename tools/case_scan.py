@@ -1,6 +1,6 @@
-"""SWF 6 is case-insensitive: lists identifiers in src/bmnet that differ only by case.
+"""SWF 6 is case-insensitive: lists identifiers in a folder of .as files that differ only by case.
 
-  python tools/case_scan.py
+  python tools/case_scan.py [folder]     default: src/bmnet
 
 Expected: bmn/BMN (_global.BMN is a property read, never a local) and lab/LAB (_root.lab vs bmn.LAB).
 """
@@ -8,9 +8,16 @@ import collections
 import glob
 import os
 import re
+import sys
 
 SRC = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "src", "bmnet")
 ALLOWED = {"bmn", "lab"}
+
+if len(sys.argv) > 1:
+    SRC = sys.argv[1]
+if not glob.glob(os.path.join(SRC, "*.as")):
+    # a scan of nothing must not look like a pass
+    raise SystemExit("case_scan: no .as files in " + SRC)
 
 bad = 0
 everything = collections.defaultdict(set)

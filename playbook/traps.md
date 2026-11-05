@@ -108,6 +108,18 @@ Each one cost a real mod time. The mod it came from is in brackets.
 - In a game that walks by scrolling the world, two players walking the same way each undo the other's step and nobody
   reaches the screen limit, so the street runs away. Scroll for the group, not per step. [Hobo]
 
+- SWF 6 and a frame-1 `var`: frame-level variables live on `_root`, so `for (var cpk...)` silently replaced the function
+  `_root.cpK`, and calls to it did nothing. Name every helper and loop counter distinct ignoring case, and run
+  `tools/case_scan.py <your src folder>`. [Electricman 2 HS]
+- A fingerprint can't see `_xscale`: solo matched the original on every frame while the health bars never moved. Compare
+  screenshots with the original too. [Electricman 2 HS]
+- A game's shared per-frame totals (enemies add, the hero reads and clears) need one reader that never changes. "The
+  first hero alive" can read right after a clear, before any enemy has added, and that reads as a win. [Electricman 2 HS]
+- A single `_root.gamespeed` set by several heroes' frames: a friend's idle frame cancels another's slow motion. Keep a
+  wish per hero and set the shared value from all of them. [Electricman 2 HS]
+- `coop.label` sits at the top of the clip's bounds, and invisible hit boxes count. Hang the label on a small clip of
+  its own that follows the head. It needs a real window to see: headless shots don't draw labels. [Electricman 2 HS]
+
 ## AS3
 - `flash.display.Sprite` is sealed: dynamic fields need a `MovieClip`. [Bad Ice-Cream]
 - `var` is hoisted to function scope: a local `key` shadowed a `key()` method (#1006), and two locals with one name
@@ -137,6 +149,13 @@ Each one cost a real mod time. The mod it came from is in brackets.
   repeat it every frame until the screen changes. [Stealth Assassin]
 
 ## Process
+- Heroes moving in screenshots doesn't prove input works: knock-backs moved heroes who could press nothing. Count the moves
+  each player has actually played. [Electricman 2 HS]
+- `wincap.py` reads the screen area, so a covered game window captures whatever covers it, including the user's other
+  apps. Check the image is the game before keeping it, and delete it unseen if not. [Electricman 2 HS]
+- Sessions share a `flash-games` clone: staging whole files can publish another session's uncommitted catalog lines
+  before their SWF is up. Check `git status` right before release, and push the file and its catalog line together.
+  [Electricman 2 HS]
 - Owning sticks per player starves a player when a team has more players than sticks (or loses sticks): rotate each team's turns round its players instead, counting the game's own turn changes. [Territory War]
 - `--coop-replay` (1.0.3.8) never passes `--coop-option` to the game, and headless session fingerprints differ between runs even with a fixed `--coop-delay`; prove an option with a `trace` per decision read from the host's log (RUST_LOG=info). [Territory War]
 - Turn ownership can be proven without game hooks: run a script where every non-owner presses keys (and the host clicks) against a twin with the same timing and mouse path but none of that input; the fingerprint files must be identical. [Territory War]

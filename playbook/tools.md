@@ -9,7 +9,7 @@ The scripts in `tools/` and the templates in `templates/`. Run every script with
 | `tools/swfinfo.py` | Frame labels of the main timeline and sprites |
 | `tools/swfmap.py` | Display tree from FFDec `-swf2xml`, for obfuscated AS2 games |
 | `tools/swfsym.py` | Links a library sprite with no class to an AS3 class (a new SymbolClass tag), so the mod can `new` it |
-| `tools/case_scan.py` | SWF 6: finds identifiers that collide when case is ignored |
+| `tools/case_scan.py <folder>` | SWF 6: finds identifiers that collide when case is ignored |
 | `tools/keys_check.py` | Checks a `.keys` file: one `slot` line per player, valid key codes |
 | `tools/unmochi.py` | Unwraps a MochiCrypt-protected SWF into the inner game SWF, so the mod is built from the game and not the ad wrapper |
 | `tools/wincap.py` | Screenshot of a window by PID, never focusing it |
