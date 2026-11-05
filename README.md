@@ -34,7 +34,8 @@ code.
 
 Games online so far: **Bad Ice-Cream** · **Gun Mayhem 2** · **Territory War** · **Fireboy & Watergirl** ·
 **Stealth Hunter 2** · **Raft Wars** · **Intrusion** · **Stealth Assassin** · **Smileys War** · **Dad 'n Me** ·
-**Bow Man** · **Air Battle** · **Ultimate Crab Battle** · yours next?
+**Bow Man** · **Air Battle** · **Ultimate Crab Battle** ·
+**Chaos Faction 2** · **Zombotron** · **Hobo** · **The World's Hardest Game** · yours next?
 
 ## Quick start
 

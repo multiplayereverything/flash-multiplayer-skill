@@ -98,6 +98,16 @@ Each one cost a real mod time. The mod it came from is in brackets.
   raft's dog, which sits straight in the shared container (penguins have their own wrapper clip). Remove the
   object's own clip unless it lives in a per-object wrapper. [Raft Wars]
 
+- A level's placed clip runs `onClipEvent(load)` after your first tick in Ruffle, and so does a fresh
+  `duplicateMovieClip`. A position set in the same tick gets overwritten, so place clips one tick later.
+  [The World's Hardest Game]
+- `ColorMatrixFilter` recolours a sprite and keeps its black outline, which a `Color` transform can't.
+  [The World's Hardest Game]
+- The game's `and` can be the Flash 4 operator, where both sides run: `health <= 0 and cpDie(h)` calls `cpDie` every
+  time, so the called function has to check again. [Hobo]
+- In a game that walks by scrolling the world, two players walking the same way each undo the other's step and nobody
+  reaches the screen limit, so the street runs away. Scroll for the group, not per step. [Hobo]
+
 ## AS3
 - `flash.display.Sprite` is sealed: dynamic fields need a `MovieClip`. [Bad Ice-Cream]
 - `var` is hoisted to function scope: a local `key` shadowed a `key()` method (#1006), and two locals with one name
@@ -110,6 +120,9 @@ Each one cost a real mod time. The mod it came from is in brackets.
   already set `currentLevelIndex`: the friend looked like it was in the new level and stayed in the old one.
   Check that the host's room exists in the loaded level; if not after 10 s, load again. [Stealth Hunter 2]
 - Assigning an Object where the game expects an Array throws #1034. Restore every swap in `finally`. [Intrusion 2]
+
+- Box2D's proxy limit can be too low for added players: Zombotron's 512 crashed with 4 players, and 2048 works. Raise
+  it only in a session, so 1 player stays the original. [Zombotron]
 
 ## Games and portals
 - Click-to-continue sponsor preloaders block labs: wait for them, or test the inner SWF. [Air Battle, Stealth Hunter 2]
