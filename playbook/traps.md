@@ -149,6 +149,12 @@ Each one cost a real mod time. The mod it came from is in brackets.
   repeat it every frame until the screen changes. [Stealth Assassin]
 
 ## Process
+- Co-op that needs a menu click to turn on looks like "everyone moves one player" when nobody clicks. Take the count
+  from `coop.players`, and check it in a session: `--coop-replay` reports the key map's slot count, not `--coop-players`,
+  so test a smaller count with a `.keys` file that has that many slots. [Stealth Assassin]
+- Enemy AI written for one player can assume its target is close when sight is lost and walk there in a straight
+  line. Switching targets by distance alone sends it through walls: switch only to a player it can see, and test with
+  a lab-only trace that logs each enemy entering a wall. [Stealth Assassin]
 - Heroes moving in screenshots doesn't prove input works: knock-backs moved heroes who could press nothing. Count the moves
   each player has actually played. [Electricman 2 HS]
 - `wincap.py` reads the screen area, so a covered game window captures whatever covers it, including the user's other

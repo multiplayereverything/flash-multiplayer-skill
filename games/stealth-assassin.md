@@ -9,13 +9,12 @@
 | Relay id | `stealthassassin`, protocol `sa-1`, star mode |
 | QA | lab, 2-4 players with a late join, RELAY and DIRECT, 80 ms lag, solo control, a must-fail control run |
 
-## Local co-op for Ruffle Together (the release since 2026-10-29)
+## Local co-op for Ruffle Together (first released 2026-10-29)
 The game has no local multiplayer, so Ruffle Together had nothing to sync. The mod adds it, reusing the relay mod's
 hooks with the network parts taken out (the same 22 patches point at a `CoopSA` class instead of `NetSA`):
 - A PLAYERS 1-4 button on the mission menu. With 1 nothing changes: a scripted Tutorial run gives byte-identical
   screenshots on the original and the mod.
-- P1 keeps arrows + Z + X; P2 W A S D + T + Y; P3 and P4 on the numpad (the Gun Mayhem 2 key map, so
-  `--coop-keys gun-mayhem-2` works). The extra keys are stopped before the game's handler, which also reads WASD for P1.
+- P1 keeps arrows + Z + X; P2 W A S D + T + Y; P3 and P4 on the numpad (`--coop-keys stealth-assassin`). The extra keys are stopped before the game's handler, which also reads WASD for P1.
 - Each extra assassin is a real game character moved by the game's own movement rules; the relay mod's per-guard
   swap makes guards see, chase and shoot it. One extra target per extra player; the game is over only when all are dead.
 - Lockstep rules kept: no wall clock, pixel reads, sounds or Dictionary; `for each` only over arrays.
@@ -23,6 +22,19 @@ hooks with the network parts taken out (the same 22 patches point at a `CoopSA` 
 - Text in a device font (`_sans`) is not drawn in `--coop-replay` screenshots; check it in a real window.
 Proof: `--coop-replay` twice identical for 1-4 players; coop-lab relay and direct 2/3/4 players, 2700 frames, no
 desync; windows_lab quiet and pressure pass (an idle PC matters: other labs on the same PC fail it, a known-good game too).
+
+## What the first release got wrong (fixed 2026-11-06)
+- **"Everyone moves the same player."** Co-op needed a click on the PLAYERS button; nobody clicked, the count stayed 1,
+  and slot 1's WASD moved player 1 because the original game reads WASD too. The count now comes from `coop.players`,
+  so the button only exists outside a session. A group with no save also had only the Tutorial, where extras never
+  spawned: a session now opens Easy, and extras spawn in the Tutorial.
+- **"The police go into the walls."** A guard that loses sight walks a straight line to the target's position at that
+  moment. That is safe with one player, who has only just left view. Pointing each guard at the *nearest* assassin
+  broke it: the nearest could be behind a wall, so sight was "lost" at once and the line ran through walls. A guard now
+  changes target only to an assassin it can see within the game's own sight distance, and a wall on that walk ends
+  the chase through the game's own routine. A lab-only trace that logs each guard entering a wall went from 3-5 entries
+  in a run to 0, and the game's own logic gave 0 as the control.
+- More targets: one extra per extra player plus one more, in co-op only. A friend who leaves (`coop.events`) drops as a body.
 
 ## The game
 Top-down stealth: walk to the green target without being seen, touch it while moving to stab it, then reach the
