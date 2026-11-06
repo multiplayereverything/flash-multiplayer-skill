@@ -186,10 +186,12 @@ Each one cost a real mod time. The mod it came from is in brackets.
   window. [Raft Wars]
 - In a `--coop-script`, a click right after a new menu appears misses: the replay's pointer only hovers what it moves over. Move one pixel off and back before each click. [Territory War]
 - Ruffle's `getBounds` returns NaN for AS2 Button instances; read `_x/_y/_width/_height` (via `localToGlobal`) to find click positions for a script. [Territory War]
-- A game that plays each sound effect on a fresh empty clip and removes the clip in `Sound.onSoundComplete` desyncs
-  Ruffle Together in real windows (the untouched game did): when a sound ends depends on each PC's audio device.
-  Headless replays and sessions never show it, because their sounds never end. Keep the clip (or remove it after a
-  fixed number of frames). Fixed in Ruffle Together itself since: sounds end on the frame clock. [Smileys War]
+- A game that culls by the screen (clips hide unless they touch a clip at the stage's size) loses everything off the
+  stage under `coop.camera`, because the world no longer moves. Grow that clip so nothing is culled. [Smileys War]
+- Under `coop.camera` a still cursor keeps its old game position while the camera moves. If the game expects a cursor
+  fixed on screen, store the offset from the camera when `coop.mouseX/Y` change and aim at camera + offset. [Smileys War]
+- Re-check a workaround when Ruffle Together fixes the bug behind it: keeping sound clips the game removes made
+  "1 player = the original" fail once sounds ended on the frame clock. [Smileys War]
 - AS2 `on(keyPress "a")` buttons hear only the typed character, not the key. Ruffle Together 1.0.3.6 and 1.0.3.7
   didn't type it for a pressed key (fixed in 1.0.3.8), so in those versions an A press in a replay or a game-set
   `coop.keys` map never reached the menu, in the untouched game too. Check menus by key in a replay, with
@@ -205,9 +207,6 @@ Each one cost a real mod time. The mod it came from is in brackets.
   run too. That needs no assumption about when Ruffle runs an attached clip's first frame. [Smileys War]
 - The lab-only probe trick: make an empty clip whose `_x/_y` hold the numbers you need (kills, deaths, last hit)
   and read them from the `COOP_DESCRIBE_AT` dump, since replays don't log traces. [Smileys War]
-- Macromedia V2 menus (List/ComboBox) gave a 1 px desync of a row highlight in a two-window lab, cause unknown.
-  Setting the global styles `openDuration` and `selectionDuration` to 0 (no animation) made the next runs pass.
-  [Smileys War]
 - `windows_lab.py` counts a frame late at > 1.25 frame times: 31 ms at 40 fps versus 50 ms at 25 fps, so a 40 fps game trips the 3-late-frame limit far more easily on a busy PC. [Territory War]
 - With 7 other sessions' labs running (about 18 Ruffle windows), some windows sat on the game's preloader for good
   (its transition clip reset). Not reproducible alone. Let the runner spot it and run the scenario again, and keep

@@ -4,7 +4,7 @@
 |---|---|
 | Engine | AS2, SWF 8, 500x375, 35 fps; game code in main-timeline frame scripts and sprite frame-1 scripts; Macromedia V2 components (List, ComboBox) on the menus |
 | Path | single player (one human against bots) to local multiplayer, 2-4 humans, played online through Ruffle Together |
-| Sync | Ruffle Together lockstep: no netcode in the SWF; `--coop-keys smileys-war`; every player's mouse through the co-op API |
+| Sync | Ruffle Together lockstep (1.0.6+): no netcode in the SWF; `--coop-keys smileys-war`; every player's mouse, camera and HUD through the co-op API |
 | Build | 3 new DoAction tags compiled by FFDec (`InsertAction`) at the end of 3 main-timeline frames; every original tag byte-for-byte (checked by the build) |
 | QA | `--coop-replay` determinism, solo = original fingerprint check, coop-lab 2/3/4 players relay + direct, windows_lab; not played between two real PCs |
 
@@ -24,8 +24,14 @@ explosion and pickup loops over `"smiley" + i`, so any clip named that way is a 
   frame-1 script has run, the controller swaps its `onEnterFrame` for a copy of the human code with per-slot keys.
   Waiting for the clip's own setup (`onEnterFrame` and `guns_ammo` defined) avoids the "when does an attached clip's
   frame 1 run" question entirely.
-- The game's camera follows player 1's mouse; with 2+ humans one shared view follows the middle of the living
-  humans (same target point and easing). A camera per PC is not possible in lockstep.
+- The world stays at (0,0) and every slot gets `coop.camera` each frame, with the game's own easing and lead towards
+  the aim. `coop.hud` keeps the HUD, background and countdown on screen. The game shows only terrain pieces touching
+  a hidden `_root.screen` clip, so that clip is made huge: which pieces show must not depend on one player's camera.
+- Each PC's HUD shows its own player: the game's HUD script also decides who won, so it still runs, then the mod writes
+  the local player's numbers over its text, the health bar's width and an alpha (the sync check compares none of them).
+- HUMANS starts at `coop.players`, and the total player count rises to HUMANS if it was set lower.
+- A friend who leaves (`coop.events`): a bot sprite takes over at the same name, depth, place and team, and the
+  player's name and score go back on the board after the bot's setup overwrites them.
 - Aim goes through one function: in a session, `ExternalInterface.call("coop.mouseX"/"coop.mouseY"/"coop.mouseDown",
   slot)` for every slot (player 1 included); keyboard aim (an angle turned with two keys) as the fallback, switched
   by input only, so every PC switches on the same frame. `coop.localSlot` only adds "YOU" to a label's text.
@@ -33,13 +39,14 @@ explosion and pickup loops over `"smiley" + i`, so any clip named that way is a 
   frame except the arena screen while the HUMANS button is shown.
 
 ## Lockstep traps found
-- **Sound clips removed in `onSoundComplete`:** each effect plays on a fresh empty clip that the game removes when
-  the sound ends. When a sound ends depends on each PC's audio device, so the stage differs (a real two-window
-  desync of the untouched game). Headless replays never see it (no audio, sounds never end). Fix: the mod's
-  `sound()` leaves the empty clip; the game recreates the container at every map load.
-- **V2 component menus in two real windows:** one List row's highlight clip ended 1 px apart on the arena screen.
-  Cause not established (Ruffle Together steps timers per frame); setting the global styles `openDuration` and
-  `selectionDuration` to 0 (no menu animation) made the next runs pass.
+- **Two desyncs this game found, both fixed in Ruffle Together 1.0.3.5:** clips removed in `onSoundComplete` (sounds
+  now end on the frame clock) and a V2 List highlight 1 px apart (`_xmouse` now ignores window size). The mod's
+  workarounds came out again: keeping the clips made "1 human = the original" fail once sounds really ended.
+- **A still cursor under a camera:** Ruffle converts a cursor through the camera only when it moves, so a still
+  mouse keeps its old game position while the camera follows the player. The mod remembers the offset from the
+  camera when the value changes and aims at camera + offset, so the crosshair stays put on screen as in the original.
+- **Shots use last frame's aim:** the game turns the gun after it fires. A scripted shot needs a mouse move the
+  frame before, and check for terrain in the way before blaming the aim.
 - `hitTest(x, y, true)` against map polygons is fine (geometry, same build on every PC).
 - Headless replay draws no device-font text: labels in `_sans` only show in a real window.
 
