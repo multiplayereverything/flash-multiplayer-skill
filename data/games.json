@@ -234,7 +234,7 @@
       "swf": 8,
       "path": "single-to-coop",
       "players": "1-4",
-      "sync": "lockstep in Ruffle Together: the mod adds 2-4 humans in place of bots on their own keys and their own mouse (co-op API), no netcode",
+      "sync": "lockstep in Ruffle Together: the mod adds 2-4 humans in place of bots with their own keys, mouse, camera and HUD (co-op API), no netcode",
       "status": "released",
       "qa": "lab-3p+",
       "flash_player": "untested",
