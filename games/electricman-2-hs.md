@@ -37,6 +37,12 @@ position, so nearly everything that means "the hero" names `_root.em`.
   that proves the path, not the balance.
 - A counter of the moves each hero played: all 14 input-driven moves for every slot.
 
+## 1.1 (2026-11-07, on Ruffle Together 1.0.7)
+1.0 passed every lab above and was still broken in real play: wrong keys (a Ruffle Together bug, fixed in 1.0.7), and the game went
+dead at the end of every fight and on leaving the training (`unloadMovie(this)`, in the original's lines too; guarded in the mod).
+New in the lab: physical keys in real windows, checked by each hero's move, and whole scripts in real windows, the whole tournament
+included. Both come out clean on 1.1.
+
 ## Lessons
 - A green solo fingerprint and good-looking screenshots hid two bugs: no player could press anything in a session, and
   1-player health bars never moved. See the traps with this game's name.
