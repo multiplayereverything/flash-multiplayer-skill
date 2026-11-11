@@ -536,7 +536,7 @@ Each one cost a real mod time. The mod it came from is in brackets.
 - Long replays on a shared PC fail with "memory allocation ... failed", and overlapping labs once ended in a power
   loss. Before each lab step wait until `FreeVirtualMemory` is 15 GB+ and fewer than 6 Ruffle processes run, and
   don't trust logs from a run a crash cut off. [Electricman 2 HS, Madness, Duck Life 4, The Skullkid]
-- A download behind a bot check (webdesignmuseum.org blocks curl): ask the user to save the file, don't work around the
+- A download behind a bot check (webdesignmuseum.org blocks curl): get it from a copy the user saved or from the Internet Archive snapshot; don't work around the
   check. Check the header (`CWS`/`FWS`) before trusting a download (the blocked URL answers with 4.5 KB of HTML), then
   record its SHA-256. [The Skullkid, Run 2, Flash Chess, Portal]
 - To stage only your own lines in a file another session has also edited, write an index blob of HEAD plus your
