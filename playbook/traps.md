@@ -50,6 +50,8 @@ Each one cost a real mod time. The mod it came from is in brackets.
 - `-deobfuscate` output is for reading only; on a wrapper SWF it wrote a 0-byte file. [Stealth Hunter 2]
 - FFDec 26 decompiles some loop exits as `§§goto(addrNNNN)` + a label, then can't compile its own output ("goto is
   not available"). When the label sits right after the loop, delete both: it's a `break`. [Stealth Assassin]
+- A clip that stays on the timeline unchanged over several frames is exported only on the frame that places it (on
+  105 and 106, absent from 107's export). Rewrite asserts must count placements, not frames. [Duck Life 4]
 
 ## AS2 / AVM1
 - Never name a function `stop` (or `play`, `gotoAndStop`...): it compiles to the timeline action. A clean-up silently
@@ -58,6 +60,10 @@ Each one cost a real mod time. The mod it came from is in brackets.
 - SWF 6 has no `try/catch/throw`, no `getNextHighestDepth`, no `getInstanceAtDepth`. Use fixed high depths away from
   the game's (Bow Man used 1048568-1048571). [Bow Man, Ultimate Crab Battle]
 - Never raise SWF 6 to 7+: `undefined + 1` becomes NaN and old counters break. [Bow Man]
+- In SWF 7+, a counter never set (`c = Number(_root.c) + 1`) stays NaN for good, and `NaN > 3` is false: a lab gate on
+  it never opened. Set every counter before counting. [Duck Life 4]
+- To replace a state clip, `createEmptyMovieClip(name, sameDepth)` alone replaces the old one. Removing the old clip
+  after creating the new one removes the new one when the name hasn't changed. [Duck Life 4]
 - `String(number)` keeps 15 digits: send the remainder for exact state. [Gun Mayhem 2]
 - `hitTest(x, y, true)` takes stage coordinates, so the camera position is gameplay state. [Gun Mayhem 2]
 - `gamepaused` flags don't freeze timeline animations or `_root.onEnterFrame`: a netplay wait must freeze them all.
@@ -229,6 +235,12 @@ Each one cost a real mod time. The mod it came from is in brackets.
 - With 7 other sessions' labs running (about 18 Ruffle windows), some windows sat on the game's preloader for good
   (its transition clip reset). Not reproducible alone. Let the runner spot it and run the scenario again, and keep
   each failing run's window logs (the next run overwrites them). [Bad Ice-Cream]
+- Lab load can take the PC down: 6 parallel 3000-frame replays with `COOP_DESCRIBE_AT` dumps every 150 frames, next to
+  other sessions' labs, came just before a power loss (resource exhaustion in the log). Run at most 2 replays at once and
+  wait while `Win32_OperatingSystem` FreeVirtualMemory is under 15 GB. [Duck Life 4]
+- One lab SWF for every scenario, no rebuild: the script's first line `move F 0` puts the host's mouse at x = F; the
+  lab code reads `coop.mouseX(0)` once loaded, sets up the state the scenario needs and does `gotoAndStop(F)`.
+  [Duck Life 4]
 - Two sessions building the same mod wiped each other's files: one build folder per run. [Gun Mayhem 2]
 - Sharing the hub checkout with other sessions: `git update-index` on the shared index replaced another session's
   staged file just as it committed. Commit your own files through a temporary index (`GIT_INDEX_FILE`). [Gun Mayhem 2]

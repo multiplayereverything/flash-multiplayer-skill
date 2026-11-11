@@ -75,4 +75,10 @@ AS2 build rules:
   top-level functions, guard only the setup call, keep each file under 32 KB.
 - **SWF 6:** run `tools/case_scan.py` (identifiers that collide when case is ignored: `var n` overwrites `N`), check
   the header version byte after the build, and don't use `try/catch`.
+- **Statement-level duplication for "the player"** (when a game has one hero variable such as `_root.duck` read in
+  many scripts): FFDec prints one statement per line with braces on their own lines, so method C's export parses into
+  a tree. Re-emit each run of consecutive statements that mention the hero once per extra hero, inside
+  `if(_root.extraHero != undefined){...}` with the hero renamed, and turn calls like `nextFrame` into a per-hero
+  "done" call. Recurse into an `if`/`while` whose test doesn't mention the hero. Solo is unchanged because the extra
+  clips don't exist. [Duck Life 4]
 - SWF 6 and 7 hide `ExternalInterface`: unhide it before calling `coop.*` (ruffle-coop's AS2 helper does it).

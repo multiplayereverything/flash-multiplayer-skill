@@ -352,6 +352,22 @@
       "flash_player": "untested",
       "release": "flash-games: games/electricman2hs/Electricman2HS_online.swf",
       "writeup": "games/electricman-2-hs.md"
+    },
+    {
+      "id": "ducklife4",
+      "game": "Duck Life 4",
+      "developer": null,
+      "year": null,
+      "engine": "AS2",
+      "swf": 15,
+      "path": "single-to-coop",
+      "players": "1-3",
+      "sync": "lockstep in Ruffle Together, no netcode: every duck races on stats, the first over the line counts; 11 of 15 minigames together, 4 one player at a time with coop.keys giving only that slot keys; stopped 2026-11-07",
+      "status": "in-progress",
+      "qa": "none",
+      "flash_player": "untested",
+      "release": null,
+      "writeup": "games/duck-life-4.md"
     }
   ]
 }
