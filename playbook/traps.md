@@ -76,6 +76,10 @@ Each one cost a real mod time. The mod it came from is in brackets.
 - Recompiling a class of an obfuscated game renames its protected namespace: #1070 in subclasses that weren't
   recompiled. `CheckNamespaces.java` catches it. [Stealth Hunter 2]
 - AS2 "offset larger than maximum allowed for SI16": a branch over 32 KB. No giant `if` around the mod. [Territory War, Gun Mayhem 2]
+- FFDec can't recompile a big AS2 `if` of the game's own that the original compiler fit ("Generated offset for onTrue
+  part of If is larger than maximum allowed for SI16"). Move the body into new `_root` functions cut at its top-level
+  statements (no locals, `return`, `break` or `continue` across a cut), call them as `_root.f()` so `this` stays
+  `_root`, and prove it with a split-only build that matches the original frame by frame. [Portal]
 - `-deobfuscate` output is for reading only; on a wrapper SWF it wrote a 0-byte file. [Stealth Hunter 2]
 - FFDec 26 decompiles some loop exits as `§§goto(addrNNNN)` + a label, then can't compile its own output ("goto is
   not available"). When the label sits right after the loop, delete both: it's a `break`. [Stealth Assassin]
@@ -206,6 +210,10 @@ Each one cost a real mod time. The mod it came from is in brackets.
 - A game typo can sit in a reset path (a door reset on a misspelled clip path, which does nothing). A rewrite regex
   for that line must allow the typo, or assert its counts per script variant. [The World's Hardest Game 2]
 
+- A player script that turns the player round before reading its clip-local `_xmouse`: copying each player's mouse
+  into a variable at the top of the script aimed the first shot after a turn the wrong way (seen only as a solo
+  mismatch). Swap the mouse in with `addProperty` getters, read at the same moment as the original. [Portal]
+
 ## AS3
 - `flash.display.Sprite` is sealed: dynamic fields need a `MovieClip`. [Bad Ice-Cream]
 - `var` is hoisted to function scope: a local `key` shadowed a `key()` method (#1006), and two locals with one name
@@ -243,7 +251,8 @@ Each one cost a real mod time. The mod it came from is in brackets.
 - A session with `--coop-script` never reads the keyboard, so no scripted lab proves real keys. Post key messages to the game's
   own windows on the launcher's line and check what the hero does. Posted focus can be lost to any focus change on the PC, so
   re-assert it before each press. Even then such labs sometimes lose keys partway (likely lost focus, not proven): rerun a
-  failed one before blaming the mod. [Electricman 2 HS, Madness]
+  failed one before blaming the mod (on a busy PC keys also landed in the wrong rows; the rerun passed).
+  [Electricman 2 HS, Madness, Portal]
 - Co-op that needs a menu click to turn on looks like "everyone moves one player" when nobody clicks. Take the count
   from `coop.players`, and check it in a session: `--coop-replay` reports the key map's slot count, not `--coop-players`,
   so test a smaller count with a `.keys` file that has that many slots. [Stealth Assassin]
@@ -407,6 +416,8 @@ Each one cost a real mod time. The mod it came from is in brackets.
 - `coop.events` empties its list on every call: read it in one place per frame. [Raft Wars]
 - A bot takes over a leaver: attach the game's own bot sprite at the same name and depth with the player's fields as
   the init object; restore name and score after the bot's own frame-1 setup. [Smileys War]
+- "The exit waits for everyone" needs a once-a-frame check too: if the others are through and the last player in
+  the room leaves the session, nobody runs the exit test and the level never ends. [Portal]
 - A leave test must kill a friend's process mid-run (`taskkill /T /F`); a friend that just reaches `--coop-frames`
   isn't a leave (the host waits about 60 s and reports it frozen). [Intrusion 2, Raft Wars, Dad 'n Me]
 
@@ -475,13 +486,19 @@ Each one cost a real mod time. The mod it came from is in brackets.
   frames: wait some ticks after a failed plan. [The World's Hardest Game 2]
 - A lab level tracker that resets its item list when it first sees a new level loses items that registered that
   tick (clip scripts run before the ticker): stamp items with a level id instead. [The World's Hardest Game 2]
+- Count level (re)starts in long lab runs, not only "no desync": a 4-player run stayed in sync but looped in two
+  chambers that crush anyone left at the entrance (the lab moved players 3-4 too late). Trace each level start.
+  [Portal]
+- A one-frame `click` in a replay is pressed and released before the frame's scripts run, so a game that reads a flag
+  set by `onMouseDown` and cleared by `onMouseUp` never sees it. Hold a key for a few frames instead. [Portal]
 - A bot that stalls isn't always the bot: of seven stalls, four were the bot, two mod bugs, one the game's dead end.
   Dump what the game still counts (enemies, objectives) before blaming either. [Madness]
 - Long replays on a shared PC fail with "memory allocation ... failed", and overlapping labs once ended in a power
   loss. Before each lab step wait until `FreeVirtualMemory` is 15 GB+ and fewer than 6 Ruffle processes run, and
   don't trust logs from a run a crash cut off. [Electricman 2 HS, Madness, Duck Life 4, The Skullkid]
 - A download behind a bot check (webdesignmuseum.org blocks curl): ask the user to save the file, don't work around the
-  check. Then record its SHA-256. [The Skullkid, Run 2, Flash Chess]
+  check. Check the header (`CWS`/`FWS`) before trusting a download (the blocked URL answers with 4.5 KB of HTML), then
+  record its SHA-256. [The Skullkid, Run 2, Flash Chess, Portal]
 - To stage only your own lines in a file another session has also edited, write an index blob of HEAD plus your
   lines (`git hash-object -w --stdin --path <file>`, then `git update-index --cacheinfo`), best in a temporary index;
   afterwards `git reset -q -- <your paths>` so the shared index doesn't show a staged revert. Feed it bytes, not
