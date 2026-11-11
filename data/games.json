@@ -480,6 +480,22 @@
       "flash_player": "untested",
       "release": "flash-games b831626 (1.0): games/raze/Raze_online.swf, --coop-keys gun-mayhem-2, Ruffle Together 1.0.8",
       "writeup": "games/raze.md"
+    },
+    {
+      "id": "worldshardestgame2",
+      "game": "The World's Hardest Game 2",
+      "developer": "Snubby Land",
+      "year": 2008,
+      "engine": "AS2",
+      "swf": 9,
+      "path": "single-to-coop",
+      "players": "1-4",
+      "sync": "lockstep in Ruffle Together, no netcode: players 2-4 are copies of the level's player clip, each running the level's own player script on its own buttons; own checkpoint and death, shared coins and keys, team goal",
+      "status": "released",
+      "qa": "lab-3p+",
+      "flash_player": "untested",
+      "release": "flash-games 1c1e46d (1.0): games/worldshardestgame2/WorldsHardestGame2_online.swf, --coop-keys gun-mayhem-2, proven on Ruffle Together 1.0.8",
+      "writeup": "games/worlds-hardest-game-2.md"
     }
   ]
 }

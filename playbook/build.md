@@ -107,4 +107,8 @@ AS2 build rules:
   `ApplicationDomain(null)`, places each copy far apart on the stage, and gives each slot a `coop.camera` on its own
   copy. Write each copy's keys through `applicationDomain.getDefinition`, and keep every slot's game codes off the
   keys the game reads hard-coded. Details in [Run 2](../games/run-2.md). [Run 2]
+- **Run the game's own player script per player** (AS2, when the player script comes in many variants per level):
+  `duplicateMovieClip` copies of the level's player carry its clip events, so each copy runs the level's own script.
+  Keep the original body for solo and add a co-op body made by asserted regex substitutions (key reads through the
+  copy's slot, global flags made clip-local, the goal test for the whole team). [The World's Hardest Game 2]
 - SWF 6 and 7 hide `ExternalInterface`: unhide it before calling `coop.*` (ruffle-coop's AS2 helper does it).

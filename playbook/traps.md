@@ -203,6 +203,9 @@ Each one cost a real mod time. The mod it came from is in brackets.
 - A hero's walk animation that moves `_root.hero._x` from its own frame script moves player 1 when a copy plays it:
   rewrite it to `_parent._x`. [The Skullkid]
 
+- A game typo can sit in a reset path (a door reset on a misspelled clip path, which does nothing). A rewrite regex
+  for that line must allow the typo, or assert its counts per script variant. [The World's Hardest Game 2]
+
 ## AS3
 - `flash.display.Sprite` is sealed: dynamic fields need a `MovieClip`. [Bad Ice-Cream]
 - `var` is hoisted to function scope: a local `key` shadowed a `key()` method (#1006), and two locals with one name
@@ -411,7 +414,8 @@ Each one cost a real mod time. The mod it came from is in brackets.
 - ruffle-coop's coop-lab `lab.py` (as of 2026-11-11): a relative `--exe` prints nothing with exit code 0 (pass an
   absolute path and count the `COOP RESULT` lines); it passes no `--save-directory`, so give each player a temp one
   (and a `--cache-directory`); its local relay allows 4 players (the real one 8); its timeout is too short for 5-6
-  players and it drops all output on timeout; it has no `--leave-after`. Without editing it: import it, patch
+  players and it drops all output on timeout; it has no `--leave-after`, and patched copies that add one wait only 60 s
+  for the host after the kill (a 2-player leave over 3600 frames timed out: use 2700). Without editing it: import it, patch
   `player()` or `subprocess.Popen` to add the flags, strip your own flags from `sys.argv` before its `main()` builds
   the parser; or pass `--exe` a `.cmd` wrapper that adds `--save-directory <temp> %*`.
   [Chaos Faction 2, Raft Wars, Ultimate Crab Battle, Dad 'n Me, Air Battle, Bow Man, Stealth Hunter 2]
@@ -467,6 +471,10 @@ Each one cost a real mod time. The mod it came from is in brackets.
   contact. [Chaos Faction 2]
 - Mouse-aim proofs: put script targets inside the game's aim range (a shot aimed straight up clamped to the limit and
   proved nothing) and log aim, mouse and gun in the fire trace. [Raft Wars]
+- A path-search bot that replans every tick while blocked (a door still opening) made a replay take minutes per 1000
+  frames: wait some ticks after a failed plan. [The World's Hardest Game 2]
+- A lab level tracker that resets its item list when it first sees a new level loses items that registered that
+  tick (clip scripts run before the ticker): stamp items with a level id instead. [The World's Hardest Game 2]
 - A bot that stalls isn't always the bot: of seven stalls, four were the bot, two mod bugs, one the game's dead end.
   Dump what the game still counts (enemies, objectives) before blaming either. [Madness]
 - Long replays on a shared PC fail with "memory allocation ... failed", and overlapping labs once ended in a power
