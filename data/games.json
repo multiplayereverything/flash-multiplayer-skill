@@ -528,6 +528,22 @@
       "flash_player": "untested",
       "release": "flash-games ae89473 (1.0): games/strikeforceheroes/StrikeForceHeroes_online.swf, --coop-keys gun-mayhem-2, Ruffle Together 1.0.8+",
       "writeup": "games/strike-force-heroes.md"
+    },
+    {
+      "id": "run",
+      "game": "Run",
+      "developer": "Joseph Cloutier, Kongregate",
+      "year": 2008,
+      "engine": "AS3",
+      "swf": 10,
+      "path": "single-to-coop",
+      "players": "1-4",
+      "sync": "lockstep in Ruffle Together, no netcode: every player runs their own copy of the game in one session (loadBytes into its own ApplicationDomain), own keys and own coop.camera per copy; copies start the host's mode and level whenever the host starts a game",
+      "status": "released",
+      "qa": "lab-3p+",
+      "flash_player": "untested",
+      "release": "flash-games 076481f (1.0): games/run/Run_online.swf, --coop-keys gun-mayhem-2, proven on Ruffle Together 1.0.8",
+      "writeup": "games/run.md"
     }
   ]
 }

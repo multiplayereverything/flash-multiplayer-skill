@@ -60,8 +60,9 @@ Each one cost a real mod time. The mod it came from is in brackets.
   `--coop-replay` (a replay is always a session): check solo in plain Ruffle, or switch on the count and replay with a
   1-slot map. [Ultimate Crab Battle, Intrusion 2]
 
-- Content loaded with `loadBytes` keeps getting `enterFrame` after `unloadAndStop()` and removal; a game loop that
-  reads `stage` then throws #1009 every frame. Remove the copy's loop listener before unloading. [Run 2]
+- Content loaded with `loadBytes` keeps getting `enterFrame` after `unloadAndStop()` and removal (still in 1.0.8),
+  and its stage key listeners stay too; a game loop that reads `stage` then throws #1009 every frame on every PC
+  while the sync check stays green. Remove the copy's listeners yourself before unloading. [Run 2, Run]
 
 ## FFDec
 - `-importScript` can't add new AS3 classes: add stubs first (`AddClasses.java`). It prints nothing on success, so
@@ -437,6 +438,10 @@ Each one cost a real mod time. The mod it came from is in brackets.
   the init object; restore name and score after the bot's own frame-1 setup. [Smileys War]
 - "The exit waits for everyone" needs a once-a-frame check too: if the others are through and the last player in
   the room leaves the session, nobody runs the exit test and the level never ends. [Portal]
+- Copy-per-player games: a mouse-only popup inside a friend's copy strands that friend for good (only the host's
+  mouse reaches the game). Run a warp run-through, look at every slot's screenshots, and give such screens a key from
+  the slot's own map. Follow only the host's start of a game, not its return to the menu, or friends get pulled out
+  mid-level. [Run]
 - A leave test must kill a friend's process mid-run (`taskkill /T /F`); a friend that just reaches `--coop-frames`
   isn't a leave (the host waits about 60 s and reports it frozen). [Intrusion 2, Raft Wars, Dad 'n Me]
 
@@ -519,6 +524,13 @@ Each one cost a real mod time. The mod it came from is in brackets.
   key after each activation. [Strike Force Heroes]
 - A probe build that jumps into a match while sponsor logos still run gets replaced by the logo's callback seconds
   later. Start from the menu. [Strike Force Heroes]
+- Headless Ruffle has no device fonts: a game screen that lays out about 20 000 texts on entry spent 60-150 s on that
+  one frame in every headless run, the untouched game too. Before blaming the mod, run the original in the same
+  harness, then put a real-window host against a headless friend; give headless runs long timeouts. [Run]
+- Windowed Ruffle Together doesn't stop at `--coop-frames`, so no COOP RESULT appears: judge real-window runs from the
+  logs (timing lines, OUT OF SYNC, AVM errors). The untouched game also gets 1-2 late frames while windows open. [Run]
+- A lab switch added to the source changes the release bytes even when it is off: patch lab switches into the
+  staged copy at build time only, and check that a rebuild reproduces the proven hash. [Run]
 - A bot that stalls isn't always the bot: of seven stalls, four were the bot, two mod bugs, one the game's dead end.
   Dump what the game still counts (enemies, objectives) before blaming either. [Madness]
 - Long replays on a shared PC fail with "memory allocation ... failed", and overlapping labs once ended in a power
