@@ -512,6 +512,22 @@
       "flash_player": "untested",
       "release": "flash-games 946dc3a (1.0): games/portalflash/PortalFlash_online.swf, --coop-keys gun-mayhem-2, Ruffle Together 1.0.8+",
       "writeup": "games/portal-flash.md"
+    },
+    {
+      "id": "strikeforceheroes",
+      "game": "Strike Force Heroes",
+      "developer": "Sky9 Games (Armor Games, Not Doppler)",
+      "year": 2012,
+      "engine": "AS3",
+      "swf": 10,
+      "path": "single-to-coop",
+      "players": "1-4",
+      "sync": "lockstep in Ruffle Together, no netcode: friends are extra human soldiers (a Unit subclass) added after the bots, moved from coop.buttons/mouse of their slot; player 1 stays the game's own Player; a camera, screen bitmap and crosshair per player",
+      "status": "released",
+      "qa": "lab-3p+",
+      "flash_player": "untested",
+      "release": "flash-games ae89473 (1.0): games/strikeforceheroes/StrikeForceHeroes_online.swf, --coop-keys gun-mayhem-2, Ruffle Together 1.0.8+",
+      "writeup": "games/strike-force-heroes.md"
     }
   ]
 }

@@ -46,8 +46,10 @@ Each one cost a real mod time. The mod it came from is in brackets.
 - `coop.hud` in a game that scrolls by moving `_root` was drawn off screen up to Ruffle Together 1.0.3.8 (fixed in
   1.0.3.9): such games need 1.0.3.9+. If your camera moves `_root` after the game pinned its HUD at `-_root._x`,
   re-pin the HUD right after, or it lags a frame and is clipped while zooming. [Intrusion]
-- Key maps refuse codes Ruffle has no key for (F12 = 123, F24 = 135: "no key with code"). For a slot key the game
-  never reads, use Insert (45). [Zombotron]
+- Key maps refuse codes Ruffle has no key for (F1 = 112, F12 = 123, F24 = 135: "no key with code"). One such code
+  makes Ruffle refuse the whole map: `coop.keys` returns false and every run quietly uses the launch map. Run
+  `tools/keys_check.py` on the map the SWF sends and check `coop.keys`'s answer. For a slot key the game never reads,
+  use Insert (45). [Zombotron, Strike Force Heroes]
 - Ruffle Together 1.0.6 took physical keys only from the launch line's `local:` line, so a game key missing there
   never arrived even with `coop.keys` (1.0.7+ reads both). On 1.0.6, counting a `coop.typed` character as that button
   held for 4 frames gets it through. [Madness]
@@ -233,6 +235,15 @@ Each one cost a real mod time. The mod it came from is in brackets.
 - A HUD the game creates in code on root: set its `.name` (`"coophud"`) and call `coop.hud("root.coophud")`; mark it
   again whenever the game makes a new HUD clip. [Intrusion 2]
 
+- Removed movie clips keep playing until garbage collection, and their frame scripts still run game code (soldiers'
+  arm clips calling the gun's shoot and reload callbacks). Collection comes at a different time on each PC, so a
+  finished match's leftovers made the PCs' `Math.random` draws drift: out of sync on the menu after a match, now and
+  then. In a session, `stop()` every MovieClip of the outgoing screen before `removeChild`. [Strike Force Heroes]
+- Setting `alpha` (or any transform) on a HUD clip that the HUD's own timeline tweens freezes that tween on that PC
+  only. Per-PC HUD changes: text, graphics, or a panel of your own. [Strike Force Heroes]
+- A game that builds its level in a screen's constructor, before `addChild`, has `parent` null there: reparent (the
+  HUD to the root for `coop.hud`) on the first frame instead. [Strike Force Heroes]
+
 ## Games and portals
 - Click-to-continue sponsor preloaders block labs: wait for them, or test the inner SWF. [Air Battle, Stealth Hunter 2]
 - A portal score board on the end screen (BubbleBox's) shows the screen's MENU button only after it loads from the
@@ -244,6 +255,13 @@ Each one cost a real mod time. The mod it came from is in brackets.
   with it. [Ultimate Assassin series]
 - A menu frame script that sets its level command back to 0 eats a command sent while the intro still plays:
   repeat it every frame until the screen changes. [Stealth Assassin]
+
+- Playtomic analytics (`Log.View`, `GameVars.Load`, common in 2010-2013 games) put `Math.random` in every request URL
+  and handle refused loads and timeouts asynchronously: don't start them in a session. [Strike Force Heroes]
+- Kongregate's API never loads offline; a stats submit in a match teardown threw and left the game on the end screen
+  (the original too). Guard it. [Strike Force Heroes]
+- "Find a spawn point nobody used yet" in a `do...while` never ends once added players outnumber the points: end the
+  loop when none is free. [Strike Force Heroes]
 
 ## Process
 - Green replays, coop-lab and two short windows can all pass on a game that dies at the end of its first fight. Play a whole
@@ -370,8 +388,9 @@ Each one cost a real mod time. The mod it came from is in brackets.
 ### Per-player screens
 - Work done on one PC only can desync even when it only feeds a picture: Raze's friend PC built its own panel string
   each frame (the host's didn't) and went out of sync at match start; each half of that work alone stayed in sync.
-  Likely garbage collection at different times (the game's listeners are weak references), not proven. Do the same
-  AS3 work on every PC and let `localSlot` pick only `alpha` or which text field shows. [Raze]
+  Likely garbage collection at different times (the game's listeners are weak references), not proven; Strike Force
+  Heroes proved the same kind of GC-timed drift (see AS3). Do the same AS3 work on every PC and let `localSlot` pick
+  only `alpha` or which text field shows. [Raze]
 - A camera look-ahead computed as `coop.mouseX(slot) - camera` drifts when the stage mouse isn't recomputed while the
   camera moves (it chases its own old value): measure it from the hero to the aim point, capped. [Raze]
 - Per-PC HUD without breaking lockstep: when the HUD script also runs game logic (it decides the winner), let it run,
@@ -491,6 +510,15 @@ Each one cost a real mod time. The mod it came from is in brackets.
   [Portal]
 - A one-frame `click` in a replay is pressed and released before the frame's scripts run, so a game that reads a flag
   set by `onMouseDown` and cleared by `onMouseUp` never sees it. Hold a key for a few frames instead. [Portal]
+- An intermittent desync where only `rng` differs: build a lab variant that traces one `Math.random()` per frame on
+  every PC (the same extra draw everywhere keeps it fair); the first differing line in the headless logs is the frame.
+  Then read the errors each PC logged around it. [Strike Force Heroes]
+- "Did my per-PC code cause it?": a replay of a build with `localSlot` forced to a friend's slot stands in for that
+  friend's PC; if its fingerprint equals the host build's, the cause is elsewhere. [Strike Force Heroes]
+- Posting `WM_SETFOCUS` to a lab window can bring a key back as held (Windows re-sends key state): release every test
+  key after each activation. [Strike Force Heroes]
+- A probe build that jumps into a match while sponsor logos still run gets replaced by the logo's callback seconds
+  later. Start from the menu. [Strike Force Heroes]
 - A bot that stalls isn't always the bot: of seven stalls, four were the bot, two mod bugs, one the game's dead end.
   Dump what the game still counts (enemies, objectives) before blaming either. [Madness]
 - Long replays on a shared PC fail with "memory allocation ... failed", and overlapping labs once ended in a power
