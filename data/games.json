@@ -506,11 +506,11 @@
       "swf": 8,
       "path": "single-to-coop",
       "players": "1-4",
-      "sync": "lockstep in Ruffle Together, no netcode: players 2-4 are copies of the player clip, the game's own code runs once per player through a swap; one portal pair for the team; the chamber ends when everyone is through",
+      "sync": "lockstep in Ruffle Together, no netcode: players 2-4 are copies of the player clip, the game's own code runs once per player through a swap; a portal pair per player (1.1); the chamber ends when everyone is through",
       "status": "released",
       "qa": "lab-3p+",
       "flash_player": "untested",
-      "release": "flash-games 946dc3a (1.0): games/portalflash/PortalFlash_online.swf, --coop-keys gun-mayhem-2, Ruffle Together 1.0.8+",
+      "release": "flash-games 73efb1b (1.1; 1.0 was 946dc3a): games/portalflash/PortalFlash_online.swf, --coop-keys gun-mayhem-2, Ruffle Together 1.0.8+",
       "writeup": "games/portal-flash.md"
     },
     {

@@ -217,6 +217,13 @@ Each one cost a real mod time. The mod it came from is in brackets.
   into a variable at the top of the script aimed the first shot after a turn the wrong way (seen only as a solo
   mismatch). Swap the mouse in with `addProperty` getters, read at the same moment as the original. [Portal]
 
+- Copies of hidden helper clips made from a frame script can come out visible: a placed clip's `onClipEvent(load)`
+  that hides the originals may run after your frame script, so `duplicateMovieClip` copied them still visible (masks
+  and hit areas covered the whole level). Set `_visible` on copies explicitly. [Portal]
+- A single-player game's arm or gun clip that turns toward its own `_xmouse` follows the host's mouse for every
+  player in a session. Search child clips for `_xmouse/_ymouse`, not only the main script, and point them at the
+  owner's `coop.mouseX/Y` through `globalToLocal`. [Portal]
+
 ## AS3
 - `flash.display.Sprite` is sealed: dynamic fields need a `MovieClip`. [Bad Ice-Cream]
 - `var` is hoisted to function scope: a local `key` shadowed a `key()` method (#1006), and two locals with one name

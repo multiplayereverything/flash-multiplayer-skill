@@ -1,6 +1,7 @@
 # Portal: The Flash Version Together
 
-Released 1.0: flash-games 946dc3a, `games/portalflash/PortalFlash_online.swf` (SHA-256 `efc7ec4f...`), 2-4 players,
+Released 1.1: flash-games 73efb1b, `games/portalflash/PortalFlash_online.swf` (SHA-256 `374a0b77...`; 1.0 was
+946dc3a), 2-4 players,
 minimum Ruffle Together 1.0.8, launch `--coop-keys gun-mayhem-2 --coop-players 2-4` (the SWF sets its own map with
 `coop.keys`). QA (hub level): lab-3p+. No launcher record yet. Entry in [DIRECTORY.md](../DIRECTORY.md).
 
@@ -13,8 +14,12 @@ objects are the player and the boxes, with the player special-cased.
   (carried box, reload, health, alive, death reason, walk-in), so the game's own code runs for each player. The rewrite
   wraps every "the player" block of the frame loop in a loop over players, and runs the game's portal, step and map
   functions for players 2-4 with the swap.
-- **One portal pair for the team:** anyone shoots either colour and the last shot wins. Chambers are designed for one
-  pair, and the game's portals, wall holes, masks, steps, balls, turret rays and teleport all assume exactly one.
+- **A portal pair per player (1.1, at the user's request):** player 1 blue/orange, 2 purple/red, 3 green/lime, 4
+  pink/white. Anyone travels through anyone's pair, and a portal can't land within 70 px of any other open portal. The
+  game's twelve portal clips are copied per player and swapped in by setting `_root.portal1`... as variables (the same
+  trick as for the player); the game's portal, step, ball and mask passes run once per pair. 1.0 had one shared pair
+  (the chambers are designed for one, and the game's code assumes exactly one).
+- **Aim:** each player's arm turns toward their own mouse (the arm clip read the host's `_xmouse` in 1.0).
 - **The team:** one death restarts the chamber for everyone; a player at the exit waits hidden inside the door; the
   chamber ends when everyone is through. One box each; grabbing a box a friend holds takes it.
 - **Mice:** each player's own mouse through `addProperty` getters, read at the same moment the original reads its
@@ -23,7 +28,8 @@ objects are the player and the boxes, with the player special-cased.
 ## QA
 Lab-tested on one PC: replays 2/3/4 identical, solo = the original, coop-lab 2/3/4 relay and direct, a leave test, every
 chamber to the credits with 2-4 players (a lab walks the players to each exit), two real windows, physical keys in real
-windows.
+windows. All of these pass on 1.1 too, plus travel through another player's pair both ways in replays
+and 2-player sessions.
 
 Not proven: the live relay, two PCs, people playing it.
 
@@ -37,3 +43,4 @@ turrets, doors and so on in an empty clip's position, to pick the rooms for "eve
 - FFDec can't recompile the game's own big `if`: split its body into `_root` functions (traps.md).
 - "The exit waits for everyone" needs a once-a-frame check, or a leave by the last player in the room hangs the level.
 - Count level restarts in long lab runs: a run can stay in sync while looping in one chamber.
+- Copies of hidden helper clips can come out visible; child clips can read the host's `_xmouse` (traps.md).
