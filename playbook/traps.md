@@ -88,9 +88,10 @@ Each one cost a real mod time. The mod it came from is in brackets.
 - `AddClasses` put new class stubs into a preloader's frame-1 ABC tag; the preloader class failed to load and the
   timeline looped with nothing thrown. Put stubs in the ABC tag of a real game class. [Zombotron]
 
-- Flow-obfuscated AS3 (`§§goto` everywhere, won't compile): `-config autoDeobfuscate=1 -export script` gives
-  readable code. To hook without recompiling any game class, subclass the document class in a new class and make
-  that the document class (`tools/ffdec/SetDocClass.java`). [Run 2]
+- Flow-obfuscated AS3 (`§§goto`, `§§push`, `if(false)` jumps; won't compile): `-config autoDeobfuscate=1
+  -export script` gives readable classes, and they compiled for Raze; prove the round trip with a no-edit build and a
+  replay. To hook without recompiling any game class, subclass the document class in a new class and make that the
+  document class (`tools/ffdec/SetDocClass.java`). [Run 2, Raze]
 
 ## AS2 / AVM1
 - Never name a function `stop` (or `play`, `gotoAndStop`...): it compiles to the timeline action. A clean-up silently
@@ -355,6 +356,12 @@ Each one cost a real mod time. The mod it came from is in brackets.
   with `WindowFromPoint` that the window itself shows at those points before copying. [Intrusion 2]
 
 ### Per-player screens
+- Work done on one PC only can desync even when it only feeds a picture: Raze's friend PC built its own panel string
+  each frame (the host's didn't) and went out of sync at match start; each half of that work alone stayed in sync.
+  Likely garbage collection at different times (the game's listeners are weak references), not proven. Do the same
+  AS3 work on every PC and let `localSlot` pick only `alpha` or which text field shows. [Raze]
+- A camera look-ahead computed as `coop.mouseX(slot) - camera` drifts when the stage mouse isn't recomputed while the
+  camera moves (it chases its own old value): measure it from the hero to the aim point, capped. [Raze]
 - Per-PC HUD without breaking lockstep: when the HUD script also runs game logic (it decides the winner), let it run,
   then write the local player's numbers over its text, a bar's `_xscale` and `_alpha`. The sync check compares
   position, visibility, depth and frame only. [Smileys War]
@@ -374,7 +381,8 @@ Each one cost a real mod time. The mod it came from is in brackets.
   and shift mouse reads made during the update by (game camera - region corner). [Stealth Hunter 2]
 - `coop.hud` needs a direct child of the root: move a deep HUD into one while the cameras are on and back for menus
   and cutscenes. Markers placed from the game's camera (a prompt over P1) must be set again on EXIT_FRAME from P1's
-  own camera and shown only on P1's PC. [Stealth Hunter 2]
+  own camera and shown only on P1's PC. In AS3, move the background with the HUD at the same draw order once a match
+  starts, and remove both in the game's destructor. [Stealth Hunter 2, Raze]
 - `--coop-replay` draws only slot 0's camera: to check slot N's view, build a throwaway copy where slot 0 uses slot
   N's camera. Identical fingerprints for every view prove the camera is picture only. [Stealth Hunter 2]
 - A game that calls `Mouse.hide()` and draws only the host's crosshair leaves friends with no cursor: draw one
@@ -431,6 +439,12 @@ Each one cost a real mod time. The mod it came from is in brackets.
 - Real windows on 1.0.8: posted mouse presses still never press a button, and posted moves can miss a window that
   other windows cover. `coop.mouse.hovered(slot)` traced from a lab module checks zones without clicks. Don't pin lab
   windows to the corner every session uses, and check `WindowFromPoint` before a capture. [Flash Chess]
+- Real-window key labs: a Ruffle process has tiny visible helper windows, so take the largest visible window of the
+  pid, not the first. New lab windows take the real focus, so the person at the PC typing reaches the game (a stray
+  P paused a match): start them with `STARTUPINFO` `SW_SHOWNOACTIVATE`, and list any key code that reached the game
+  without being sent. [Raze]
+- End-of-match buttons that are text fields hit-tested on click exist only once the game-over animation reaches their
+  frame: in a script, click 3 times 60 frames apart, on a spot that is empty on the next screen. [Raze]
 - Real-window labs post messages and can't click: for a game with mouse-only menus, a key-probe lab build starts the
   game itself (the frame the menu's START leads to, with the menu's own variables set). [Ultimate Flash Sonic]
 - A state clip name read from `COOP_DESCRIBE_AT` dumps must have no commas: the state pattern stops there.

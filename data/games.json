@@ -464,6 +464,22 @@
       "flash_player": "untested",
       "release": "flash-games f41daf4 (1.0): games/flashchess/FlashChess_online.swf, --coop-keys bow-man, Ruffle Together 1.0.8+",
       "writeup": "games/flash-chess.md"
+    },
+    {
+      "id": "raze",
+      "game": "Raze",
+      "developer": "Juice-Tin, AddisonR (Armor Games)",
+      "year": 2010,
+      "engine": "AS3",
+      "swf": 9,
+      "path": "single-to-coop",
+      "players": "1-4",
+      "sync": "lockstep in Ruffle Together, no netcode: the mod adds players 2-4 as new Unit subclasses on their own buttons and mouse, a camera per player",
+      "status": "released",
+      "qa": "lab-3p+",
+      "flash_player": "untested",
+      "release": "flash-games b831626 (1.0): games/raze/Raze_online.swf, --coop-keys gun-mayhem-2, Ruffle Together 1.0.8",
+      "writeup": "games/raze.md"
     }
   ]
 }
