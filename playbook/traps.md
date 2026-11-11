@@ -184,6 +184,13 @@ Each one cost a real mod time. The mod it came from is in brackets.
 - A call to a function that no longer exists does nothing and raises no error: a scripted edit between two markers
   deleted 5 functions and the build still passed. List the `^function` names after every scripted edit. [Dad 'n Me]
 
+- Controls clips whose frame scripts switch the hero to a scroll walk on a mode change (entering a scroll zone), key
+  or not, are harmless with one hero, but a second hero dragged by the scroll into a zone starts scrolling back with
+  no key held and the world shakes. Keep dragged heroes out of the zones, and apply mode switches to added heroes
+  only while the arrow is held. [The Skullkid]
+- A hero's walk animation that moves `_root.hero._x` from its own frame script moves player 1 when a copy plays it:
+  rewrite it to `_parent._x`. [The Skullkid]
+
 ## AS3
 - `flash.display.Sprite` is sealed: dynamic fields need a `MovieClip`. [Bad Ice-Cream]
 - `var` is hoisted to function scope: a local `key` shadowed a `key()` method (#1006), and two locals with one name
@@ -402,6 +409,10 @@ Each one cost a real mod time. The mod it came from is in brackets.
 - A headless session (`--coop-headless` host and joiners) needs `--coop-script` on every player; each plays its own
   slot's lines. With the script on the host only, friends get no input and the session still reports
   `desync_at=none`. (coop-lab's `lab.py` already does this.) [Run 2]
+- A game whose input is `onClipEvent(keyDown)` with `Key.getCode()` acts only on the press, and Ruffle Together's
+  scripted sessions send no key repeat. The Skullkid's boss could never die: the saw and the boss's loop both start
+  on the Space keyDown, and the death lands on the loop's restart tick and loses. Real Flash key repeat re-sent
+  keyDown and moved the loop. Look for timelines a held key's repeat used to restart. [The Skullkid]
 - A lab FlashVar path that feeds scripted keys must turn the co-op API off, or replays mix the two.
   [Ultimate Crab Battle]
 - Reaching an ending without a bot: move a hero onto each level's real exit trigger (position from `-swf2xml`, twips
@@ -423,7 +434,9 @@ Each one cost a real mod time. The mod it came from is in brackets.
 - A bot that stalls isn't always the bot: of seven stalls, four were the bot, two mod bugs, one the game's dead end.
   Dump what the game still counts (enemies, objectives) before blaming either. [Madness]
 - Long replays on a shared PC fail with "memory allocation ... failed", and overlapping labs once ended in a power
-  loss. Before each lab step wait until `FreeVirtualMemory` is 15 GB+, and don't trust logs from a run a crash cut
-  off. [Electricman 2 HS, Madness, Duck Life 4]
+  loss. Before each lab step wait until `FreeVirtualMemory` is 15 GB+ and fewer than 6 Ruffle processes run, and
+  don't trust logs from a run a crash cut off. [Electricman 2 HS, Madness, Duck Life 4, The Skullkid]
+- webdesignmuseum.org serves SWFs to a browser page but Cloudflare blocks curl: load the page in the agent's browser
+  and save its own fetch (with the owner's OK), then check the SHA-256. [The Skullkid, Run 2]
 - flash-games' `tools/update-catalog.ps1` rewrites every entry from the SWFs on disk, so it sweeps other sessions'
   pending lines into your commit. Run `git status` first. [Intrusion]

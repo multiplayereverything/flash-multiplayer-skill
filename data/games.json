@@ -416,6 +416,22 @@
       "flash_player": "untested",
       "release": "flash-games 8a4d0b9 (1.0): games/run2/Run2_online.swf, proven on Ruffle Together 1.0.8",
       "writeup": "games/run-2.md"
+    },
+    {
+      "id": "theskullkid",
+      "game": "The Skullkid",
+      "developer": null,
+      "year": 2002,
+      "engine": "AS2",
+      "swf": 6,
+      "path": "single-to-coop",
+      "players": "1-2",
+      "sync": "lockstep in Ruffle Together, no netcode: the mod adds a second kid; on floor 1 each kid walks and saws alone and whoever reaches a screen edge scrolls (the other is dragged), on floors 2-3 the team walks together and each shoots or saws alone",
+      "status": "released",
+      "qa": "lab-2p",
+      "flash_player": "untested",
+      "release": "flash-games e8db705 (1.0): games/theskullkid/TheSkullkid_online.swf, proven on Ruffle Together 1.0.8",
+      "writeup": "games/the-skullkid.md"
     }
   ]
 }
