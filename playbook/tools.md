@@ -26,7 +26,8 @@ The scripts in `tools/` and the templates in `templates/`. Run every script with
 `tools/ffdec/` holds Java helpers that FFDec runs during a build: `AddClasses.java` (empty stub classes so
 `-importScript` can compile new classes), `CheckNamespaces.java` (fails the build on a protected-namespace change,
 #1070), `ListClasses.java` (classes and static traits in a built SWF), `InsertAction.java` (compiles `.as` files into
-new DoAction tags, leaving every original tag alone).
+new DoAction tags, leaving every original tag alone), `SetDocClass.java` (makes another class the document class,
+so a subclass of the game's main class can hook it with no game class recompiled).
 
 ## Templates
 | Path | What it is |

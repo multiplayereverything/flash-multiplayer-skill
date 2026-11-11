@@ -102,4 +102,9 @@ AS2 build rules:
 - **Before rewriting exported scripts,** re-import every script unchanged and compare a replay with the original.
   Hobo's 5368 scripts were identical on every frame, which proved FFDec's AS1/AS2 round trip safe for that game.
   [Hobo]
+- **A copy of the game per player** (AS3; a world built around its one player, such as a level that rotates around
+  it): a document-class subclass loads one more copy of the SWF per friend with `loadBytes` into its own
+  `ApplicationDomain(null)`, places each copy far apart on the stage, and gives each slot a `coop.camera` on its own
+  copy. Write each copy's keys through `applicationDomain.getDefinition`, and keep every slot's game codes off the
+  keys the game reads hard-coded. Details in [Run 2](../games/run-2.md). [Run 2]
 - SWF 6 and 7 hide `ExternalInterface`: unhide it before calling `coop.*` (ruffle-coop's AS2 helper does it).

@@ -400,6 +400,22 @@
       "flash_player": "untested",
       "release": "flash-games 7e41e79 (1.4): games/madnessprojectnexus/MadnessProjectNexus_online.swf, --coop-keys stealth-hunter-2, Ruffle Together 1.0.8",
       "writeup": "games/madness-project-nexus.md"
+    },
+    {
+      "id": "run2",
+      "game": "Run 2",
+      "developer": "Joseph Cloutier, Kongregate",
+      "year": 2011,
+      "engine": "AS3",
+      "swf": 10,
+      "path": "single-to-coop",
+      "players": "1-4",
+      "sync": "lockstep in Ruffle Together, no netcode: every player runs their own copy of the game in one session (the SWF loads one more copy of itself per friend with loadBytes, each in its own ApplicationDomain), own keys and own coop.camera per copy",
+      "status": "released",
+      "qa": "lab-3p+",
+      "flash_player": "untested",
+      "release": "flash-games 8a4d0b9 (1.0): games/run2/Run2_online.swf, proven on Ruffle Together 1.0.8",
+      "writeup": "games/run-2.md"
     }
   ]
 }

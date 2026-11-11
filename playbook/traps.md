@@ -58,6 +58,9 @@ Each one cost a real mod time. The mod it came from is in brackets.
   `--coop-replay` (a replay is always a session): check solo in plain Ruffle, or switch on the count and replay with a
   1-slot map. [Ultimate Crab Battle, Intrusion 2]
 
+- Content loaded with `loadBytes` keeps getting `enterFrame` after `unloadAndStop()` and removal; a game loop that
+  reads `stage` then throws #1009 every frame. Remove the copy's loop listener before unloading. [Run 2]
+
 ## FFDec
 - `-importScript` can't add new AS3 classes: add stubs first (`AddClasses.java`). It prints nothing on success, so
   prove a replacement with a trace. [Stealth Hunter 2, Intrusion 2]
@@ -84,6 +87,10 @@ Each one cost a real mod time. The mod it came from is in brackets.
   file name too. [My Friend Pedro]
 - `AddClasses` put new class stubs into a preloader's frame-1 ABC tag; the preloader class failed to load and the
   timeline looped with nothing thrown. Put stubs in the ABC tag of a real game class. [Zombotron]
+
+- Flow-obfuscated AS3 (`§§goto` everywhere, won't compile): `-config autoDeobfuscate=1 -export script` gives
+  readable code. To hook without recompiling any game class, subclass the document class in a new class and make
+  that the document class (`tools/ffdec/SetDocClass.java`). [Run 2]
 
 ## AS2 / AVM1
 - Never name a function `stop` (or `play`, `gotoAndStop`...): it compiles to the timeline action. A clean-up silently
@@ -392,6 +399,9 @@ Each one cost a real mod time. The mod it came from is in brackets.
 - In AS, `undefined == null` is true: debug checks need `===`. [Bow Man]
 - A one-frame scripted `click` still proves a turn gate in a drag-to-shoot game (it fires a zero-power shot): delete
   one click and check the run stays identical up to the next scripted event. [Bow Man]
+- A headless session (`--coop-headless` host and joiners) needs `--coop-script` on every player; each plays its own
+  slot's lines. With the script on the host only, friends get no input and the session still reports
+  `desync_at=none`. (coop-lab's `lab.py` already does this.) [Run 2]
 - A lab FlashVar path that feeds scripted keys must turn the co-op API off, or replays mix the two.
   [Ultimate Crab Battle]
 - Reaching an ending without a bot: move a hero onto each level's real exit trigger (position from `-swf2xml`, twips
