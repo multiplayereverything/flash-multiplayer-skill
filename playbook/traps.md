@@ -99,6 +99,13 @@ Each one cost a real mod time. The mod it came from is in brackets.
 - SWF 6 has no `try/catch/throw`, no `getNextHighestDepth`, no `getInstanceAtDepth`. Use fixed high depths away from
   the game's (Bow Man used 1048568-1048571). [Bow Man, Ultimate Crab Battle]
 - Never raise SWF 6 to 7+: `undefined + 1` becomes NaN and old counters break. [Bow Man]
+- SWF 5 can't reach `ExternalInterface` in Ruffle: `_global` resolves only from SWF 6, and calls to Ruffle's
+  AS-defined globals don't get the global object as `this` either. Raise it to 6, but never by the header byte alone:
+  clip-event flags are 16 bits in SWF 5 and 32 from SWF 6, so every `onClipEvent` misparses (a preloader clip
+  vanished). Re-encode every tag with `tools/ffdec/SetVersion.java`; the fingerprint then matched the original on
+  every frame. [Ultimate Flash Sonic]
+- A clip removed with `removeMovieClip` loses its own fields, so filtering a list by `clip.slot` afterwards keeps it
+  (`undefined != k`). Filter first, then remove. [Ultimate Flash Sonic]
 - In SWF 7+, a counter never set (`c = Number(_root.c) + 1`) stays NaN for good, and `NaN > 3` is false: a lab gate on
   it never opened. Set every counter before counting. [Duck Life 4]
 - To replace a state clip, `createEmptyMovieClip(name, sameDepth)` alone replaces the old one. Removing the old clip
@@ -413,6 +420,10 @@ Each one cost a real mod time. The mod it came from is in brackets.
   scripted sessions send no key repeat. The Skullkid's boss could never die: the saw and the boss's loop both start
   on the Space keyDown, and the death lands on the loop's restart tick and loses. Real Flash key repeat re-sent
   keyDown and moved the loop. Look for timelines a held key's repeat used to restart. [The Skullkid]
+- Real-window labs post messages and can't click: for a game with mouse-only menus, a key-probe lab build starts the
+  game itself (the frame the menu's START leads to, with the menu's own variables set). [Ultimate Flash Sonic]
+- A state clip name read from `COOP_DESCRIBE_AT` dumps must have no commas: the state pattern stops there.
+  [Ultimate Flash Sonic]
 - A lab FlashVar path that feeds scripted keys must turn the co-op API off, or replays mix the two.
   [Ultimate Crab Battle]
 - Reaching an ending without a bot: move a hero onto each level's real exit trigger (position from `-swf2xml`, twips
@@ -438,5 +449,9 @@ Each one cost a real mod time. The mod it came from is in brackets.
   don't trust logs from a run a crash cut off. [Electricman 2 HS, Madness, Duck Life 4, The Skullkid]
 - webdesignmuseum.org serves SWFs to a browser page but Cloudflare blocks curl: load the page in the agent's browser
   and save its own fetch (with the owner's OK), then check the SHA-256. [The Skullkid, Run 2]
+- To stage only your own lines in a file another session has also edited, write an index blob of HEAD plus your
+  lines (`git hash-object -w --stdin`, then `git update-index --cacheinfo`). Keep the file's exact bytes:
+  flash-games' README and info.json mix CRLF and LF lines, and `git show` in text mode hides that.
+  [Ultimate Flash Sonic]
 - flash-games' `tools/update-catalog.ps1` rewrites every entry from the SWFs on disk, so it sweeps other sessions'
   pending lines into your commit. Run `git status` first. [Intrusion]

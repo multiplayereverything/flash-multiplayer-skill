@@ -432,6 +432,22 @@
       "flash_player": "untested",
       "release": "flash-games e8db705 (1.0): games/theskullkid/TheSkullkid_online.swf, proven on Ruffle Together 1.0.8",
       "writeup": "games/the-skullkid.md"
+    },
+    {
+      "id": "ultimateflashsonic",
+      "game": "Ultimate Flash Sonic",
+      "developer": "menace.ch (fan game)",
+      "year": 2004,
+      "engine": "AS2",
+      "swf": 5,
+      "path": "single-to-coop",
+      "players": "1-4",
+      "sync": "lockstep in Ruffle Together, no netcode: players 2-4 are copies of the hero clip with their own key codes; one shared screen with the camera on the middle of the heroes who are up",
+      "status": "released",
+      "qa": "lab-3p+",
+      "flash_player": "untested",
+      "release": "flash-games 236472f: games/ultimateflashsonic/UltimateFlashSonic_online.swf, Ruffle Together 1.0.8 (tested only there)",
+      "writeup": "games/ultimate-flash-sonic.md"
     }
   ]
 }

@@ -27,7 +27,8 @@ The scripts in `tools/` and the templates in `templates/`. Run every script with
 `-importScript` can compile new classes), `CheckNamespaces.java` (fails the build on a protected-namespace change,
 #1070), `ListClasses.java` (classes and static traits in a built SWF), `InsertAction.java` (compiles `.as` files into
 new DoAction tags, leaving every original tag alone), `SetDocClass.java` (makes another class the document class,
-so a subclass of the game's main class can hook it with no game class recompiled).
+so a subclass of the game's main class can hook it with no game class recompiled), `SetVersion.java` (re-encodes a
+SWF at another version, every tag written again, e.g. SWF 5 to 6 so `_global` and `ExternalInterface` work).
 
 ## Templates
 | Path | What it is |
