@@ -29,8 +29,8 @@ Each one cost a real mod time. The mod it came from is in brackets.
 - `unloadMovie(this)` right after `removeMovieClip(this)` unloads the **whole movie** in a real window: `this` reads as `""`
   and resolves to the root. Frames keep running and nothing is logged, but `_root._currentframe` reads 0. Headless runs and
   replays pass straight through, because that unload runs on a future their navigator backend never runs. Search your game for
-  `unloadMovie` and guard it with `if(this._name != undefined)`. Fix found in Ruffle Together's tree, not released as of
-  2026-11-07. [Electricman 2 HS]
+  `unloadMovie` and guard it with `if(this._name != undefined)`. Fixed in Ruffle Together 1.0.8; keep the guard while
+  players may run older builds. [Electricman 2 HS]
 
 ## FFDec
 - `-importScript` can't add new AS3 classes: add stubs first (`AddClasses.java`). It prints nothing on success, so
@@ -159,7 +159,8 @@ Each one cost a real mod time. The mod it came from is in brackets.
   script in real windows, and check a heartbeat from the game to its end. [Electricman 2 HS]
 - A session with `--coop-script` never reads the keyboard, so no scripted lab proves real keys. Post key messages to the game's
   own windows on the launcher's line and check what the hero does. Posted focus can be lost to any focus change on the PC, so
-  re-assert it before each press. [Electricman 2 HS, Madness]
+  re-assert it before each press. Even then such labs sometimes lose keys partway (likely lost focus, not proven): rerun a
+  failed one before blaming the mod. [Electricman 2 HS, Madness]
 - Co-op that needs a menu click to turn on looks like "everyone moves one player" when nobody clicks. Take the count
   from `coop.players`, and check it in a session: `--coop-replay` reports the key map's slot count, not `--coop-players`,
   so test a smaller count with a `.keys` file that has that many slots. [Stealth Assassin]

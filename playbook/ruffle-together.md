@@ -58,7 +58,8 @@ local: UP=38,87 DOWN=40,83 LEFT=37,65 RIGHT=39,68 FIRE=90,84 ALT=88,89
   stealth-assassin, stealth-hunter-2, intrusion, intrusion-2, air-battle, ultimate-crab-battle, fireboy-watergirl) or
   a `.keys` file.
 - A game can set its own map from frame 1 with `coop.keys(text)` (Dad 'n Me: every player presses the original
-  arrows, A and S on their own PC). Launch it with any map that has enough slots; the game's replaces it.
+  arrows, A and S on their own PC). Launch it with any map that has enough slots; the game's replaces it. From
+  Ruffle Together 1.0.7 `coop.keys` also sets this PC's keyboard from the map's `local:` line.
 - A key press also types the game key's character, so AS2 `on(keyPress "a")` menu buttons work from any map, in
   scripts and replays too (from Ruffle Together 1.0.3.8).
 - Only the host's mouse reaches the game's own mouse; a game built for co-op reads every player's with the API.
@@ -142,7 +143,9 @@ The full checklist, in order and with what counts as passed, is `.claude/skills/
 Mods target Ruffle Together **1.0.3.9** (release `v1.0.3.9`, published 2026-10-31, commit `1a56efb`). Everyone in a
 room must run the same build: 1.0.3.8 and 1.0.3.9 players can't join each other. Its release notes list Bad Ice-Cream,
 Gun Mayhem 2 (4 players) and Territory War replays as unchanged from 1.0.3.8; rerun a mod's own tests on it before
-calling that mod tested on 1.0.3.9.
+calling that mod tested on 1.0.3.9. Newer builds exist (1.0.7: `coop.keys` reads `local:`; 1.0.8: fixes the
+`removeMovieClip(this); unloadMovie(this)` dead game and a drawing crash); the pin moves only when someone fetches one,
+records its hashes here and in `tools/fetch_ruffle.py`, and reruns the mods' tests.
 
 | | |
 |---|---|
