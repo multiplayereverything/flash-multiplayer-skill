@@ -1,16 +1,42 @@
 # Bow Man Online
 
-Relay id `bowman`. Entry in [DIRECTORY.md](../DIRECTORY.md).
+Entry in [DIRECTORY.md](../DIRECTORY.md).
 
 Two archers taking turns, AS2 SWF 6 (38 KB).
 
-- **Path:** local multiplayer to online, 2 players, one archer each.
-- **Connect:** RELAY (room codes, the default) or DIRECT (the host runs a relay on its own PC, friends type its IP:port; `H|name` / `J|name` to the relay's default room). A Mode button switches; DIRECT is saved only when picked. The DIRECT room has no size limit, so the host sends `FULL|id` to a third player, and `BYE` names its target: host messages reach every guest.
-- **Sync:** events only. The shooter sends `FIRE` with angle and power; both games fly the same arrow; the host sends `LAND` with the true position, frame, HP, wind and its flight-frame count, and the guest corrects. Positions are rounded the way Ruffle stores `_x` (twips), or hit tests differ.
-- **Shots while an arrow still flies** (turns flip on release, so players can) desynced through two effects: the wind change when an arrow lands, and the game's random arrow-on-arrow deflection. Each arrow now reads its wind through a hook (`addx += windFor(this) / 6`), and the host reports per arrow, by that arrow's own flight-frame count, a wind change (`AW`) or a deflection (`DEFL`, the course at the start of that frame). The guest starts arrows 3 frames late and replays them; when one still arrives late (a host stalls) it corrects exactly (n frames in the old wind: velocity off by n*dw/6, position by dw*n(n+1)/2). A deflection can happen mid-frame, so the guest runs the game's own deterministic distance test and holds both arrows there until the host's course arrives.
-- **Silent connections:** both sides end the session after 15 s with no message (the guest pings every 2 s); lab `--freeze` suspends the relay and checks both give up within 25 s. `--live` runs the whole lab on the central relay with unlisted rooms.
-- **Known gap:** two arrows both in flight that cross within 15 px (rapid fire) can still jump on the guest's screen before `LAND` corrects them; outcomes match.
-- **Build:** export the frame scripts, patch a few with strings that must match exactly once, append the mod to frame 1, import. The SWF stays version 6: raising it makes `undefined + 1` NaN and the arrow counter breaks.
-- **SWF 6 traps:** identifiers are case-insensitive (`var n` overwrote `N`), there's no `try/catch` and no `getNextHighestDepth`; a regex rename once rewrote the relay's `"L"` string (guest departures were ignored) and the idle state `"off"` (into `"pOff"`).
-- **Flash Player:** refuses XMLSocket from a local SWF 6 file, so this mod is Ruffle only.
-- **Lab:** 9 scenarios, each in RELAY and DIRECT, plus `--solo`: default, `--mouse` (drags posted to the lab windows), `--delay/--jitter`, `--host-leaves`, `--guest-leaves`, `--late-join`, `--rapid` (each shot leaves 20 frames after the last), `--zoom`, `--deflect` (forces the deflection: arrows stuck in an archer keep the clip the game's test reads, ground arrows don't). Checks compare every arrow's landing on both screens and the guest's own copy (same hit or miss, no snapping, drift <= 5 px).
+## Ruffle Together build 2.0
+- **Path:** local multiplayer to online on Ruffle Together, 2 players, one archer each. No network code in the SWF.
+- **Release:** 2.0 in flash-games edcc204 (`games/bowman/BowMan_online.swf`, the same file name as before),
+  `--coop-keys bow-man`.
+- **Controls (VS Human):** P1 W/S to aim, hold Space to draw and release to shoot; P2 I/K + Enter. Each player can also
+  drag-aim with their own mouse through `coop.mouseX/Y/mouseDown(slot)`.
+- **QA:** lab-2p, proven on Ruffle Together 1.0.3.6: replays identical twice (keys 3300 frames, mouse 900); the solo
+  path equals the original over 1500 frames; coop-lab relay and direct, `desync_at=none`.
+- **Not proven:** not rerun on 1.0.3.7+ (the run was interrupted); never played on two real PCs; a real mouse drag with
+  power is untested (script clicks are one frame down); windows_lab fails on late frames only, and the untouched game
+  fails the same way (Ruffle side; sync checks pass).
+
+## Lessons
+- **Per-slot mouse in turn-based AS2:** in a session, gate the game's `onClipEvent(mouseDown)` off and re-run its
+  mouseDown/Move/Up each frame from `coop.mouseX/Y/mouseDown(slot)` with its own drag flag. Otherwise the host's normal
+  mouse events steer P2's bow. Stage pixels to `_root` coordinates: `(mx - _root._x) * 100 / _root._xscale`.
+- **"Solo = original" in `--coop-replay`:** build a test copy with the session check forced false, compare it with the
+  untouched SWF, and show the real build diverges only where the session path starts.
+- **Debug in headless replay** with one filled box per boolean, read from `--coop-shot`. `undefined == null` is true,
+  so test with `===`.
+- **A one-frame click still proves the turn gate:** delete one click and check the run stays identical up to the next
+  scripted event.
+- **SWF 6 traps** (true for any build of this SWF): identifiers are case-insensitive (`var n` overwrote `N`), there's
+  no `try/catch` and no `getNextHighestDepth`; raising the SWF version makes `undefined + 1` NaN and breaks the arrow
+  counter.
+
+## Relay mod 1.1.1 (retired)
+Kept locally only, not shipped. Relay id `bowman`, RELAY room codes or DIRECT to a relay on the host's PC. What it
+taught:
+- **Events-only sync:** `FIRE` with angle and power, the host's `LAND` with the true position. Positions had to be
+  rounded the way Ruffle stores `_x` (twips), or hit tests differed.
+- **Two arrows in flight** desynced through the wind change on landing and the game's random arrow-on-arrow
+  deflection; the mod sent wind and deflection per arrow by its own flight-frame count.
+- **Silent connections:** both sides ended the session after 15 s with no message.
+- **Flash Player** refuses XMLSocket from a local SWF 6 file, so that mod was Ruffle only.
+- A regex rename once rewrote the relay's `"L"` string and the idle state `"off"`: rename by exact match only.
