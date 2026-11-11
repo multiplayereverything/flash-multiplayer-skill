@@ -448,6 +448,22 @@
       "flash_player": "untested",
       "release": "flash-games 236472f: games/ultimateflashsonic/UltimateFlashSonic_online.swf, Ruffle Together 1.0.8 (tested only there)",
       "writeup": "games/ultimate-flash-sonic.md"
+    },
+    {
+      "id": "flashchess",
+      "game": "Flash Chess",
+      "developer": "Digital Vision Multimedia",
+      "year": 2002,
+      "engine": "AS2",
+      "swf": 5,
+      "path": "single-to-versus",
+      "players": "1-2",
+      "sync": "lockstep in Ruffle Together, no netcode: the friend plays red in place of the computer; each player moves only their own pieces on their own turn with their own mouse (coop.mouse zones); a leaver's side goes back to the computer",
+      "status": "released",
+      "qa": "lab-2p",
+      "flash_player": "untested",
+      "release": "flash-games f41daf4 (1.0): games/flashchess/FlashChess_online.swf, --coop-keys bow-man, Ruffle Together 1.0.8+",
+      "writeup": "games/flash-chess.md"
     }
   ]
 }

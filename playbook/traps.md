@@ -99,11 +99,15 @@ Each one cost a real mod time. The mod it came from is in brackets.
 - SWF 6 has no `try/catch/throw`, no `getNextHighestDepth`, no `getInstanceAtDepth`. Use fixed high depths away from
   the game's (Bow Man used 1048568-1048571). [Bow Man, Ultimate Crab Battle]
 - Never raise SWF 6 to 7+: `undefined + 1` becomes NaN and old counters break. [Bow Man]
-- SWF 5 can't reach `ExternalInterface` in Ruffle: `_global` resolves only from SWF 6, and calls to Ruffle's
-  AS-defined globals don't get the global object as `this` either. Raise it to 6, but never by the header byte alone:
-  clip-event flags are 16 bits in SWF 5 and 32 from SWF 6, so every `onClipEvent` misparses (a preloader clip
-  vanished). Re-encode every tag with `tools/ffdec/SetVersion.java`; the fingerprint then matched the original on
-  every frame. [Ultimate Flash Sonic]
+- SWF 5 hides everything newer than Flash 5: `_global` and `flash` are undefined, `onEnterFrame` handlers never fire,
+  and `createTextField` fields can't be reached by path. Two ways out:
+  - Keep SWF 5: `function g(){return this;} G = g.call(null);` returns the global object in any version. Then
+    `ASSetPropFlags(G, "flash", 0, 32640)` and `ASSetPropFlags(G.flash.external.ExternalInterface, null, 0, 32640)`
+    make `coop.*` work (32640 clears every version bit; unhide one name per call). `setInterval`, unhidden the same
+    way, runs on the shared clock and serves as the per-frame tick. [Flash Chess]
+  - Raise it to SWF 6, but never by the header byte alone: clip-event flags are 16 bits in SWF 5 and 32 from SWF 6, so
+    every `onClipEvent` misparses (a preloader clip vanished). Re-encode every tag with `tools/ffdec/SetVersion.java`;
+    the fingerprint then matched the original on every frame. [Ultimate Flash Sonic]
 - A clip removed with `removeMovieClip` loses its own fields, so filtering a list by `clip.slot` afterwards keeps it
   (`undefined != k`). Filter first, then remove. [Ultimate Flash Sonic]
 - In SWF 7+, a counter never set (`c = Number(_root.c) + 1`) stays NaN for good, and `NaN > 3` is false: a lab gate on
@@ -420,6 +424,13 @@ Each one cost a real mod time. The mod it came from is in brackets.
   scripted sessions send no key repeat. The Skullkid's boss could never die: the saw and the boss's loop both start
   on the Space keyDown, and the death lands on the loop's restart tick and loses. Real Flash key repeat re-sent
   keyDown and moved the loop. Look for timelines a held key's repeat used to restart. [The Skullkid]
+- Turn-based board game with the game's own buttons and one mouse per player: `coop.mouse("zones")`, and each turn
+  `coop.zone` over the board for the side to move only, the host included. Also check `coop.mouse.clicker` in the
+  handlers you wrap. A key map's `mouse: zones` line does the same. [Flash Chess]
+- In a twin test, a "must do nothing" click by the side to move on its own piece is a real selection. [Flash Chess]
+- Real windows on 1.0.8: posted mouse presses still never press a button, and posted moves can miss a window that
+  other windows cover. `coop.mouse.hovered(slot)` traced from a lab module checks zones without clicks. Don't pin lab
+  windows to the corner every session uses, and check `WindowFromPoint` before a capture. [Flash Chess]
 - Real-window labs post messages and can't click: for a game with mouse-only menus, a key-probe lab build starts the
   game itself (the frame the menu's START leads to, with the menu's own variables set). [Ultimate Flash Sonic]
 - A state clip name read from `COOP_DESCRIBE_AT` dumps must have no commas: the state pattern stops there.
@@ -447,11 +458,12 @@ Each one cost a real mod time. The mod it came from is in brackets.
 - Long replays on a shared PC fail with "memory allocation ... failed", and overlapping labs once ended in a power
   loss. Before each lab step wait until `FreeVirtualMemory` is 15 GB+ and fewer than 6 Ruffle processes run, and
   don't trust logs from a run a crash cut off. [Electricman 2 HS, Madness, Duck Life 4, The Skullkid]
-- webdesignmuseum.org serves SWFs to a browser page but Cloudflare blocks curl: load the page in the agent's browser
-  and save its own fetch (with the owner's OK), then check the SHA-256. [The Skullkid, Run 2]
+- A download behind a bot check (webdesignmuseum.org blocks curl): ask the user to save the file, don't work around the
+  check. Then record its SHA-256. [The Skullkid, Run 2, Flash Chess]
 - To stage only your own lines in a file another session has also edited, write an index blob of HEAD plus your
-  lines (`git hash-object -w --stdin`, then `git update-index --cacheinfo`). Keep the file's exact bytes:
-  flash-games' README and info.json mix CRLF and LF lines, and `git show` in text mode hides that.
-  [Ultimate Flash Sonic]
+  lines (`git hash-object -w --stdin --path <file>`, then `git update-index --cacheinfo`), best in a temporary index;
+  afterwards `git reset -q -- <your paths>` so the shared index doesn't show a staged revert. Feed it bytes, not
+  Python text-mode strings: flash-games' README and info.json mix CRLF and LF lines, and text mode rewrote whole files.
+  Build `catalog.json` in a throwaway worktree holding only your file. [Ultimate Flash Sonic, Flash Chess]
 - flash-games' `tools/update-catalog.ps1` rewrites every entry from the SWFs on disk, so it sweeps other sessions'
   pending lines into your commit. Run `git status` first. [Intrusion]
