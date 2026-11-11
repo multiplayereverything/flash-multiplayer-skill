@@ -223,8 +223,46 @@ def test_keys_check():
             ok("twin: keys_check refuses " + why, False)
         except ValueError:
             ok("twin: keys_check refuses " + why, True)
+    six = ("".join("slot %d: UP=%d FIRE=%d\n" % (i, 65 + i, 75 + i) for i in range(6))
+           + "mouse: zones\nmouse 2: all\nzone 1: _root.players.p2\nzone 5: 290,95 200x190\n"
+           + "private: _root.pcb opened-by _root.players.*.instance*\nprivate: _root.shop\nhover: own\ncursors: auto\n")
+    extras = {}
+    slots = keys_check.parse(six, extras)[0]
+    ok("keys_check reads a 6-slot map with mouse, zone, private and hover lines",
+       len(slots) == 6 and extras["mouse"] == "zones" and extras["zones"] == [(1, "_root.players.p2"),
+       (5, "290,95 200x190")] and extras["privates"][0] == ("_root.pcb", "_root.players.*.instance*")
+       and extras["hover"] == "own" and extras["mouse_modes"] == [(2, "all")])
+    ok("keys_check reads an 8-slot map", len(keys_check.parse(six + "slot 6: UP=81\nslot 7: UP=82\n")[0]) == 8)
+    for bad, why in [(six + "slot 6: UP=81\nslot 7: UP=82\nslot 8: UP=83\n", "a ninth slot"),
+                     (six + "mouse: everyone\n", "an unknown mouse mode"),
+                     (six + "mouse 0: all\n", "a mouse line for the host"),
+                     (six + "zone 8: _root.p9\n", "a zone for slot 8"),
+                     (six + "zone 1: 290,95 200\n", "a zone box with no height"),
+                     (six + "zone 1: _root.a _root.b\n", "a zone with two clips"),
+                     (six + "private: _root.a opened-by\n", "a private line with an empty opened-by"),
+                     (six + "hover: mine\n", "an unknown hover"), (six + "cursors: maybe\n", "an unknown cursors")]:
+        try:
+            keys_check.parse(bad)
+            ok("twin: keys_check refuses " + why, False)
+        except ValueError:
+            ok("twin: keys_check refuses " + why, True)
     example = os.path.join(os.path.dirname(HERE), "templates", "ruffle-together", "example.keys")
     ok("the template key map parses", len(keys_check.parse(open(example, encoding="utf-8").read())[0]) == 2)
+    import importlib.util
+    for name in ("replay_check", "solo_check"):
+        path = os.path.join(os.path.dirname(example), name + ".py")
+        spec = importlib.util.spec_from_file_location(name, path)
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+        here = os.getcwd()
+        os.chdir(os.path.dirname(example))
+        try:
+            found = module.find_exe(name + ".py")
+        finally:
+            os.chdir(here)
+        ok(name + " makes a relative --exe absolute", os.path.isabs(found) and os.path.samefile(found, path))
+        ok(name + " gives every run its own --save-directory",
+           '"--save-directory", saves' in open(path, encoding="utf-8").read())
 
 
 with tempfile.TemporaryDirectory() as tmp:

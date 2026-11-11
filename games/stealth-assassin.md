@@ -4,10 +4,11 @@
 |---|---|
 | Engine | AS3, SWF 15, 720x560, one 5,900-line document class (`MainTimeline`) plus a `Guard` symbol class |
 | Path | single player to co-op, up to 4 |
-| Sync | release: local co-op (2-4 assassins on one keyboard) played online through Ruffle Together; the older relay build: each PC moves its own assassin; the host's game runs guards, alarms, bullets, damage, targets, mission flow |
+| Sync | release: lockstep in Ruffle Together, no netcode, 2-4 assassins, one per player, count from `coop.players`; the older relay mod is kept as a separate build: each PC moves its own assassin; the host's game runs guards, alarms, bullets, damage, targets, mission flow |
+| Release | flash-games a26c0ce (`games/stealthassassin/StealthAssassin_online.swf`), tested on Ruffle Together 1.0.6, `--coop-keys stealth-assassin` (the API needs 1.0.3.7+) |
 | Build | patches on a fresh copy of the decompiled MainTimeline (22 asserted edits) + new classes via `AddClasses` stubs |
 | Relay id | `stealthassassin`, protocol `sa-1`, star mode |
-| QA | lab, 2-4 players with a late join, RELAY and DIRECT, 80 ms lag, solo control, a must-fail control run |
+| QA | release: lab-3p+ (see below); relay build: lab, 2-4 players with a late join, RELAY and DIRECT, 80 ms lag, solo control, a must-fail control run |
 
 ## Local co-op for Ruffle Together (first released 2026-10-29)
 The game has no local multiplayer, so Ruffle Together had nothing to sync. The mod adds it, reusing the relay mod's
@@ -35,6 +36,14 @@ desync; windows_lab quiet and pressure pass (an idle PC matters: other labs on t
   the chase through the game's own routine. A lab-only trace that logs each guard entering a wall went from 3-5 entries
   in a run to 0, and the game's own logic gave 0 as the control.
 - More targets: one extra per extra player plus one more, in co-op only. A friend who leaves (`coop.events`) drops as a body.
+
+QA of the release (lab-3p+, Ruffle Together 1.0.6): replays twice identical at 2, 3 and 4 players; a 1-slot replay
+byte-identical to the original; coop-lab relay and direct at 2, 3 and 4 players with no desync; a friend-leaves run;
+windows_lab quiet and pressure pass.
+Not proven: play between two real PCs on this build; the body left by a leaving friend wasn't seen on screen; only
+Ruffle Together 1.0.6 was tested.
+Possible issue, likely but NOT checked (from reading the code only): an unlock done for a co-op group with no save also
+changes saved progress. That goes to the co-op save, not the solo save.
 
 ## The game
 Top-down stealth: walk to the green target without being seen, touch it while moving to stab it, then reach the
@@ -72,3 +81,6 @@ A lab-only "god" flag keeps players alive through the shooting steps (hits are s
   until the screen changes.
 - Replaying a host event inside the game's own check must keep the request until the check really runs.
 - Lab screenshots: take pending ones before starting a new window (window start can block for seconds).
+- Lab-only switches through `--coop-option` and `coop.option(name)`, compiled only into the lab build: `GOD=1` (refill
+  health), `ALL=1` (unlock every mission), `SOLO=1` (force the game's 1-player logic inside a session, as a control).
+  Trace lines from a lab build come out on a headless session's stdout.

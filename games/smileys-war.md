@@ -6,7 +6,8 @@
 | Path | single player (one human against bots) to local multiplayer, 2-4 humans, played online through Ruffle Together |
 | Sync | Ruffle Together lockstep (1.0.6+): no netcode in the SWF; `--coop-keys smileys-war`; every player's mouse, camera and HUD through the co-op API |
 | Build | 3 new DoAction tags compiled by FFDec (`InsertAction`) at the end of 3 main-timeline frames; every original tag byte-for-byte (checked by the build) |
-| QA | `--coop-replay` determinism, solo = original fingerprint check, coop-lab 2/3/4 players relay + direct, windows_lab; not played between two real PCs |
+| Release | flash-games f5a0aea, `SmileysWar_online.swf` (sha256 acdf7856...353a); tested only on Ruffle Together 1.0.6, not 1.0.7 or 1.0.8 |
+| QA | lab-3p+: `--coop-replay` twice with jitter, solo = original fingerprint check, coop-lab 2/3/4 players relay + direct, a mid-match leave, windows_lab; never played between two real PCs |
 
 ## The game
 Side-view platform shooter: smileys walk (A/D), jump (W), aim and fire with the mouse, 9 weapons (1-9 or wheel),
@@ -29,9 +30,11 @@ explosion and pickup loops over `"smiley" + i`, so any clip named that way is a 
   a hidden `_root.screen` clip, so that clip is made huge: which pieces show must not depend on one player's camera.
 - Each PC's HUD shows its own player: the game's HUD script also decides who won, so it still runs, then the mod writes
   the local player's numbers over its text, the health bar's width and an alpha (the sync check compares none of them).
-- HUMANS starts at `coop.players`, and the total player count rises to HUMANS if it was set lower.
-- A friend who leaves (`coop.events`): a bot sprite takes over at the same name, depth, place and team, and the
-  player's name and score go back on the board after the bot's setup overwrites them.
+- HUMANS starts at `coop.players` and cycles 1..that; the total player count rises to HUMANS if it was set lower.
+  Replays report the key map's slots (4), not the players in the session.
+- A friend who leaves (`coop.events`): the game's bot sprite is attached at the same name and depth, with tag, team,
+  flags and position as its init object; the player's name and score go back on the board after the bot's frame-1
+  setup overwrites them. A slot that left stays a bot in later matches.
 - Aim goes through one function: in a session, `ExternalInterface.call("coop.mouseX"/"coop.mouseY"/"coop.mouseDown",
   slot)` for every slot (player 1 included); keyboard aim (an angle turned with two keys) as the fallback, switched
   by input only, so every PC switches on the same frame. `coop.localSlot` only adds "YOU" to a label's text.
@@ -55,3 +58,7 @@ explosion and pickup loops over `"smiley" + i`, so any clip named that way is a 
   (`COOP_DESCRIBE_AT`), since traces don't reach the replay log. It proved human-vs-human kills (keyboard aim and
   per-slot mouse) and bot scoring.
 - Clicking a V2 ComboBox in a script: open it, then click the row at 22.6 px steps below it.
+- A copy of the coop-lab with `--leave-after` and a temporary `--save-directory` per player for the leave test.
+- A lab build that treats a slot holding QUIT as leaving, to check the bot takeover in `COOP_DESCRIBE_AT`.
+- Mouse aim under `coop.camera` in a replay: the script's mouse is a raw world point. Move it one pixel the frame
+  before each press, and check for terrain in the line of fire.

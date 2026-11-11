@@ -28,9 +28,35 @@ Each one cost a real mod time. The mod it came from is in brackets.
 
 - `unloadMovie(this)` right after `removeMovieClip(this)` unloads the **whole movie** in a real window: `this` reads as `""`
   and resolves to the root. Frames keep running and nothing is logged, but `_root._currentframe` reads 0. Headless runs and
-  replays pass straight through, because that unload runs on a future their navigator backend never runs. Search your game for
+  replays pass straight through, because that unload runs as a future that their `NullNavigatorBackend` drops (true of
+  any `loadMovie`/`unloadMovie` bug, so test those in real windows). Search your game for
   `unloadMovie` and guard it with `if(this._name != undefined)`. Fixed in Ruffle Together 1.0.8; keep the guard while
   players may run older builds. [Electricman 2 HS]
+
+- An AS2 variable is found before a child clip of the same name. Setting `_root.playerL = otherHero` (or
+  `game.dude1 = otherHero`) for the length of a call makes the game's own code run for that hero; `delete` the variable
+  afterwards to expose the real child again. Restore to a computed base (P1, a boss's grab victim, the first player up).
+  [My Friend Pedro, Dad 'n Me]
+- A stale clip reference re-resolves by path to a new clip of the same name, so `if (clip != lastClip)` never sees a
+  re-attached clip. `coop.hud` marks the object, not the path: call it every frame for clips the game re-attaches.
+  [My Friend Pedro]
+- `getInstanceAtDepth(NaN)` finds a clip, so a "find a free depth" loop that starts at NaN never ends. [Madness]
+- "thread 'main' has overflowed its stack" after a long run was the renderer tessellating a stroke at an absurd scale,
+  not script recursion (AVM1's call limit gives an error, not a crash). Fixed in Ruffle Together 1.0.8. [Madness]
+- `coop.hud` in a game that scrolls by moving `_root` was drawn off screen up to Ruffle Together 1.0.3.8 (fixed in
+  1.0.3.9): such games need 1.0.3.9+. If your camera moves `_root` after the game pinned its HUD at `-_root._x`,
+  re-pin the HUD right after, or it lags a frame and is clipped while zooming. [Intrusion]
+- Key maps refuse codes Ruffle has no key for (F12 = 123, F24 = 135: "no key with code"). For a slot key the game
+  never reads, use Insert (45). [Zombotron]
+- Ruffle Together 1.0.6 took physical keys only from the launch line's `local:` line, so a game key missing there
+  never arrived even with `coop.keys` (1.0.7+ reads both). On 1.0.6, counting a `coop.typed` character as that button
+  held for 4 frames gets it through. [Madness]
+- When every slot's map gives the same game key codes, `Key.isDown` sees everyone's keys at once: fine for menus, but
+  in play hide the movement and fire codes from the game and move each hero from `coop.buttons(slot)`.
+  [Ultimate Crab Battle]
+- A mod that turns co-op on for "in a session" rather than `coop.players > 1` takes its co-op path in every
+  `--coop-replay` (a replay is always a session): check solo in plain Ruffle, or switch on the count and replay with a
+  1-slot map. [Ultimate Crab Battle, Intrusion 2]
 
 ## FFDec
 - `-importScript` can't add new AS3 classes: add stubs first (`AddClasses.java`). It prints nothing on success, so
@@ -52,6 +78,12 @@ Each one cost a real mod time. The mod it came from is in brackets.
   not available"). When the label sits right after the loop, delete both: it's a `break`. [Stealth Assassin]
 - A clip that stays on the timeline unchanged over several frames is exported only on the frame that places it (on
   105 and 106, absent from 107's export). Rewrite asserts must count placements, not frames. [Duck Life 4]
+
+- `onClipEvent(load)` and `onClipEvent(enterFrame)` of one placed clip export as separate files in one folder. A rewrite
+  rule matched by folder hit the load script and broke the import ("Parsing finished before end of file"): match the
+  file name too. [My Friend Pedro]
+- `AddClasses` put new class stubs into a preloader's frame-1 ABC tag; the preloader class failed to load and the
+  timeline looped with nothing thrown. Put stubs in the ABC tag of a real game class. [Zombotron]
 
 ## AS2 / AVM1
 - Never name a function `stop` (or `play`, `gotoAndStop`...): it compiles to the timeline action. A clean-up silently
@@ -132,6 +164,19 @@ Each one cost a real mod time. The mod it came from is in brackets.
 - `coop.label` sits at the top of the clip's bounds, and invisible hit boxes count. Hang the label on a small clip of
   its own that follows the head. It needs a real window to see: headless shots don't draw labels. [Electricman 2 HS]
 
+- AVM1 `undefined >= n` is true (it compiles to `!(a < b)`): a "sit out" check removed the team leader. Test for a
+  number first. [Madness]
+- Never `attachMovie` at a fixed depth inside the game's world: it silently replaces what is there (a reticle deleted a
+  boss's retreat point and the stage couldn't be finished). Use `getNextHighestDepth`. [Madness]
+- Copying a character with the game's own copy function can leave fields pointing at the old owner (weapons'
+  `myOwner`), which blocked doors and pick-ups for that friend. Check every back-reference on a copy. [Madness]
+- A level's `onEnterFrame` runs before that frame's own script: set up per-level copies only once the frame script has
+  run (wait for a handler it installs), or you copy undefined handlers and it overwrites your setup. [My Friend Pedro]
+- SWF 6: `Key.isDown = f` fails silently (read-only). `ASSetPropFlags(Key, "isDown", 0, 7)` first, then assign.
+  [Dad 'n Me]
+- A call to a function that no longer exists does nothing and raises no error: a scripted edit between two markers
+  deleted 5 functions and the build still passed. List the `^function` names after every scripted edit. [Dad 'n Me]
+
 ## AS3
 - `flash.display.Sprite` is sealed: dynamic fields need a `MovieClip`. [Bad Ice-Cream]
 - `var` is hoisted to function scope: a local `key` shadowed a `key()` method (#1006), and two locals with one name
@@ -147,6 +192,9 @@ Each one cost a real mod time. The mod it came from is in brackets.
 
 - Box2D's proxy limit can be too low for added players: Zombotron's 512 crashed with 4 players, and 2048 works. Raise
   it only in a session, so 1 player stays the original. [Zombotron]
+
+- A HUD the game creates in code on root: set its `.name` (`"coophud"`) and call `coop.hud("root.coophud")`; mark it
+  again whenever the game makes a new HUD clip. [Intrusion 2]
 
 ## Games and portals
 - Click-to-continue sponsor preloaders block labs: wait for them, or test the inner SWF. [Air Battle, Stealth Hunter 2]
@@ -209,6 +257,12 @@ Each one cost a real mod time. The mod it came from is in brackets.
 - Headless Ruffle has no device fonts (`_sans` text is missing in replay screenshots); check HUD text in a real
   window. [Raft Wars]
 - In a `--coop-script`, a click right after a new menu appears misses: the replay's pointer only hovers what it moves over. Move one pixel off and back before each click. [Territory War]
+- Ruffle gives a fill of alpha 0 no mouse hits: use alpha 0.01 for invisible hit areas. [Air Battle]
+- Never place or size co-op UI by TextField metrics: device-font sizes differ between PCs (about 0 headless), and
+  positions are in the sync fingerprint. Use fixed sizes, positions and hit rects. [Air Battle]
+- Ruffle window screenshots include a 24 px menu bar; replay script clicks are stage pixels. [Air Battle]
+- Chat on "/" (1.0.3.7+) opens only on the main-row slash (191); a map using numpad "/" (111) doesn't clash.
+  [Air Battle]
 - Ruffle's `getBounds` returns NaN for AS2 Button instances; read `_x/_y/_width/_height` (via `localToGlobal`) to find click positions for a script. [Territory War]
 - A game that culls by the screen (clips hide unless they touch a clip at the stage's size) loses everything off the
   stage under `coop.camera`, because the world no longer moves. Grow that clip so nothing is culled. [Smileys War]
@@ -274,3 +328,92 @@ Each one cost a real mod time. The mod it came from is in brackets.
   the level exit through the trigger code instead of moving the hero there. [Intrusion 2]
 - A screenshot fallback that copies the screen area of a lab window copies whatever covers it (other apps). Check
   with `WindowFromPoint` that the window itself shows at those points before copying. [Intrusion 2]
+
+### Per-player screens
+- Per-PC HUD without breaking lockstep: when the HUD script also runs game logic (it decides the winner), let it run,
+  then write the local player's numbers over its text, a bar's `_xscale` and `_alpha`. The sync check compares
+  position, visibility, depth and frame only. [Smileys War]
+- Per-player markers under `coop.camera`: build every (camera, teammate) marker on every PC, placed from shared camera
+  values, and give only the local camera's markers alpha 1. Proven with 21 players at `desync_at=none`. [Zombotron]
+- With a camera per player, testers said friends "disappeared" when one ran ahead: they were only off screen. Add
+  off-screen markers or a team camera from the start. [Zombotron]
+- Per-player cameras in a game with its own zoom: let the game's camera zoom out to fit every living hero (it decides
+  what stays awake), and give each slot `coop.camera(s, x, y, z)` with z = 1 / level scale (clamped), the hero's stage
+  point clamped inside the stage, a downed slot following the nearest living hero, and cameras off outside play.
+  Details in [Intrusion 2](../games/intrusion-2.md) and [Intrusion](../games/intrusion.md). [Intrusion, Intrusion 2]
+- A tile engine that blits the world into one screen-sized canvas at the camera's offset draws nothing outside P1's
+  view under `coop.camera`, and growing a cull rect isn't enough. After the game's update, set the engine camera to
+  the corner of a region around every player's view, size the viewport and canvas to it (whole blocks), and put
+  the game's camera back at the start of the next update so the simulation never sees the region. Each slot's
+  camera is its player's point inside the region. Stretch screen-space layers (night tint, rain) over the region,
+  and shift mouse reads made during the update by (game camera - region corner). [Stealth Hunter 2]
+- `coop.hud` needs a direct child of the root: move a deep HUD into one while the cameras are on and back for menus
+  and cutscenes. Markers placed from the game's camera (a prompt over P1) must be set again on EXIT_FRAME from P1's
+  own camera and shown only on P1's PC. [Stealth Hunter 2]
+- `--coop-replay` draws only slot 0's camera: to check slot N's view, build a throwaway copy where slot 0 uses slot
+  N's camera. Identical fingerprints for every view prove the camera is picture only. [Stealth Hunter 2]
+- A game that calls `Mouse.hide()` and draws only the host's crosshair leaves friends with no cursor: draw one
+  coloured crosshair per slot at `coop.mouseX/Y(slot)` (shared answers, sync-safe). [Intrusion 2]
+- Locking a world-scrolling brawler's vertical camera for 2+ players halved the street depth and left enemies out of
+  reach. Keep each player's limit in world terms and move one group camera to the players' middle height. [Hobo]
+
+### Players, turns and leaving
+- A player-count menu must start at `coop.players` and never go above it: slots nobody holds stall the game. A replay
+  reports the key map's slot count (4), so scripts click from that value. [Raft Wars, Smileys War]
+- Turn-based games after Ruffle Together 1.0.3.7: a leaver no longer ends the session, but `turn % players` keeps
+  handing their slot turns. Mark "leave N" from `coop.events` and skip it; pass on a turn they were aiming. [Raft Wars]
+- Per-slot mouse in a turn-based AS2 game: gate the game's own `onClipEvent(mouseDown)` off in a session and re-run
+  its down/move/up each frame from `coop.mouseX/Y/mouseDown(slot)` with your own drag flag; otherwise the host's
+  normal mouse events, which still fire, steer or shoot the other player's bow. Stage px to `_root`:
+  `(mx - _root._x) * 100 / _root._xscale`. [Bow Man]
+- Extra players spawned at a level's start can fall or die before their player acts: park each one (hold its spawn
+  position, zero velocity) until that slot presses any key. [Air Battle]
+- `coop.events` empties its list on every call: read it in one place per frame. [Raft Wars]
+- A bot takes over a leaver: attach the game's own bot sprite at the same name and depth with the player's fields as
+  the init object; restore name and score after the bot's own frame-1 setup. [Smileys War]
+- A leave test must kill a friend's process mid-run (`taskkill /T /F`); a friend that just reaches `--coop-frames`
+  isn't a leave (the host waits about 60 s and reports it frozen). [Intrusion 2, Raft Wars, Dad 'n Me]
+
+### Labs
+- ruffle-coop's coop-lab `lab.py` (as of 2026-11-11): a relative `--exe` prints nothing with exit code 0 (pass an
+  absolute path and count the `COOP RESULT` lines); it passes no `--save-directory`, so give each player a temp one
+  (and a `--cache-directory`); its local relay allows 4 players (the real one 8); its timeout is too short for 5-6
+  players and it drops all output on timeout; it has no `--leave-after`. Without editing it: import it, patch
+  `player()` or `subprocess.Popen` to add the flags, strip your own flags from `sys.argv` before its `main()` builds
+  the parser; or pass `--exe` a `.cmd` wrapper that adds `--save-directory <temp> %*`.
+  [Chaos Faction 2, Raft Wars, Ultimate Crab Battle, Dad 'n Me, Air Battle, Bow Man, Stealth Hunter 2]
+- `windows_lab.py` passes no `--save-directory`, so its windows write the user's real co-op saves. [Chaos Faction 2]
+- Lab-only switches: read `coop.option(name)` (GOD, ALL missions, SOLO as a same-session control) in the lab build
+  only, set with `--coop-option` in headless sessions; replays never pass options, so build replay variants that force
+  them. [Stealth Assassin, Dad 'n Me]
+- "Solo = original" when the mod switches on for any session: build a test copy with the session check forced
+  false and compare it with the untouched SWF, then show the real build diverges only where the session path
+  starts. [Bow Man]
+- In AS, `undefined == null` is true: debug checks need `===`. [Bow Man]
+- A one-frame scripted `click` still proves a turn gate in a drag-to-shoot game (it fires a zero-power shot): delete
+  one click and check the run stays identical up to the next scripted event. [Bow Man]
+- A lab FlashVar path that feeds scripted keys must turn the co-op API off, or replays mix the two.
+  [Ultimate Crab Battle]
+- Reaching an ending without a bot: move a hero onto each level's real exit trigger (position from `-swf2xml`, twips
+  / 20, the root child at that spot, the centre of its bounds), or call the game's own `die()` on every enemy every 60
+  frames, or teleport onto the exit sensor. The game's real path then runs. Rotate which slot finishes.
+  [My Friend Pedro, Chaos Faction 2, Zombotron]
+- Prove every button of every slot without screenshots: press one button of one slot for 10 frames and report the
+  first frame whose fingerprint differs from a no-press run. [Chaos Faction 2]
+- Instrumentation can change the run: `_root.watch` and a per-instance `gotoAndStop` override both did. Renaming an
+  empty clip's `_name` to a state string each frame (read in `COOP_DESCRIBE_AT`) didn't. [Hobo, Madness]
+- Lab checks that depend on where P1 lands are flaky (an enemy spawned "next to" a soldier ends up nearer P1): move the
+  soldier under test away first, and make walk checks jump. [Intrusion]
+- When a key reached the slot but the move didn't happen, check the lab first: the hero had drifted away from the
+  probe's enemy. Put it back on its spot whenever idle. [Electricman 2 HS]
+- Idle test fighters get knocked out in seconds and drop their weapon: time single-button checks before first
+  contact. [Chaos Faction 2]
+- Mouse-aim proofs: put script targets inside the game's aim range (a shot aimed straight up clamped to the limit and
+  proved nothing) and log aim, mouse and gun in the fire trace. [Raft Wars]
+- A bot that stalls isn't always the bot: of seven stalls, four were the bot, two mod bugs, one the game's dead end.
+  Dump what the game still counts (enemies, objectives) before blaming either. [Madness]
+- Long replays on a shared PC fail with "memory allocation ... failed", and overlapping labs once ended in a power
+  loss. Before each lab step wait until `FreeVirtualMemory` is 15 GB+, and don't trust logs from a run a crash cut
+  off. [Electricman 2 HS, Madness, Duck Life 4]
+- flash-games' `tools/update-catalog.ps1` rewrites every entry from the SWFs on disk, so it sweeps other sessions'
+  pending lines into your commit. Run `git status` first. [Intrusion]

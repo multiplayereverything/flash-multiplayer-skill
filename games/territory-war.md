@@ -16,3 +16,19 @@ Turn-based team artillery with sticks (Afro-Ninja, 2007), AS2 SWF 8.
 - **Ruffle Together:** fits as hot-seat (shared keys, merged across slots; `--coop-keys territory-war`, 2-4 players). The coop SWF is the untouched game. Replays twice identical over 4400 frames; coop-lab in sync with 2, 3 and 4 players over the relay and directly; windows_lab over its late-frame limit at 40 fps (no desync). Released with Ruffle Together 1.0.3.4 as `TerritoryWar_online.swf` (flash-games a1698f6); the relay mod stays in the mod folder.
 - **Own turns (2.1):** a frame-3 module answers every `Key.isDown` with the current stick owner's `coop.buttons(slot)` (owner = a pure function of the stick name and the match setup: slots 0/2 red, 1/3 blue), replays turn-menu key releases into the game's own Key listener, and gates the ten turn functions so clicks count only for the owner (`coop.zone` on `_root.HUD` where zones exist). Proof: a script where every non-owner presses keys and the host clicks on a friend's turn gives the same fingerprints as its same-timing clean twin over 4965 frames on the 1.0.3.8 release; 2-4 players in sync. flash-games 673e405.
 - **Turns setting (2.3):** with ownership per stick, 4 players and 3 sticks (the campaign puts everyone on red against the CPU) left player 4 without a turn. Now the game's `findCurrentPlayer` is wrapped and each team's turns go round its players (default); the launcher's `--coop-option turns=stick` keeps fixed sticks per player. The replay doesn't pass `--coop-option`, and session fingerprints differ between runs, so the setting is proven with a per-turn trace in headless sessions.
+- **Launcher setting:** Turns is a launcher choice, not an in-game button. It lives in flash-games `info.json`
+  under `games.territorywar.settings`, and flash-games `tools/update-catalog.ps1` copies it to `catalog.json`
+  `settings.territorywar`: id `turns`, type `choice`, scope `host`, since `1.0.3.7`, default `rotation`; choices
+  `rotation` (no args) and `stick` (`--coop-option turns=stick`). Launcher 1.0.38+ reads it, so `launcher.json`
+  needs no change. Not yet tried in the launcher UI.
+- **Now:** Ruffle Together lockstep on the game's own hot-seat; each player plays only their own turns through
+  `coop.buttons`. Key map `territory-war`, 2-4 players. Minimum Ruffle Together 1.0.3.7 (older builds fall back to
+  plain shared hot-seat keys). Release flash-games f525b54 (SWF 2.3) and de7deb6 (launcher setting). The relay mod
+  (room codes and Direct IP) is kept locally.
+- **QA (hub level lab-3p+):** replays; coop-lab 2/3/4 over the relay and direct; 4 players vs CPU; the
+  intruder-vs-clean twin proof on the 1.0.3.8 release.
+- **Not proven:** two real PCs; Flash Player 32; windows_lab goes over its late-frame limit at 40 fps (no desync).
+
+## Lessons
+- A host option goes in flash-games `info.json` `games.<id>.settings`, and the catalog is rebuilt from that. Read it
+  with `coop.option(name)` once at boot; anything other than the agreed value means the default.

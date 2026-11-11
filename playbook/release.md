@@ -29,6 +29,19 @@ works): `servers.json` with the relay's address, and `mods/<id>.json` with the l
 download link and a notice. Starter kit: `modsinfo/` (file format, a template mod file, `schema.json`,
 `tools/validate.py`).
 
+- **Host options in the launcher:** for the flash-games catalog, put a game's options in its `info.json`
+  `games.<id>.settings` (a checkbox or a choice with the args each adds, `scope: host`, `since:` the Ruffle Together
+  version); `tools/update-catalog.ps1` copies them into `catalog.json` `settings`. Format: the launcher's CONFIG.md,
+  "Game settings". The SWF reads each with `coop.option(name)` once at boot; any other value means the default.
+  [Territory War, Dad 'n Me]
+- **Updates don't reach existing installs (as of 2026-11-11):** the Rust launcher decides a file is outdated from a
+  saved `catalog.json` that nothing writes, so players who already have a game keep the old bytes and can't join a
+  host on the new release. Until that's fixed, tell players in the release notes to delete the file and download it
+  again. (Checked from the code only.) [The World's Hardest Game]
+- **Co-op saves:** an unlock the mod does for the co-op group (an unlocked-level value set before the menu) may also
+  change the saved progress, which then lands in the co-op save, not the solo one. Likely from reading the code, not
+  checked; say so in the release notes. [Stealth Assassin]
+
 For TV mode the launcher sets `RUFFLE_TOGETHER_TV=1` and passes `--fullscreen`, and every action, solo included,
 passes the game's `--coop-keys` (a solo map where the game has one). Builds with TV mode have a new build id, so they
 can't join 1.0.5 players: release it as a new version for everyone.

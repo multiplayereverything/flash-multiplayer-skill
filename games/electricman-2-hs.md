@@ -6,7 +6,8 @@
 | Path | single player to co-op, 1-4 players on one shared screen |
 | Sync | Ruffle Together lockstep, no netcode; `--coop-keys gun-mayhem-2 --coop-players 2-4` as the start map, then the SWF's own `coop.keys` |
 | Build | 53 scripts rewritten as text from FFDec's export and compiled back with `-importScript`, plus one DoAction on frame 1 |
-| QA | lab-3p+ on Ruffle Together 1.0.6: see below. Not played between two real PCs, not tried on the live relay |
+| Version | 1.1, flash-games cce0737 (1.0 was 0bafa6c, broken in real play); Ruffle Together 1.0.7 |
+| QA | lab-3p+ on Ruffle Together 1.0.7: see below. Not played on two real PCs, a real keyboard or the live relay |
 
 ## The game
 A one-screen arena fighter: one hero (`_root.em`) against a team of enemies (`m1..N`), a tournament of 19 matches over 6
@@ -43,6 +44,16 @@ dead at the end of every fight and on leaving the training (`unloadMovie(this)`,
 New in the lab: physical keys in real windows, checked by each hero's move, and whole scripts in real windows, the whole tournament
 included. Both come out clean on 1.1.
 
+Proven on Ruffle Together 1.0.7: physical keys in real windows at 2 and 4 players and solo, the whole tournament and lost
+matches in real windows, replays, solo = original, coop-lab 2-4 through a relay and directly, leave tests.
+Not proven: Ruffle Together 1.0.8 (stopped after only the 2-player keys test passed; the launcher record still says
+1.0.7). Never played on two real PCs, a real keyboard or the live relay. The tournament run used god mode and short
+fights, so the balance is unproven.
+
 ## Lessons
 - A green solo fingerprint and good-looking screenshots hid two bugs: no player could press anything in a session, and
   1-player health bars never moved. See the traps with this game's name.
+- Headless runs and replays miss an unload of the root: it runs as a future that `NullNavigatorBackend` drops. That
+  covers any `loadMovie`/`unloadMovie` bug, so check those in a real window.
+- When a key reached the slot but the move didn't happen, check the lab first: here the hero had drifted away from
+  the probe enemy. Put the hero back on its spot when idle.

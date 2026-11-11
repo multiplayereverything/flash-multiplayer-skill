@@ -7,17 +7,36 @@ from the same input script and compares their fingerprints frame by frame.
 `--keys` must be a 1-slot map (one `slot 0:` line), so the replay has one player. `--allow` lists frames that may
 differ (where the mod's own menu button shows); every other differing frame fails. Prints the differing frames as
 ranges. Exit code 0 only if both runs wrote every frame and nothing outside --allow differs.
+
+Each run gets its own empty `--save-directory` (a temp folder, deleted afterwards), so the mod and the original
+start from the same blank saves. `--exe` is made absolute first (a relative path fails on Windows).
 """
 import argparse
 import os
+import shutil
 import subprocess
 import sys
+import tempfile
+
+
+def find_exe(exe):
+    """The exe as an absolute path: Windows can't start a relative one ("WinError 2")."""
+    if os.path.isfile(exe):
+        return os.path.abspath(exe)
+    found = shutil.which(exe)
+    if not found:
+        sys.exit("no Ruffle Together exe at %s" % exe)
+    return os.path.abspath(found)
 
 
 def replay(args, swf, out):
-    r = subprocess.run([args.exe, "--coop-replay", swf, "--coop-keys", args.keys, "--coop-script", args.script,
-                        "--coop-frames", str(args.frames), "--coop-out", out], capture_output=True, text=True,
-                       errors="replace")
+    saves = tempfile.mkdtemp(prefix="coop-saves-")
+    try:
+        r = subprocess.run([args.exe, "--save-directory", saves, "--coop-replay", swf, "--coop-keys", args.keys,
+                            "--coop-script", args.script, "--coop-frames", str(args.frames), "--coop-out", out],
+                           capture_output=True, text=True, errors="replace")
+    finally:
+        shutil.rmtree(saves, ignore_errors=True)
     if not os.path.exists(out):
         sys.exit("replay of %s wrote nothing:\n%s" % (swf, (r.stdout + r.stderr)[-2000:]))
     prints = {}
@@ -61,6 +80,7 @@ def main():
     ap.add_argument("--allow", default="", help="frames that may differ, e.g. 10-40,95")
     ap.add_argument("--out", default="solo")
     args = ap.parse_args()
+    args.exe = find_exe(args.exe)
     os.makedirs(args.out, exist_ok=True)
     mod = replay(args, args.mod, os.path.join(args.out, "mod.txt"))
     original = replay(args, args.original, os.path.join(args.out, "original.txt"))

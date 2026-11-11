@@ -1,33 +1,41 @@
 # Ultimate Crab Battle Online
 
-Relay id `ucb`. Entry in [DIRECTORY.md](../DIRECTORY.md).
+Released 2.1: flash-games 5d8945e (2026-10-31), `UltimateCrabBattle_online.swf`, built on Ruffle Together 1.0.3.8,
+`--coop-keys ultimate-crab-battle`, 2-4 players. QA (hub level): lab-3p+. Entry in [DIRECTORY.md](../DIRECTORY.md).
 
 Single-player boss-fight shooter, AS2 SWF 6, obfuscated (FFDec's AS1/2 deobfuscator makes it readable, but there are
 no functions worth hooking: the fight is timelines and clip events).
 
-- **Path:** single player to co-op, up to 4 ships against the same crab, one shared HP bar and continues.
-- **Connect:** RELAY (default: room codes, public list, mods-info) and DIRECT (`H|`/`J|` to a relay on the host's PC,
-  IP:port) behind a MODE button. In DIRECT the host checks the version (`HELLO|name|version`, then `BYE|id|reason`)
-  and caps the room at 4, because the relay's legacy room does neither; guests leave on `X` themselves.
-- **Sync:** each player flies their own ship locally and sends its pose every 2 frames; shots go to the host as events
-  and the host spawns the same projectile clips, which do the real damage. Remote torpedoes are held under their ship
-  for the launcher's 6 frames; remote lasers replay the laser's explosions. A "world mirror" sends every `_root` clip
-  up to 7 levels deep, keyed by depth path (instance names differ between PCs), as a delta every 3 frames and in full
-  every 68. Stopped clips are corrected only once the guest's clip is at rest on the wrong frame for 8 frames; the
-  player's own launchers are never mirrored. Crab HP, team HP and score come from the host; hits on a guest's own
-  ship go to the host as `H|n`.
-- **Before mods-info lists the game:** the central relay refuses `ucb`; the panel says "This server doesn't host
-  the game yet: press MODE for DIRECT." (1.1.2), and DIRECT plays meanwhile. Flash Player 32 can't play it online
-  (it refuses sockets from a local SWF 6 file, and the game can't move to SWF 7+).
-- **Late join:** a friend can join mid-fight, also straight from the loader screen (launcher `join=`), and drops in.
-- **Host leaves:** guests see "The host closed the room." and keep playing alone.
-- **Lab:** RELAY and DIRECT, 3 players with a late join, 4 players with a 5th refused, join from the loader, 80+30 ms
-  lag, refusals, host leaving, mods-info over HTTP and over the relay, solo, release boot. At the end each guest's crab
-  HP, team HP, the score shown on its HUD and the fight timeline equal the host's exactly. Control runs
-  (`--no-torpedo-hold`, `--no-laser-fx`) show which checks can fail. Sessions start through the panel's own buttons,
-  and the real-keyboard path is checked at boot. Real input: posted key messages to the lab window (F9, 1, Ctrl,
-  arrows, A all work while hosting) and real browser clicks in Ruffle's web player (MODE, typing, HOST, X, ONLINE).
-  That click test found 1.1.0's panel dead to real clicks (a handler on the panel clip); fixed in 1.1.1.
-- **Lessons:** a click-blocking handler on a parent clip kills its buttons; AS1's 64 KB function-body cap; jumps to not-yet-loaded frames are ignored silently; frame scripts run
-  after enterFrame handlers, and bound text fields show the last value written; a game-over timeout can end a guest's
-  game first; setting `_x` inside a tween freezes it; Ruffle's fps drops as more windows run.
+- **Path:** single player to co-op: local co-op added to the SWF, up to 4 ships against the same crab, one shared HP
+  bar and continues. The relay mod 1.1.2 is retired and kept only as `_relay.swf`.
+- **Players:** every player gets a ship from `coop.players`; there is no join step. `coop.keys` on frame 1 gives every
+  slot and PC the game's own keys (arrows, A fire, Ctrl skip, 1-3 difficulty, Y/Z continue, N). Each ship follows
+  `coop.buttons(slot)`.
+- **"The player":** the game reads `_root.player` everywhere, so the instance name `player` moves between ships every
+  2 frames; every ship gets hit, and enemies aiming at `_root.player` switch targets with it.
+- **Leaving:** `coop.events` `leave N` hands `player` back to P1, then removes that ship.
+- **One keyboard:** outside a session P2 plays with I J K L + U, P3 with T F G H + R, P4 with numpad 8 4 5 6 + 0; P2-P4
+  press fire on the menu to join.
+- **QA:** on the 1.0.3.8 release exe with a throwaway `--save-directory`: replays identical twice over 2700 frames;
+  coop-lab with 2/3/4 players over relay and direct in sync; a friend leaving at frame 1500 with 3 and 4 players,
+  the others in sync to the end; solo is the original (plain Ruffle lab).
+- **Not proven:** two real PCs, two real windows, the leaver's ship disappearing on screen; not re-run after 1.0.3.8.
+- **Lab tool:** a wrapper loads coop-lab's `lab.py` as a module and patches `player()` so each headless player gets its
+  own `--save-directory` and `--cache-directory`, plus `--leave-at N`.
+
+## Relay mod 1.1.2 (retired, kept as `_relay.swf`)
+Relay id `ucb`. Each player flew their own ship locally and sent its pose every 2 frames; the host spawned the real
+projectiles and a "world mirror" sent every `_root` clip by depth path. RELAY and DIRECT behind a MODE button; the
+central relay never listed `ucb`, so DIRECT was the way in. Flash Player 32 can't play it online (it refuses sockets
+from a local SWF 6 file). Its lab checked late join, host leaving, lag and real clicks in Ruffle's web player.
+
+## Lessons
+- When every slot's `coop.keys` map gives the same codes, `Key.isDown` sees everyone's keys at once (fine for menus);
+  in the fight hide the movement and fire codes (37-40, 65) from the game and move every hero from `coop.buttons(slot)`.
+- `--coop-replay` always counts as a session (`coop.players` answers even with `--coop-players 1`), so check solo in
+  plain Ruffle.
+- SWF 6: two locals differing only by case are one variable.
+- A lab FlashVar path that feeds scripted keys must turn the co-op API off.
+- From the relay mod: a click-blocking handler on a parent clip kills its buttons; AS1's 64 KB function-body cap;
+  jumps to not-yet-loaded frames are ignored silently; frame scripts run after enterFrame handlers, and bound text
+  fields show the last value written; setting `_x` inside a tween freezes it; Ruffle's fps drops as more windows run.

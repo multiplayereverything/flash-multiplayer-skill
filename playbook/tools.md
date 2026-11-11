@@ -10,7 +10,7 @@ The scripts in `tools/` and the templates in `templates/`. Run every script with
 | `tools/swfmap.py` | Display tree from FFDec `-swf2xml`, for obfuscated AS2 games |
 | `tools/swfsym.py` | Links a library sprite with no class to an AS3 class (a new SymbolClass tag), so the mod can `new` it |
 | `tools/case_scan.py <folder>` | SWF 6: finds identifiers that collide when case is ignored |
-| `tools/keys_check.py` | Checks a `.keys` file: one `slot` line per player, valid key codes |
+| `tools/keys_check.py` | Checks a `.keys` file like Ruffle Together 1.0.8 reads it: 1-8 `slot` lines, valid key codes, and the form of `mouse:`, `mouse N:`, `zone N:`, `private:`, `hover:` and `cursors:` lines (Ruffle Together's own loader is the final check) |
 | `tools/unmochi.py` | Unwraps a MochiCrypt-protected SWF into the inner game SWF, so the mod is built from the game and not the ad wrapper |
 | `tools/wincap.py` | Screenshot of a window by PID, never focusing it |
 
@@ -38,8 +38,8 @@ new DoAction tags, leaving every original tag alone).
 | `templates/build/patches.py` | Exact-text edits to the game's classes, applied at build time to copies (the mod never holds game code) |
 | `templates/ruffle-together/example.keys` | A key map to rename for your game |
 | `templates/ruffle-together/example-2p.txt` | An input script for two players |
-| `templates/ruffle-together/replay_check.py` | Runs a replay twice and checks the fingerprints match |
-| `templates/ruffle-together/solo_check.py` | Runs the co-op SWF and the untouched SWF with one player and compares them |
+| `templates/ruffle-together/replay_check.py` | Runs a replay twice and checks the fingerprints match; each run gets a fresh temp `--save-directory`, and `--exe` is made absolute |
+| `templates/ruffle-together/solo_check.py` | Runs the co-op SWF and the untouched SWF with one player and compares them; each run gets a fresh temp `--save-directory`, and `--exe` is made absolute |
 
 The build scripts read FFDec from `FFDEC`. The co-op API helpers (`RuffleTogether.as`) and the demo SWF are in the
 ruffle-coop repo under `tools/coop-api/`.

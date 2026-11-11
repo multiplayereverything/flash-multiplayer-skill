@@ -26,11 +26,11 @@
       "swf": 11,
       "path": "single-to-coop",
       "players": "2-4",
-      "sync": "relay build: host snapshot at 15 Hz plus events, each player moves their own character; Ruffle Together build: local co-op added to the SWF, lockstep",
+      "sync": "lockstep in Ruffle Together: local co-op for 2-4 added to the SWF, a camera per player from 2.1 (coop.camera over a render region around every view); the relay build retired",
       "status": "released",
       "qa": "lab-3p+",
       "flash_player": "dropped",
-      "release": "https://github.com/Multiplayer-Everything-Team/flash-games/tree/main/games/stealthhunter2",
+      "release": "flash-games 4c01013 (2.1): games/stealthhunter2, --coop-keys stealth-hunter-2, Ruffle Together 1.0.3.7+",
       "writeup": "games/stealth-hunter-2.md"
     },
     {
@@ -57,12 +57,12 @@
       "engine": "AS3",
       "swf": 9,
       "path": "single-to-coop",
-      "players": "2-4",
-      "sync": "host snapshot every frame (moved bodies plus 1 s keyframe) and events; room codes or Direct IP",
+      "players": "1-4",
+      "sync": "lockstep in Ruffle Together, no netcode: local co-op for 1-4 boats added to the SWF, enemies target the nearest flying boat; the relay mod 1.1.1 kept, not shipped",
       "status": "released",
       "qa": "lab-3p+",
       "flash_player": "works (lab: host and 3 windows)",
-      "release": "https://github.com/Multiplayer-Everything-Team/flash-games/tree/main/games/airbattle",
+      "release": "flash-games 90f9eda: games/airbattle/AirBattle_online.swf, --coop-keys air-battle, tested on Ruffle Together 1.0.3.7",
       "writeup": "games/air-battle.md"
     },
     {
@@ -74,11 +74,11 @@
       "swf": 8,
       "path": "local-to-online",
       "players": "2-4",
-      "sync": "turn-based: host runs the match, the turn owner aims locally and sends the shot; room codes or Direct IP",
+      "sync": "lockstep in Ruffle Together, no netcode: the game's own hot-seat, each player plays only their own turns via coop.buttons (1.0.3.7+); turns setting from the launcher; the relay mod kept locally",
       "status": "released",
       "qa": "lab-3p+",
       "flash_player": "untested",
-      "release": "https://github.com/Multiplayer-Everything-Team/flash-games/tree/main/games/territorywar",
+      "release": "flash-games f525b54 (2.3) + de7deb6 (launcher setting): games/territorywar, --coop-keys territory-war, Ruffle Together 1.0.3.7+",
       "writeup": "games/territory-war.md"
     },
     {
@@ -90,11 +90,11 @@
       "swf": 6,
       "path": "local-to-online",
       "players": "2",
-      "sync": "turn-based events (FIRE, LAND); both fly each arrow, the host reports wind changes and arrow-on-arrow deflections per arrow flight frame (AW, DEFL), the guest replays them; RELAY room codes or DIRECT",
+      "sync": "lockstep in Ruffle Together, no netcode: the game's own 2-player VS Human on --coop-keys bow-man, each player can drag-aim with their own mouse; the relay mod 1.1.1 retired",
       "status": "released",
       "qa": "lab-2p",
       "flash_player": "not possible (SWF 6)",
-      "release": "https://github.com/Multiplayer-Everything-Team/flash-games/tree/main/games/bowman",
+      "release": "flash-games edcc204 (2.0): games/bowman/BowMan_online.swf, tested on Ruffle Together 1.0.3.6",
       "writeup": "games/bow-man.md"
     },
     {
@@ -106,11 +106,11 @@
       "swf": 6,
       "path": "single-to-coop",
       "players": "2-4",
-      "sync": "own ship local; shots to the host; world mirror of every clip by depth path, corrected at rest; HUD from the host",
+      "sync": "lockstep in Ruffle Together, no netcode: a ship per player from coop.players, moved from coop.buttons; the game's one \"player\" name rotates between ships; the relay mod 1.1.2 kept as _relay.swf",
       "status": "released",
       "qa": "lab-3p+",
       "flash_player": "not possible (SWF 6)",
-      "release": "https://github.com/Multiplayer-Everything-Team/flash-games/tree/main/games/ultimatecrabbattle",
+      "release": "flash-games 5d8945e (2.1): games/ultimatecrabbattle/UltimateCrabBattle_online.swf, --coop-keys ultimate-crab-battle, Ruffle Together 1.0.3.8",
       "writeup": "games/ultimate-crab-battle.md"
     },
     {
@@ -122,11 +122,11 @@
       "swf": 8,
       "path": "single-to-coop",
       "players": "1-4",
-      "sync": "now lockstep in Ruffle Together: the mod adds 1-4 local players taking turns on their own keys (no netcode); the older relay mod: host mirror snapshot, guests play back 4 frames behind",
+      "sync": "lockstep in Ruffle Together, no netcode: 2-4 players from coop.players take turns, each aiming with their own keys or mouse; every player shops with their own mouse; leavers skipped",
       "status": "released",
       "qa": "lab-3p+",
       "flash_player": "untested",
-      "release": "https://github.com/Multiplayer-Everything-Team/flash-games/tree/main/games/raftwars",
+      "release": "flash-games 6512f82 (1.3): games/raftwars, --coop-keys gun-mayhem-2, tested on Ruffle Together 1.0.4",
       "writeup": "games/raft-wars.md"
     },
     {
@@ -138,11 +138,11 @@
       "swf": 8,
       "path": "single-to-coop",
       "players": "2-4",
-      "sync": "Ruffle Together build: local co-op for 2-4 added to the SWF, lockstep, the game's one player swapped to the nearest slot per object update; paused relay mod: own soldier local, host stand-ins, host streams its clips",
+      "sync": "lockstep in Ruffle Together: local co-op for 2-4 added to the SWF, the game's one player swapped to the nearest slot per object update; per-player coop.camera views over a shared midpoint camera; a leash teleports stragglers",
       "status": "released",
       "qa": "lab-3p+",
       "flash_player": "untested",
-      "release": "https://github.com/Multiplayer-Everything-Team/flash-games/tree/main/games/intrusion",
+      "release": "flash-games 64b185f: games/intrusion, Ruffle Together 1.0.3.9+",
       "writeup": "games/intrusion.md"
     },
     {
@@ -154,11 +154,11 @@
       "swf": 9,
       "path": "single-to-coop",
       "players": "2-4",
-      "sync": "each PC runs its own hero; remote heroes fed by input and steered; host owns enemies and damage",
-      "status": "in-progress",
+      "sync": "lockstep in Ruffle Together: every slot is a real game hero on coop.buttons and its own mouse; nearest-hero targeting, shared lives, leash, a camera per player",
+      "status": "released",
       "qa": "lab-3p+",
       "flash_player": "untested",
-      "release": null,
+      "release": "flash-games 924bd92: games/intrusion2/Intrusion2_online.swf, Ruffle Together 1.0.3.9+",
       "writeup": "games/intrusion-2.md"
     },
     {
@@ -170,11 +170,11 @@
       "swf": 15,
       "path": "single-to-coop",
       "players": "2-4",
-      "sync": "now lockstep in Ruffle Together: the mod adds 2-4 local assassins on their own keys (no netcode); the older relay mod: each PC moves its own assassin, host owns guards, bullets, damage, targets",
+      "sync": "lockstep in Ruffle Together: 2-4 assassins, one per player, count from coop.players (no netcode); the older relay mod kept as a separate build",
       "status": "released",
       "qa": "lab-3p+",
       "flash_player": "untested",
-      "release": "flash-games: games/stealthassassin/StealthAssassin_online.swf",
+      "release": "flash-games a26c0ce: games/stealthassassin/StealthAssassin_online.swf, --coop-keys stealth-assassin, tested on Ruffle Together 1.0.6",
       "writeup": "games/stealth-assassin.md"
     },
     {
@@ -238,7 +238,7 @@
       "status": "released",
       "qa": "lab-3p+",
       "flash_player": "untested",
-      "release": "https://github.com/Multiplayer-Everything-Team/flash-games/tree/main/games/smileyswar",
+      "release": "flash-games f5a0aea: games/smileyswar/SmileysWar_online.swf, tested on Ruffle Together 1.0.6",
       "writeup": "games/smileys-war.md"
     },
     {
@@ -266,11 +266,11 @@
       "swf": 6,
       "path": "single-to-coop",
       "players": "1-4",
-      "sync": "lockstep in Ruffle Together, no netcode: the mod adds players 2-4 on one shared screen; enemies go for the nearest player who is up",
+      "sync": "lockstep in Ruffle Together, no netcode: players 2-4 on one shared screen with the original keys (coop.keys); enemies go for the nearest player who is up; friendly fire as a host option",
       "status": "released",
       "qa": "lab-3p+",
       "flash_player": "untested",
-      "release": "flash-games: games/dadnme/DadNMe_online.swf",
+      "release": "flash-games 16ac6ad (1.5): games/dadnme/DadNMe_online.swf, tested up to Ruffle Together 1.0.3.8",
       "writeup": "games/dad-n-me.md"
     },
     {
@@ -286,7 +286,7 @@
       "status": "released",
       "qa": "lab-3p+",
       "flash_player": "untested",
-      "release": "flash-games: games/chaosfaction2/ChaosFaction2_online.swf",
+      "release": "flash-games d19b8af (1.2): games/chaosfaction2/ChaosFaction2_online.swf, tested on Ruffle Together 1.0.5",
       "writeup": "games/chaos-faction-2.md"
     },
     {
@@ -302,7 +302,7 @@
       "status": "released",
       "qa": "lab-3p+",
       "flash_player": "untested",
-      "release": "flash-games: games/zombotron/Zombotron_online.swf",
+      "release": "flash-games 5d3265d (1.1): games/zombotron/Zombotron_online.swf, Ruffle Together 1.0.3.8",
       "writeup": "games/zombotron.md"
     },
     {
@@ -318,7 +318,7 @@
       "status": "released",
       "qa": "lab-3p+",
       "flash_player": "untested",
-      "release": "flash-games: games/hobo/Hobo_online.swf",
+      "release": "flash-games 577cd7c: games/hobo/Hobo_online.swf, checked on Ruffle Together 1.0.3.9 and 1.0.4",
       "writeup": "games/hobo.md"
     },
     {
@@ -334,7 +334,7 @@
       "status": "released",
       "qa": "lab-3p+",
       "flash_player": "untested",
-      "release": "flash-games: games/worldshardestgame/WorldsHardestGame_online.swf",
+      "release": "flash-games c911045 (1.1): games/worldshardestgame/WorldsHardestGame_online.swf, Ruffle Together 1.0.6+",
       "writeup": "games/worlds-hardest-game.md"
     },
     {
@@ -350,7 +350,7 @@
       "status": "released",
       "qa": "lab-3p+",
       "flash_player": "untested",
-      "release": "flash-games: games/electricman2hs/Electricman2HS_online.swf",
+      "release": "flash-games cce0737 (1.1): games/electricman2hs/Electricman2HS_online.swf, proven on Ruffle Together 1.0.7",
       "writeup": "games/electricman-2-hs.md"
     },
     {
@@ -368,6 +368,38 @@
       "flash_player": "untested",
       "release": null,
       "writeup": "games/duck-life-4.md"
+    },
+    {
+      "id": "myfriendpedro",
+      "game": "My Friend Pedro",
+      "developer": "DeadToast / Adult Swim",
+      "year": null,
+      "engine": "AS2",
+      "swf": 7,
+      "path": "single-to-coop",
+      "players": "1-4",
+      "sync": "lockstep in Ruffle Together, no netcode: the game's one _root loop runs once per player with that player's variables and camera swapped in; shared world only in player 1's turn",
+      "status": "in-progress",
+      "qa": "lab-2p",
+      "flash_player": "untested",
+      "release": null,
+      "writeup": "games/my-friend-pedro.md"
+    },
+    {
+      "id": "madnessprojectnexus",
+      "game": "Madness: Project Nexus (Classic)",
+      "developer": "Michael Swain and Matt Jolly",
+      "year": null,
+      "engine": "AS2",
+      "swf": 10,
+      "path": "single-to-coop",
+      "players": "1-4",
+      "sync": "lockstep in Ruffle Together, no netcode: one frame-1 DoAction replaces class methods only in a session of 2+; friends are teammates copied from the leader with their own camera, HUD and reticle",
+      "status": "released",
+      "qa": "lab-3p+",
+      "flash_player": "untested",
+      "release": "flash-games 7e41e79 (1.4): games/madnessprojectnexus/MadnessProjectNexus_online.swf, --coop-keys stealth-hunter-2, Ruffle Together 1.0.8",
+      "writeup": "games/madness-project-nexus.md"
     }
   ]
 }

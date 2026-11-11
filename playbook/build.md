@@ -81,4 +81,25 @@ AS2 build rules:
   `if(_root.extraHero != undefined){...}` with the hero renamed, and turn calls like `nextFrame` into a per-hero
   "done" call. Recurse into an `if`/`while` whose test doesn't mention the hero. Solo is unchanged because the extra
   clips don't exist. [Duck Life 4]
+- **Register swap for "the player"** (one player kept in `_root` variables, one big `_root.onEnterFrame`): rename the
+  loop (`onEnterFrame = function` to `modLoop = function`) and run it once per player from a frame-1 tick. Before
+  each extra player's turn swap that player's variables into `_root` (and `_root._x/_y` as their camera, so the
+  game's own camera, clamps and shake work per player), and swap back after. Shared-world lines (enemy loop, timers,
+  depth raises) run only in player 1's turn. Clips with their own scripts find their owner by walking `_parent` to a
+  clip tagged with a slot. Solo is identical because every helper returns the original's answer. [My Friend Pedro]
+- **Patch AS2 classes without recompiling:** one frame-1 DoAction replaces methods on the class prototypes at run time,
+  only when `coop.players > 1`, so solo is the original by construction. Wait until the game's `_root` functions
+  exist before installing. [Madness]
+- **Fixed player numbers** (`_root.all.p3`, `pID == 2`, `while(i <= 4)`): add the extra players before the level
+  spawns anything so they are players 2..N, then rewrite every fixed number from 2 up to `n + offset` (N - 1) with a
+  regex at build time. Turn "player 1 out" into "every player out" with a helper that equals the original test when
+  the offset is 0. Solo stays byte-identical. [Chaos Faction 2]
+- **Code that loops over enemies, then hits "the player" once** (explosions, thrown bodies): call the game's function
+  again for each other player with the loop counts set to 0, so only the player part runs. [Dad 'n Me]
+- **Path A key sets that change by mode** (P1 moves to other keys in 2-player mode): pin the game's key variables to
+  the map's codes after its own `controls()`, and replace `_root.controls` too (a Settings menu calls it again).
+  [Chaos Faction 2]
+- **Before rewriting exported scripts,** re-import every script unchanged and compare a replay with the original.
+  Hobo's 5368 scripts were identical on every frame, which proved FFDec's AS1/AS2 round trip safe for that game.
+  [Hobo]
 - SWF 6 and 7 hide `ExternalInterface`: unhide it before calling `coop.*` (ruffle-coop's AS2 helper does it).
