@@ -37,6 +37,15 @@ any refusal                                              -> E|<reason>, then the
 - For each friend the relay sends `OPEN|<token>`. Open a **new** connection, send `RELAY|1|DATA|<token>\n`, and treat that
   socket exactly like one your `TcpListener` accepted. The friend's socket, after `OK`, is a raw pipe to it.
 - Host leaves: every friend's pipe closes. A friend leaving closes only its own pipe.
+- **Browser games** can't open raw TCP to the relay. The host's own local server is the tunnel host; each friend runs a
+  small local helper that serves the game from the friend's own copy and pipes only the websocket and API requests
+  through relay `JOIN` pipes, one per request. The relay counts every open pipe in a tunnel room as a player, so an
+  8-player game needs `max_players` 16. Use the mod version plus `#` and a hash of the mod code as the version, so only
+  identical builds meet. [Plazma Burst 2, an HTML5 game, not in the Flash directory]
+- Test it with a local copy of the real relay script run read-only (`python -B`, a `--games` file, mods-info and
+  Discord off) on a spare port: host and 2 friends by room code in headless browsers, checking that a wrong code and
+  another build are refused. Run the same test with no relay override to also prove the address lookup through
+  mods-info. [Plazma Burst 2]
 
 ## Version 2 (tunnel only, optional)
 ```
