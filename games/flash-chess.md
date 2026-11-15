@@ -4,7 +4,7 @@ Released 1.0: flash-games f41daf4, `games/flashchess/FlashChess_online.swf` (SHA
 Ruffle Together 1.0.8+ (uses `coop.mouse`, `coop.zone` and `coop.mouse.clicker`; tested only on 1.0.8). QA (hub
 level): lab-2p. Entry in [DIRECTORY.md](../DIRECTORY.md).
 
-Flash Chess (2002), Digital Vision Multimedia; the Web Design Museum's copy. SWF 5, AS1, 800x600, 100 fps, 75 KB. One
+Flash Chess (2002), Digital Vision Multimedia; the Web Design Museum's copy. SWF 5, AS1 (frame scripts and button handlers only), 800x600, 100 fps, 75 KB. One
 human against the computer; the game has no 2-player mode.
 
 - **Path:** single player to versus. The host is blue (moves first); the friend is red in place of the computer.

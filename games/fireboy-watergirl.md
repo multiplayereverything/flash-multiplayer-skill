@@ -9,4 +9,10 @@ Oslo Albet's two-player puzzle platformer, AS3 with Box2D, SWF 9.
 - **The players:** nothing added. The game already reads both sets of keys.
 - **Build route:** only the ad, the hiscore loader and the sponsor links are stripped from the SWF.
 - **Lab runs (Ruffle Together 1.0.3.6):** a 2000-frame script through menus, moving and jumping, pause from each slot, Watergirl dying in lava, Game Over and Retry. Replays identical 3 times, also with 15 ms jitter. Solo matches the original on every frame from 62 on; frames 0-61 are the preloader, where the ad box was. coop-lab relay and direct stayed in sync.
-- **Not proven:** the script plays level 1 without finishing it, so level completion, saves and the ending were not reached. No two-window run, and no two-PC game.
+- **Release:** flash-games f1fa444, unchanged since. Every lab run above used Ruffle Together 1.0.3.6 with the map
+  passed as a `.keys` file of identical text; nothing was rechecked on 1.0.3.7 or later (that run was stopped before
+  it ran).
+- **Not proven:** the script plays level 1 without finishing it, so level completion, saves and the ending were not
+  reached. The built-in `fireboy-watergirl` name on a release exe, and the game's own P pause (the map's MENU = 80) on
+  1.0.3.7+, where Ruffle Together's own pause was removed. Two real windows were opened for the user to play by hand,
+  but the result wasn't reported, so no two-window run counts; no two-PC game.

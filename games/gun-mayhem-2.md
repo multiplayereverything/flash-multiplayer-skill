@@ -1,8 +1,25 @@
 # Gun Mayhem 2 Online
 
-Relay id `gm2`. Entry in [DIRECTORY.md](../DIRECTORY.md).
+Id `gm2`. Entry in [DIRECTORY.md](../DIRECTORY.md).
 
 Platform brawler with local 4-player (KevinGu, 2012), AS2 code in a SWF 9 file.
+
+## Now: Ruffle Together (released)
+- **Release:** flash-games 5fe43fe, `games/gunmayhem2/gunmayhem2_online.swf` (SHA-256 `080b5f9b...`), launch
+  `--coop-keys gun-mayhem-2`, 2-4 players. Tested on Ruffle Together 1.0.3.5; not rechecked on 1.0.4 or 1.0.8.
+- **Path:** local multiplayer to online with a key map only. Lockstep in Ruffle Together, no netcode.
+- **The one SWF change:** at the start of the arena frame, all 4 slots' saved key bindings are reset to the game's
+  defaults (one p-code call), because the host's save is shared and a host who rebound the controls would otherwise
+  move the wrong players on every PC (traps.md).
+- **QA (lab-3p+):** on the 1.0.3.5 release exe, the 4-player replay over 3300 frames gave the same hash twice, matching
+  1.0.3.4-rc; coop-lab at 2, 3 and 4 players, relay and direct, `desync_at=none` in all six runs. Median felt delay:
+  relay 93-124 ms, direct 36-38 ms, with rare spikes up to 1.8 s at 3 players. One 4-player input script also drives
+  the 2- and 3-player runs (the extra slots' keys go unused).
+- **Not proven:** two people on two PCs; Flash Player.
+
+## Before: the netcode build (retired)
+No longer published; this is history, kept for its lessons. Its source still builds with `python build.py` without
+`--coop`.
 
 - **Path:** local multiplayer to online, 2-4 players.
 - **Sync:** input lockstep driven by the host. The host sends `F|frame|inputs` every frame, guests send theirs, a 2-frame jitter buffer absorbs lag, and the host waits only when a guest falls more than 15 frames behind. A full snapshot plus the RNG state goes out every 35 frames to repair drift.

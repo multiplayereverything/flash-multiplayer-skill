@@ -14,7 +14,7 @@
       "status": "released",
       "qa": "lab-2p",
       "flash_player": "untested",
-      "release": "https://github.com/multiplayereverything/flash-games/tree/main/games/badicecream",
+      "release": "flash-games 5c7784c: games/badicecream/BadIceCream_online.swf, --coop-keys bad-ice-cream, tested on Ruffle Together 1.0.3.5",
       "writeup": "games/bad-ice-cream.md"
     },
     {
@@ -42,11 +42,11 @@
       "swf": 9,
       "path": "local-to-online",
       "players": "2-4",
-      "sync": "input lockstep from the host, seeded RNG, waits hold gameplay timelines, snapshot every 35 frames",
+      "sync": "lockstep in Ruffle Together, no netcode: a key map only (--coop-keys gun-mayhem-2); the one SWF change resets all 4 slots' saved key bindings to the defaults at the start of the arena; the old netcode build retired",
       "status": "released",
       "qa": "lab-3p+",
       "flash_player": "partial",
-      "release": "https://github.com/Multiplayer-Everything-Team/flash-games/tree/main/games/gunmayhem2",
+      "release": "flash-games 5fe43fe: games/gunmayhem2/gunmayhem2_online.swf, tested on Ruffle Together 1.0.3.5",
       "writeup": "games/gun-mayhem-2.md"
     },
     {
@@ -254,7 +254,7 @@
       "status": "released",
       "qa": "lab-2p",
       "flash_player": "untested",
-      "release": "flash-games: games/fireboywatergirlforesttemple/FireboyWatergirlForestTemple_online.swf",
+      "release": "flash-games f1fa444: games/fireboywatergirlforesttemple/FireboyWatergirlForestTemple_online.swf, --coop-keys fireboy-watergirl, tested on Ruffle Together 1.0.3.6 only",
       "writeup": "games/fireboy-watergirl.md"
     },
     {
@@ -438,7 +438,7 @@
       "game": "Ultimate Flash Sonic",
       "developer": "menace.ch (fan game)",
       "year": 2004,
-      "engine": "AS2",
+      "engine": "AS1",
       "swf": 5,
       "path": "single-to-coop",
       "players": "1-4",
@@ -454,7 +454,7 @@
       "game": "Flash Chess",
       "developer": "Digital Vision Multimedia",
       "year": 2002,
-      "engine": "AS2",
+      "engine": "AS1",
       "swf": 5,
       "path": "single-to-versus",
       "players": "1-2",

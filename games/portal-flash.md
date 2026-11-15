@@ -3,7 +3,7 @@
 Released 1.1: flash-games 73efb1b, `games/portalflash/PortalFlash_online.swf` (SHA-256 `374a0b77...`; 1.0 was
 946dc3a), 2-4 players,
 minimum Ruffle Together 1.0.8, launch `--coop-keys gun-mayhem-2 --coop-players 2-4` (the SWF sets its own map with
-`coop.keys`). QA (hub level): lab-3p+. No launcher record yet. Entry in [DIRECTORY.md](../DIRECTORY.md).
+`coop.keys`). QA (hub level): lab-3p+. Launcher record live (mods-info 9de2187, `records/portalflash.json`, up to 4 players). Entry in [DIRECTORY.md](../DIRECTORY.md).
 
 Portal: The Flash Version (We Create Stuff, 2007), version 1.1.1, the Web Design Museum's copy. AS2, SWF 8, 45 fps,
 800x450, no wrapper, no obfuscation. A single-screen puzzle game: one frame-5 script runs everything; the physics

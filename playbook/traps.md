@@ -46,6 +46,9 @@ Each one cost a real mod time. The mod it came from is in brackets.
 - `coop.hud` in a game that scrolls by moving `_root` was drawn off screen up to Ruffle Together 1.0.3.8 (fixed in
   1.0.3.9): such games need 1.0.3.9+. If your camera moves `_root` after the game pinned its HUD at `-_root._x`,
   re-pin the HUD right after, or it lags a frame and is clipped while zooming. [Intrusion]
+- Ruffle Together shares the host's save, and key maps send a game's default key codes. If the host rebound the
+  controls in their save, every PC plays with the rebound keys, so friends' keys move the wrong player or nothing.
+  Reset the game's saved bindings to the defaults at match start. [Gun Mayhem 2]
 - Key maps refuse codes Ruffle has no key for (F1 = 112, F12 = 123, F24 = 135: "no key with code"). One such code
   makes Ruffle refuse the whole map: `coop.keys` returns false and every run quietly uses the launch map. Run
   `tools/keys_check.py` on the map the SWF sends and check `coop.keys`'s answer. For a slot key the game never reads,
@@ -495,6 +498,14 @@ Each one cost a real mod time. The mod it came from is in brackets.
   game itself (the frame the menu's START leads to, with the menu's own variables set). [Ultimate Flash Sonic]
 - A state clip name read from `COOP_DESCRIBE_AT` dumps must have no commas: the state pattern stops there.
   [Ultimate Flash Sonic]
+- To hand a game to the user to try, open a host window and a join window (`--coop-host <port>` /
+  `--coop-join 127.0.0.1:<port>`, the same `--coop-keys`, each with its own `--save-directory` and
+  `--cache-directory`), and say which window is which player and that only the host's mouse runs the menus. The exe
+  started with only a SWF runs as plain Ruffle, with no session, and looked to the user like the wrong player.
+  [Fireboy & Watergirl]
+- One 4-player input script also drives 2- and 3-player coop-lab runs (the extra slots' keys go unused).
+  Replay fingerprints quoted as 8 hex characters are the start of the `--coop-out` file's SHA-256.
+  [Gun Mayhem 2, Bad Ice-Cream]
 - A lab FlashVar path that feeds scripted keys must turn the co-op API off, or replays mix the two.
   [Ultimate Crab Battle]
 - Reaching an ending without a bot: move a hero onto each level's real exit trigger (position from `-swf2xml`, twips

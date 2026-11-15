@@ -17,7 +17,7 @@ OUT = os.path.join(ROOT, "DIRECTORY.md")
 
 FIELDS = ["id", "game", "developer", "year", "engine", "swf", "path", "players", "sync", "status", "qa",
           "flash_player", "release", "writeup"]
-ENGINES = {"AS2", "AS3"}
+ENGINES = {"AS1", "AS2", "AS3"}
 PATHS = {"local-to-online": "local multiplayer to online", "single-to-coop": "single player to co-op",
          "single-to-versus": "single player to versus", "fix-existing": "fix an existing online mod"}
 STATUS = ["idea", "in-progress", "built", "released"]

@@ -7,6 +7,12 @@ online in [Ruffle Together](https://github.com/multiplayereverything/ruffle-toge
 key presses travel). The relay mod described below (host snapshots, F9 panel, DIRECT, the launcher lobby bridge)
 isn't released any more; its lessons stand.
 
+Release: flash-games 5c7784c, `games/badicecream/BadIceCream_online.swf` (SHA-256 `4635ddfc...3494`),
+`--coop-keys bad-ice-cream`, 2 players. QA lab-2p, last checked on Ruffle Together 1.0.3.5 (2026-10-29): replay
+identical twice; coop-lab relay (40 ms lag + jitter) and direct, 3000 frames each, no desync. Felt delay median 81 ms
+relay, 47 ms direct, but spikes over 3 s in both (cause not checked). Not proven: two real PCs, any Ruffle Together
+after 1.0.3.5, Flash Player for this build.
+
 Tile arcade game for two (Nitrome, 2010), AS3 SWF 9, unobfuscated, from a Poki build.
 
 - **Path:** local multiplayer to online. The game already had a 2-player mode on one keyboard; P2's keys now come from the network.
